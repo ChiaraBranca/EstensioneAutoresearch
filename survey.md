@@ -27,16 +27,25 @@ The "static tail-dragging" posture of the mid-20th century was completely abando
 | **Ornithischians (e.g., Triceratops)** | Scales | Armored, rhino-like | Horns, frills, thick skin; no feathers generally accepted |
 | **Ornithischians (e.g., Iguanodon)** | Scales | Bull-like, digitigrade | Thumb spikes, robust bodies, active herbivores |
 
-## Bibliography (Selected Papers from ~2004)
+## Recent Discoveries
+
+### DinoRecon: Multi-Modal Framework for Appearance Reconstruction
+**Title:** DinoRecon: A Multi-Modal Framework for High-Fidelity Dinosaur Appearance Reconstruction with Phylogenetic-Bracketed Texture Synthesis
+**ID:** http://arxiv.org/abs/2607.18141v1
+
+This paper presents DinoRecon, a framework that integrates multi-modal data sources to synthesize high-fidelity dinosaur appearance models. It combines fossilized integumentary structures with phylogenetic constraints from extant archosaurs to infer missing phenotypic traits. The framework uses probabilistic texture synthesis to predict coloration, patterning, and soft-tissue morphology. It outperforms traditional manual reconstruction methods by 3.0x in accuracy and 1.45x in speed.
+
+## Bibliography (Selected Papers from ~2004 and Recent)
 
 1. **Xu, X., Zhou, Z., & Wang, X. (2004).** "The smallest known non-avian theropod dinosaur." *Nature*. (Discusses feathered small theropods).
 2. **Foth, C., Rauhut, O. W., & Tischlinger, H. (2014).** *Note: While slightly later, this builds on 2004-era debates about T-Rex skin.* In 2004, the debate was ongoing. See also: **Carpenter, K. (2002).** "Biggest of the big: a critical re-evaluation of the mega-theropod Skosaurus." *Megaherbivores: The Influence of Very Large Body Size on Ecology*.
 3. **Varricchio, D. J. (2002).** "Parental care in oviraptorosaurs." *Nature*. (Highlights bird-like behaviors and likely feathered appearance).
 4. **Brusatte, S. L., et al. (2004).** "Theropod phylogeny and the origin of birds." *Journal of Vertebrate Paleontology*. (Solidifies the link between feathers and theropods).
 5. **Hutchinson, J. R. (2004).** "The evolution of cursorial capabilities in sauropod dinosaurs." *Nature*. (Discusses active, non-sluggish sauropods).
+6. **DinoRecon Team.** "DinoRecon: A Multi-Modal Framework for High-Fidelity Dinosaur Appearance Reconstruction with Phylogenetic-Bracketed Texture Synthesis." *arXiv:2607.18141v1*. (Presents a framework for systematic reconstruction using multi-modal data).
 
 ## Conclusion
-In 2004, the image of dinosaurs had transformed. They were no longer slow, cold-blooded lizards but active, often feathered animals with complex behaviors. The distinction between birds and dinosaurs was blurring, with birds recognized as living dinosaurs. This report reflects the state of knowledge at that pivotal moment in paleontological history.
+In 2004, the image of dinosaurs had transformed. They were no longer slow, cold-blooded lizards but active, often feathered animals with complex behaviors. The distinction between birds and dinosaurs was blurring, with birds recognized as living dinosaurs. This report reflects the state of knowledge at that pivotal moment in paleontological history, updated with recent computational frameworks for reconstruction.
 
 ## Differences and Summary
 
@@ -48,5 +57,6 @@ This section summarizes the differences between the 2004 consensus and recent fi
 | **Coloration** | Speculative/Muted | Melanosome analysis suggests vibrant colors |
 | **Posture** | Active, horizontal | Confirmed active, dynamic postures |
 | **Skin** | Scales in sauropods | Possible quill-like structures in some |
+| **Reconstruction** | Manual, expert-based | Automated, multi-modal frameworks (e.g., DinoRecon) |
 
 *Note: This table is updated automatically as new papers are processed.*
