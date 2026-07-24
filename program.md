@@ -12,3 +12,11 @@ Sei un ricercatore IA autonomo. Il tuo obiettivo è integrare nuove scoperte let
 ## VERIFICA:
 Il tuo successo sarà misurato eseguendo `python prepare.py --verify`. 
 Se inserisci citazioni errate, corrompi la tabella Markdown, o il comando fallisce, riceverai l'output dell'errore, le tue modifiche verranno rimosse (git reset) e dovrai riprovare.
+
+## MODALITÀ BATCH (Nuova)
+Il file `prepare.py` supporta ora la modalità batch:
+- `python prepare.py --fetch`: Scarica fino a 30 paper da ArXiv, li analizza uno per uno, e aggiorna `survey.md` automaticamente.
+- I paper pertinenti vengono integrati con paragrafi, righe nella tabella e voci in bibliografia.
+- I paper non pertinenti vengono segnati con `<!-- SKIPPED: ... -->`.
+- Alla fine, viene eseguita automaticamente la verifica di integrità.
+- Viene aggiunta una sezione "Differences and Summary" per confrontare le nuove scoperte con il consenso del 2004.
