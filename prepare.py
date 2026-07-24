@@ -55,6 +55,6 @@ if __name__ == "__main__":
     elif "--eval" in sys.argv:
         # Simulazione lettura stato
         fig_exists = os.path.exists("figures/distribution.png")
-        # Aggiornato il conteggio dei paper integrati a 13 (2000-2026)
-        score = compute_living_survey_score(integrated_papers_count=13, figure_generated=fig_exists)
+        # Aggiornato il conteggio dei paper integrati a 14 (2000-2026 + 2000 Black Hole)
+        score = compute_living_survey_score(integrated_papers_count=14, figure_generated=fig_exists)
         print(f"LSS_SCORE:{score}")
