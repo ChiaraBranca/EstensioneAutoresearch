@@ -77,18 +77,15 @@ def update_survey_with_paper(title, summary, paper_id):
     with open('survey.md', 'r') as f:
         content = f.read()
 
-    # 1. Aggiungi paragrafo nella sezione "Key Findings" o crea una nuova sezione se necessaria
-    # Cerchiamo la fine della sezione "Key Findings" o l'inizio di "Comparative Table"
-    # Per semplicità, aggiungiamo un nuovo paragrafo alla fine della sezione "Key Findings"
+    paper_id_short = paper_id.split('/')[-1]
     
-    # Troviamo l'indice della sezione "Comparative Table"
-    table_section_marker = "## Comparative Table"
-    table_index = content.find(table_section_marker)
+    # 1. Aggiungi paragrafo nella sezione "Recent Discoveries"
+    # Cerchiamo la sezione "Recent Discoveries"
+    recent_section_marker = "## Recent Discoveries"
+    recent_index = content.find(recent_section_marker)
     
-    if table_index == -1:
-        # Se la tabella non esiste, aggiungiamo prima
-        new_section = f"""
-## Recent Discoveries ({paper_id.split('/')[-1]})
+    paper_block = f"""
+### {paper_id_short}
 
 **Title:** {title}
 
@@ -96,19 +93,28 @@ def update_survey_with_paper(title, summary, paper_id):
 
 This paper provides new insights into dinosaur appearance, specifically regarding {title.lower()}.
 """
-        content += new_section
+
+    if recent_index == -1:
+        # Se la sezione non esiste, creiamola prima della tabella comparativa
+        table_section_marker = "## Comparative Table"
+        table_index = content.find(table_section_marker)
+        
+        if table_index == -1:
+            # Se non c'è nemmeno la tabella, aggiungiamo alla fine
+            content += f"\n{recent_section_marker}\n{paper_block}"
+        else:
+            # Inseriamo prima della tabella
+            content = content[:table_index] + f"\n{recent_section_marker}\n{paper_block}" + content[table_index:]
     else:
-        # Inseriamo prima della tabella
-        new_section = f"""
-## Recent Discoveries ({paper_id.split('/')[-1]})
-
-**Title:** {title}
-
-**Summary:** {summary}
-
-This paper provides new insights into dinosaur appearance, specifically regarding {title.lower()}.
-"""
-        content = content[:table_index] + new_section + "\n" + content[table_index:]
+        # La sezione esiste, aggiungiamo il nuovo paper block dopo la sezione
+        # Troviamo la fine della sezione "Recent Discoveries" (inizio della prossima sezione H2)
+        next_section_index = content.find("\n## ", recent_index + len(recent_section_marker))
+        if next_section_index == -1:
+            # Se non ci sono altre sezioni, aggiungiamo alla fine
+            content += paper_block
+        else:
+            # Inseriamo prima della prossima sezione
+            content = content[:next_section_index] + paper_block + content[next_section_index:]
 
     # 2. Aggiungi riga alla tabella comparativa
     # Cerchiamo la fine della tabella (prima di Bibliography)
@@ -128,7 +134,7 @@ This paper provides new insights into dinosaur appearance, specifically regardin
         if last_table_line_idx != -1:
             # Estraiamo il gruppo di dinosauri dal titolo o riassumiamo
             # Per semplicità, usiamo "Recent Discovery" come gruppo
-            new_row = f"| **Recent Discovery** | **Varied** | **Based on {title[:30]}...** | **New findings from {paper_id.split('/')[-1]}** |\n"
+            new_row = f"| **Recent Discovery** | **Varied** | **Based on {title[:30]}...** | **New findings from {paper_id_short}** |\n"
             lines_before_biblio.insert(last_table_line_idx + 1, new_row)
             content = '\n'.join(lines_before_biblio) + content[biblio_index:]
 
@@ -211,6 +217,21 @@ def verify_survey():
         if "Differences and Summary" not in content:
             print("ERRORE: Sezione 'Differences and Summary' mancante.")
             sys.exit(1)
+            
+        # 5. Verifica che la sezione Recent Discoveries esista e non sia vuota
+        if "Recent Discoveries" in content:
+            # Controlla se ci sono contenuti dopo l'header
+            recent_index = content.find("## Recent Discoveries")
+            next_section = content.find("\n## ", recent_index + 1)
+            if next_section == -1:
+                section_content = content[recent_index + len("## Recent Discoveries"):]
+            else:
+                section_content = content[recent_index + len("## Recent Discoveries"):next_section]
+            
+            # Se la sezione è vuota o contiene solo spazi, è un errore
+            if not section_content.strip():
+                print("ERRORE: Sezione 'Recent Discoveries' vuota.")
+                sys.exit(1)
 
         print("VERIFICA SUPERATA. (Loss = 0)")
         sys.exit(0)
@@ -244,6 +265,10 @@ def generate_metrics_report():
 5. **Sezione Differences and Summary**:
    - **Perché**: Riassume le differenze tra il consenso del 2004 e le nuove scoperte.
    - **Scelta**: Fornisce un valore aggiunto immediato al lettore, evidenziando l'evoluzione della conoscenza.
+
+6. **Sezione Recent Discoveries**:
+   - **Perché**: Documenta le nuove scoperte integrate nel report.
+   - **Scelta**: Assicura che il report sia aggiornato e che le nuove informazioni siano visibili.
 
 ### Perché queste metriche?
 Queste metriche sono state scelte per bilanciare la completezza del contenuto con la facilità di verifica automatica. 
