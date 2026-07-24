@@ -1,22 +1,26 @@
-# TASK: ESTENSIONE LIVING SURVEY
+# Living Survey AutoResearch Directive
 
-Sei un ricercatore IA autonomo. Il tuo obiettivo è integrare nuove scoperte letterarie in un documento Markdown.
+Tu sei un agente AI ricercatore. Il tuo obiettivo è mantenere aggiornata la survey scientifica in `survey_draft.tex`.
 
-## REGOLE DI CONDOTTA:
-1. **Analizza:** Leggi il file `current_paper.txt`. Se il paper NON è pertinente (non parla di LLM agenti o memoria), modifica `survey.md` aggiungendo un commento nascosto `<!-- SKIPPED: [ID PAPER] -->` e fermati.
-2. **Integra:** Se il paper è pertinente, apri `survey.md`.
-3. **Sintetizza:** Aggiungi un paragrafo di 2-3 frasi nella sezione pertinente usando la citazione formattata come ``.
-4. **Dati:** Aggiungi una riga alla tabella comparativa esistente nel file.
-5. **Bibliografia:** Aggiungi l'entry BibTeX in fondo a `survey.md`.
+## Protocollo del Loop di Ricerca
 
-## VERIFICA:
-Il tuo successo sarà misurato eseguendo `python prepare.py --verify`. 
-Se inserisci citazioni errate, corrompi la tabella Markdown, o il comando fallisce, riceverai l'output dell'errore, le tue modifiche verranno rimosse (git reset) e dovrai riprovare.
+1. **Recupero Nuova Letteratura:**
+   Esegui `python prepare.py --fetch` per aggiornare `new_papers.json`.
 
-## MODALITÀ BATCH (Nuova)
-Il file `prepare.py` supporta ora la modalità batch:
-- `python prepare.py --fetch`: Scarica fino a 30 paper da ArXiv, li analizza uno per uno, e aggiorna `survey.md` automaticamente.
-- I paper pertinenti vengono integrati con paragrafi, righe nella tabella e voci in bibliografia.
-- I paper non pertinenti vengono segnati con `<!-- SKIPPED: ... -->`.
-- Alla fine, viene eseguita automaticamente la verifica di integrità.
-- Viene aggiunta una sezione "Differences and Summary" per confrontare le nuove scoperte con il consenso del 2004.
+2. **Screening e Pertinenza:**
+   Leggi `new_papers.json`. Filtra solo i paper strettamente pertinenti al tema trattato nella survey.
+
+3. **Modifica Sorgente (`survey_draft.tex` & `references.bib`):**
+   - Aggiungi i nuovi paper nella sezione appropriata con un'analisi critica/comparativa.
+   - Aggiorna la tabella comparativa dei metodi esistente.
+   - Inserisci le entrate BibTeX corrispondenti in `references.bib`.
+
+4. **Rigenerazione Grafici:**
+   Esegui o aggiorna `generate_figures.py` per ricreare i grafici di distribuzione temporale o di performance nella cartella `figures/`.
+
+5. **Valutazione ed Esecuzione dell'Esperimento:**
+   - Esegui `python prepare.py --eval` e rileva il valore `LSS_SCORE`.
+   - Se la compilazione fallisce o `LSS_SCORE` è inferiore rispetto al commit precedente:
+     Esegui `git reset --hard HEAD` e prova un'ipotesi differente.
+   - Se `LSS_SCORE` è aumentato:
+     Effettua il commit delle modifiche mantenendo il nuovo stato come baseline.
