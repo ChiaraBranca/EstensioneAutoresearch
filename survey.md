@@ -17,7 +17,9 @@ The study of melanosomes (pigment-bearing organelles) in fossilized feathers was
 ### 4. Posture and Activity
 The "static tail-dragging" posture of the mid-20th century was completely abandoned. Dinosaurs were depicted with horizontal, active postures. Theropods were shown as agile, fast-moving predators. Sauropods were seen as slow but active grazers, not sluggish swamp-dwellers.
 
-## Recent Discoveries (2607.18141v1)
+## Recent Discoveries
+
+### 2607.18141v1
 
 **Title:** DinoRecon: A Multi-Modal Framework for High-Fidelity Dinosaur Appearance Reconstruction with Phylogenetic-Bracketed Texture Synthesis
 
