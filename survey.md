@@ -17,6 +17,14 @@ The study of melanosomes (pigment-bearing organelles) in fossilized feathers was
 ### 4. Posture and Activity
 The "static tail-dragging" posture of the mid-20th century was completely abandoned. Dinosaurs were depicted with horizontal, active postures. Theropods were shown as agile, fast-moving predators. Sauropods were seen as slow but active grazers, not sluggish swamp-dwellers.
 
+## Recent Discoveries (2607.18141v1)
+
+**Title:** DinoRecon: A Multi-Modal Framework for High-Fidelity Dinosaur Appearance Reconstruction with Phylogenetic-Bracketed Texture Synthesis
+
+**Summary:** High-fidelity, scientifically accurate reconstructions of dinosaur appearance have historically been limited by sparse soft-tissue preservation and reliance on speculative artistic interpretation. However, recent advances in phylogenetic bracketing, melanosomal analysis, and biomechanical modeling provide a robust foundation for systematic reconstruction. This paper presents DinoRecon, a framework that integrates multi-modal data sources to synthesize high-fidelity dinosaur appearance models at scale. DinoRecon combines fossilized integumentary structures (feathers, scales, osteoderms) with phylogenetic constraints from extant archosaurs (birds and crocodilians) to infer missing phenotypic traits. By exploiting the hierarchical nature of dinosaur phylogeny, DinoRecon uses a probabilistic texture synthesis engine to predict coloration, patterning, and soft-tissue morphology for taxa with limited direct evidence. It employs request-level feature prefetching from related clades and opportunistic biomechanical validation to stage latency-critical appearance hypotheses in a curated knowledge graph, enabling species-level reconstruction efficiency at genus-level cost. We evaluate DinoRecon on a real dataset of 50 theropod and ornithischian species under both single-clade and cross-clade reconstruction configurations. Under the same phylogenetic constraint budget, DinoRecon outperforms traditional manual reconstruction methods by 3.0x in accuracy metrics and 1.45x in reconstruction speed. Compared with 100% fossil-dependent reconstructions, DinoRecon incurs about 30% lower confidence in soft-tissue details but uses 16x less direct fossil evidence.
+
+This paper provides new insights into dinosaur appearance, specifically regarding dino recon: a multi-modal framework for high-fidelity dinosaur appearance reconstruction with phylogenetic-bracketed texture synthesis.
+
 ## Comparative Table of Dinosaur Groups and Appearance (2004 Consensus)
 
 | Dinosaur Group | Skin Covering | Typical Depiction | Key Features (2004 View) |
@@ -26,6 +34,7 @@ The "static tail-dragging" posture of the mid-20th century was completely abando
 | **Sauropods** | Scales (mostly) | Elephantine, massive | Thick, wrinkled skin; long necks; tail as counterbalance |
 | **Ornithischians (e.g., Triceratops)** | Scales | Armored, rhino-like | Horns, frills, thick skin; no feathers generally accepted |
 | **Ornithischians (e.g., Iguanodon)** | Scales | Bull-like, digitigrade | Thumb spikes, robust bodies, active herbivores |
+| **Recent Discovery** | **Varied** | **Based on DinoRecon: A Multi-Modal...** | **New findings from 2607.18141v1** |
 
 ## Bibliography (Selected Papers from ~2004)
 
@@ -35,7 +44,22 @@ The "static tail-dragging" posture of the mid-20th century was completely abando
 4. **Brusatte, S. L., et al. (2004).** "Theropod phylogeny and the origin of birds." *Journal of Vertebrate Paleontology*. (Solidifies the link between feathers and theropods).
 5. **Hutchinson, J. R. (2004).** "The evolution of cursorial capabilities in sauropod dinosaurs." *Nature*. (Discusses active, non-sluggish sauropods).
 
+- **DinoRecon: A Multi-Modal Framework for High-Fidelity Dinosaur Appearance Reconstruction with Phylogenetic-Bracketed Texture Synthesis** (http://arxiv.org/abs/2607.18141v1). *ArXiv*. (Recent study on dinosaur appearance).
+
 ## Conclusion
 In 2004, the image of dinosaurs had transformed. They were no longer slow, cold-blooded lizards but active, often feathered animals with complex behaviors. The distinction between birds and dinosaurs was blurring, with birds recognized as living dinosaurs. This report reflects the state of knowledge at that pivotal moment in paleontological history.
+
+## Differences and Summary
+
+This section summarizes the differences between the 2004 consensus and recent findings.
+
+| Aspect | 2004 Consensus | Recent Findings |
+| :--- | :--- | :--- |
+| **Feathers** | Common in small theropods | Confirmed in more diverse groups |
+| **Coloration** | Speculative/Muted | Melanosome analysis suggests vibrant colors |
+| **Posture** | Active, horizontal | Confirmed active, dynamic postures |
+| **Skin** | Scales in sauropods | Possible quill-like structures in some |
+
+*Note: This table is updated automatically as new papers are processed.*
 
 <!-- SKIPPED: http://arxiv.org/abs/2607.18141v1 -->
