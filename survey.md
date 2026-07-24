@@ -37,3 +37,5 @@ The "static tail-dragging" posture of the mid-20th century was completely abando
 
 ## Conclusion
 In 2004, the image of dinosaurs had transformed. They were no longer slow, cold-blooded lizards but active, often feathered animals with complex behaviors. The distinction between birds and dinosaurs was blurring, with birds recognized as living dinosaurs. This report reflects the state of knowledge at that pivotal moment in paleontological history.
+
+<!-- SKIPPED: http://arxiv.org/abs/2607.18141v1 -->
