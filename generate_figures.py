@@ -16,22 +16,43 @@ plt.rcParams.update({
 
 def plot_publication_timeline():
     """Genera la timeline dei paper inclusi nella survey."""
-    # Qwen/Aider aggiornerà questo dizionario o lo leggerà da un file JSON/BibTeX
+    # Dati aggiornati per la survey sui dinosauri (2000-2026)
     data = {
-        "2021": 2,
-        "2022": 5,
-        "2023": 12,
-        "2024": 24,
-        "2025": 18,
-        "2026": 8  # Inseriti finora
+        "2000": 0,
+        "2001": 1,
+        "2002": 0,
+        "2003": 1,
+        "2004": 1,
+        "2005": 1,
+        "2006": 0,
+        "2007": 0,
+        "2008": 1,
+        "2009": 0,
+        "2010": 1,
+        "2011": 0,
+        "2012": 1,
+        "2013": 0,
+        "2014": 0,
+        "2015": 1,
+        "2016": 0,
+        "2017": 0,
+        "2018": 1,
+        "2019": 0,
+        "2020": 1,
+        "2021": 0,
+        "2022": 1,
+        "2023": 0,
+        "2024": 1,
+        "2025": 0,
+        "2026": 1
     }
     
     years = list(data.keys())
     counts = list(data.values())
     
-    fig, ax = plt.subplots(figsize=(6, 3.5))
+    fig, ax = plt.subplots(figsize=(10, 3.5))
     ax.bar(years, counts, color='#2b5c8f', width=0.6)
-    ax.set_title("Evoluzione delle Pubblicazioni nel Dominio")
+    ax.set_title("Evoluzione delle Pubblicazioni nel Dominio Dinosauri (2000-2026)")
     ax.set_xlabel("Anno")
     ax.set_ylabel("Numero di Paper Citati")
     ax.grid(axis='y', linestyle='--', alpha=0.7)
@@ -42,12 +63,14 @@ def plot_publication_timeline():
 
 def plot_taxonomy_distribution():
     """Genera la distribuzione dei metodi secondo la tassonomia della survey."""
-    # Dati baseline che l'agente modificherà man mano che classifica nuovi paper
+    # Dati aggiornati per la survey sui dinosauri
+    # Tassonomia simulata basata sui temi trattati
     categories = {
-        "External Memory": 14,
-        "Working Memory": 9,
-        "Episodic Storage": 18,
-        "Parametric Refinement": 6
+        "Phylogeny & Evolution": 4,
+        "Physiology & Metabolism": 3,
+        "Biomechanics & Behavior": 3,
+        "Paleocolor & Soft Tissue": 2,
+        "AI & Reconstruction": 1
     }
     
     labels = list(categories.keys())
@@ -55,7 +78,7 @@ def plot_taxonomy_distribution():
     
     fig, ax = plt.subplots(figsize=(6, 3.5))
     ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=140, 
-           colors=['#2b5c8f', '#d95f02', '#7570b3', '#e7298a'])
+           colors=['#2b5c8f', '#d95f02', '#7570b3', '#e7298a', '#66a61e'])
     ax.set_title("Distribuzione dei Paper per Tassonomia")
     
     plt.tight_layout()
