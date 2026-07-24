@@ -1,8 +1,8 @@
 ==================================================
 LIVING SURVEY AUTORESEARCH SUMMARY
 ==================================================
-total_papers_evaluated: 15
-papers_accepted:        15
+total_papers_evaluated: 18
+papers_accepted:        18
 papers_rejected:        0
 acceptance_rate:        100.0%
 initial_lss_score:      94.0
