@@ -16,35 +16,36 @@ plt.rcParams.update({
 
 def plot_publication_timeline():
     """Genera la timeline dei paper inclusi nella survey."""
-    # Dati aggiornati per la survey sui dinosauri (2000-2026) e buchi neri (2000)
+    # Dati aggiornati per la survey sui dinosauri (2000-2026), buchi neri (2000) e telefoni (1999-2005)
     data = {
-        "2000": 2, # 1 Dinosaur, 1 Black Hole
-        "2001": 1,
+        "1999": 2, # 1 WAP, 1 SMS
+        "2000": 4, # 1 Dinosaur, 1 Black Hole, 1 Camera Phone, 1 Smartphone
+        "2001": 2, # 1 Dinosaur, 1 Smartphone
         "2002": 0,
-        "2003": 1,
-        "2004": 1,
-        "2005": 1,
+        "2003": 1, # 1 Dinosaur
+        "2004": 1, # 1 Dinosaur
+        "2005": 1, # 1 Dinosaur
         "2006": 0,
         "2007": 0,
-        "2008": 1,
+        "2008": 1, # 1 Dinosaur
         "2009": 0,
-        "2010": 1,
+        "2010": 1, # 1 Dinosaur
         "2011": 0,
-        "2012": 1,
+        "2012": 1, # 1 Dinosaur
         "2013": 0,
         "2014": 0,
-        "2015": 1,
+        "2015": 1, # 1 Dinosaur
         "2016": 0,
         "2017": 0,
-        "2018": 1,
+        "2018": 1, # 1 Dinosaur
         "2019": 0,
-        "2020": 1,
+        "2020": 1, # 1 Dinosaur
         "2021": 0,
-        "2022": 1,
+        "2022": 1, # 1 Dinosaur
         "2023": 0,
-        "2024": 1,
+        "2024": 1, # 1 Dinosaur
         "2025": 0,
-        "2026": 1
+        "2026": 1  # 1 Dinosaur
     }
     
     years = list(data.keys())
@@ -52,7 +53,7 @@ def plot_publication_timeline():
     
     fig, ax = plt.subplots(figsize=(10, 3.5))
     ax.bar(years, counts, color='#2b5c8f', width=0.6)
-    ax.set_title("Evoluzione delle Pubblicazioni nel Dominio Dinosauri e Buchi Neri (2000-2026)")
+    ax.set_title("Evoluzione delle Pubblicazioni nel Dominio Dinosauri, Buchi Neri e Telefoni (1999-2026)")
     ax.set_xlabel("Anno")
     ax.set_ylabel("Numero di Paper Citati")
     ax.grid(axis='y', linestyle='--', alpha=0.7)
@@ -63,7 +64,7 @@ def plot_publication_timeline():
 
 def plot_taxonomy_distribution():
     """Genera la distribuzione dei metodi secondo la tassonomia della survey."""
-    # Dati aggiornati per la survey sui dinosauri e buchi neri
+    # Dati aggiornati per la survey sui dinosauri, buchi neri e telefoni
     # Tassonomia simulata basata sui temi trattati
     categories = {
         "Phylogeny & Evolution": 4,
@@ -71,7 +72,9 @@ def plot_taxonomy_distribution():
         "Biomechanics & Behavior": 3,
         "Paleocolor & Soft Tissue": 2,
         "AI & Reconstruction": 1,
-        "Accretion Dynamics": 1
+        "Accretion Dynamics": 1,
+        "Mobile Communication": 2,
+        "Smartphone & Internet": 2
     }
     
     labels = list(categories.keys())
@@ -79,7 +82,7 @@ def plot_taxonomy_distribution():
     
     fig, ax = plt.subplots(figsize=(6, 3.5))
     ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=140, 
-           colors=['#2b5c8f', '#d95f02', '#7570b3', '#e7298a', '#66a61e', '#ff7f0e'])
+           colors=['#2b5c8f', '#d95f02', '#7570b3', '#e7298a', '#66a61e', '#ff7f0e', '#4e79a7', '#f28e2b'])
     ax.set_title("Distribuzione dei Paper per Tassonomia")
     
     plt.tight_layout()
