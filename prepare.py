@@ -87,8 +87,13 @@ if __name__ == "__main__":
     return topic_dir
 
 def fetch_arxiv_papers(query, max_results=5):
-    """Scarica articoli reali da ArXiv via API Atom."""
-    url = f"http://export.arxiv.org/api/query?search_query=all:{urllib.parse.quote(query)}&start=0&max_results={max_results}&sortBy=submittedDate&sortOrder=descending"
+    """Scarica articoli reali da ArXiv via API Atom (ordinati per RILEVANZA)."""
+    # 1. Puliamo la query per fare una ricerca esatta tra virgolette ed evitare paper a caso
+    exact_query = f'"{query}"' if " " in query else query
+    encoded_query = urllib.parse.quote(f"all:{exact_query}")
+    
+    # 2. IMPORTANTE: Cambiato da 'submittedDate' a 'relevance' così scarica paper davvero inerenti al tema!
+    url = f"http://export.arxiv.org/api/query?search_query={encoded_query}&start=0&max_results={max_results}&sortBy=relevance&sortOrder=descending"
     try:
         data = urllib.request.urlopen(url).read()
         root = ET.fromstring(data)
