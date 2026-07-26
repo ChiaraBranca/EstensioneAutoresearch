@@ -3,6 +3,10 @@ import sys
 import subprocess
 import re
 
+# Configurazione automatica ambiente locale
+os.environ["OPENAI_API_BASE"] = "http://127.0.0.1:9000/v1"
+os.environ["OPENAI_API_KEY"] = "none"
+
 def run_command(cmd, capture_output=True):
     """Esegue un comando di sistema reale e ne restituisce l'output."""
     print(f"\n[SISTEMA] Esecuzione: {' '.join(cmd) if isinstance(cmd, list) else cmd}")
@@ -29,13 +33,10 @@ def run_autonomous_loop(topic, iterations=1):
     # 1. Inizializzazione Workspace reale
     run_command(f'python prepare.py --init "{topic}"')
     
-    # Cartella di lavoro per questo argomento (es. surveys/dinosaurs)
     clean_name = re.sub(r'[^a-zA-Z0-9]', '_', topic.lower()).strip('_')
     topic_dir = os.path.join("surveys", clean_name)
     
-    # IL FILE SI CHIAMA COME IL TOPIC (es. dinosaurs.md)
     survey_file = os.path.join(topic_dir, f"{clean_name}.md")
-    
     bib_file = os.path.join(topic_dir, "references.bib")
     fig_script = os.path.join(topic_dir, "generate_figures.py")
 
@@ -54,7 +55,7 @@ def run_autonomous_loop(topic, iterations=1):
         baseline_score = get_lss_score(topic)
         print(f"[METRICA] Punteggio LSS Baseline di partenza: {baseline_score}")
 
-        # 4. Costruzione del Prompt per Aider (Solo Editing del Testo!)
+        # 4. Costruzione del Prompt per Aider
         prompt = (
             f"Leggi attentamente il file 'new_papers.json'. Per ogni paper all'interno: "
             f"1) Valuta se è realmente pertinente al tema '{topic}'. Se non è pertinente, scartalo e ignoralo. "
@@ -64,28 +65,30 @@ def run_autonomous_loop(topic, iterations=1):
             f"NON inventare comandi terminale, NON scrivere codice LaTeX, limitati a modificare i file richiesti."
         )
 
-        # 5. Esecuzione di Aider (Usa la configurazione di default del tuo sistema!)
-        print("\n[AI AGENT] Passo il controllo a Qwen per lo screening e la scrittura...")
+        # 5. Esecuzione di Aider tramite uvx con il modello locale corretto
+        print("\n[AI AGENT] Passo il controllo a openai/lab-main per lo screening e la scrittura...")
         aider_cmd = [
+            "uvx",
+            "--from", "aider-chat",
             "aider",
-            # Rimosso il parametro --model per usare il modello Qwen che usi di solito
+            "--model", "openai/lab-main",
             "--read", "prepare.py",
             "--read", "program.md",
             "--read", "new_papers.json",
-            "--yes-always",                # Risponde sempre sì ai prompt di conferma di aider
-            "--no-git",                    # Diciamo ad aider di non committare, lo controlla loop.py!
+            "--yes-always",
+            "--no-git",
             "--message", prompt,
             survey_file,
             bib_file,
             fig_script
         ]
-        run_command(aider_cmd, capture_output=False) # Stampa l'output di Aider in tempo reale
+        run_command(aider_cmd, capture_output=False)
 
-        # 6. Esecuzione reale dello script dei grafici (generazione Matplotlib su disco)
+        # 6. Esecuzione reale dello script dei grafici
         print("\n[SISTEMA] Ricreazione reale dei grafici su disco...")
         run_command(f'python "{fig_script}"')
 
-        # 7. Valutazione Reale e Verdetto (Il computer decide se accettare!)
+        # 7. Valutazione Reale e Verdetto
         new_score = get_lss_score(topic)
         delta = round(new_score - baseline_score, 2)
         print(f"\n[VERDETTO] Baseline: {baseline_score} -> Nuovo Score: {new_score} (Δ {delta:+.2f})")
@@ -97,7 +100,7 @@ def run_autonomous_loop(topic, iterations=1):
         else:
             print("[REJECT] Nessun miglioramento (o errore di sintassi). Eseguo Git Reset!")
             run_command("git reset --hard HEAD")
-            run_command("git clean -fd") # Rimuove file temporanei indesiderati
+            run_command("git clean -fd")
 
     print("\n==================================================")
     print(" LOOP COMPLETATO CON SUCCESSO!")
