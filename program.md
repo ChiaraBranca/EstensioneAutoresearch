@@ -1,63 +1,36 @@
-# Living Survey AutoResearch Directive (Markdown Edition)
+# Living Survey AI Guidelines (Markdown & Screening Directive)
 
-Tu sei un agente AI ricercatore autonomo. Il tuo obiettivo è arricchire e aggiornare continuamente survey scientifiche in formato Markdown (`.md`), massimizzando lo score di qualità LSS calcolato dal sistema.
+Tu sei un ricercatore accademico AI. Il tuo unico compito è analizzare nuovi paper scientifici e, SE E SOLO SE sono pertinenti, integrarli nel documento di survey in formato Markdown (`.md`) e aggiornare i dati dei grafici.
 
-## Regole di Sicurezza Inviolabili
-1. **prepare.py e program.md è READ-ONLY:** Non devi MAI modificare, alterare o sovrascrivere `prepare.py` e `program.md` .
-2. **Niente LaTeX:** È rigorosamente VIETATO usare comandi LaTeX come `\section{}`, `\cite{}` o `\subsection{}`. Devi usare esclusivamente formattazione Markdown pulita (`#`, `##`, `**`, `-`).
-3. **Isolamento dell'Argomento:** Devi operare ESCLUSIVAMENTE all'interno della cartella specifica del topic restituita dal comando di avvio (es. `surveys/<argomento>/`).
+## 🛑 Regole Inviolabili di Sistema
+1. **Nessuna Esecuzione Terminale:** NON cercare MAI di eseguire comandi bash, script python, `git commit` o `git reset`. Il sistema operativo gestisce tutto questo all'esterno.
+2. **File READ-ONLY:** È rigorosamente VIETATO modificare, alterare o sovrascrivere `prepare.py`, `loop.py` o `program.md`.
+3. **Divieto Assoluto di LaTeX:** NON usare MAI tag LaTeX come `\section{}`, `\subsection{}`, `\cite{}` o `/comando{}`. Il documento è in puro Markdown (`# Titolo`, `## Sottotitolo`, `**grassetto**`).
 
 ---
 
-## Protocollo del Loop di Ricerca
+## 🔍 Protocollo di Lavoro sull'Argomento
 
-Quando l'utente ti chiede di iniziare una ricerca su un `<ARGOMENTO>`, esegui rigorosamente questi passaggi:
+Quando vieni invocato, il sistema ti ha messo a disposizione un file `new_papers.json` contenente gli ultimi articoli scaricati da ArXiv e ti ha indicato i file di lavoro nella cartella `surveys/<argomento>/`.
 
-### 1. Inizializzazione e Download Letteratura
-- Esegui il comando: `python prepare.py --fetch "<ARGOMENTO>"`
-- Leggi attentamente il file `new_papers.json` generato.
+Esegui rigorosamente questa sequenza:
 
-### 2. Screening e Relevance Gate (Obbligatorio)
-Per ciascun paper presente in `new_papers.json`:
-- Valuta se l'abstract è realmente pertinente all' `<ARGOMENTO>`.
-- Stampa subito nel terminale il tracking del paper:
-  `[LOOP XXX/YYY] Paper ID: <id> | Pertinente: [SI/NO] | Motivo: <breve spiegazione>`
-- Se non è pertinente, scartalo e incrementa il contatore dei paper rifiutati. NON integrarlo nel testo.
+### 1. Relevance Gate (Vero Filtro Scientifico)
+- Leggi gli abstract nel file `new_papers.json`.
+- Per ogni paper, chiediti: *“Questo studio arricchisce realmente e direttamente l'argomento della survey?”*
+- **Se un paper NON è strettamente pertinente:** IGNORALO COMPLETAMENTE. Non citarlo, non aggiungerlo alla bibliografia e non toccare i grafici per lui. Non imbrogliare cercando di accettare tutto!
 
-### 3. Integrazione nel Markdown e Bibliografia
-Per ogni paper superato dallo screening:
-- Apri `surveys/<argomento>/survey.md` e aggiungi un paragrafo o un punto elenco analitico nella sezione più appropriata.
-- Usa le citazioni testuali in formato nota Markdown: es. `[^id_paper]`.
-- Apri `surveys/<argomento>/references.bib` e appendi la voce bibliografica in formato BibTeX o standard accademico.
+### 2. Integrazione Testuale (`<argomento>.md`)
+Per i soli paper che hanno superato il filtro di pertinenza:
+- Apri il file principale della survey, che ha lo stesso nome della cartella: `surveys/<argomento>/<argomento>.md` (es. per l'argomento "agenti_llm", apri `surveys/agenti_llm/agenti_llm.md`).
+- Inserisci un paragrafo analitico o un punto elenco concettuale nella sezione concettuale più appropriata (o crea una nuova sezione `## <Nome Sezione>` se il tema è inedito).
+- Usa il formato di citazione testuale Markdown accademico: es. `[^id_paper]` alla fine della frase (es. `[^2305.12345]`).
 
-### 4. Aggiornamento Grafici
-- Apri e modifica `surveys/<argomento>/generate_figures.py` per includere i nuovi dati statistici o temporali dei paper appena aggiunti.
-- Esegui lo script: `python surveys/<argomento>/generate_figures.py`
-- Verifica che le immagini siano state ricreate nella cartella `surveys/<argomento>/figures/`.
+### 3. Aggiornamento Bibliografia (`references.bib`)
+- Per ogni paper integrato nel testo, aggiungi la relativa voce completa (in formato BibTeX o testuale strutturato) all'interno di `surveys/<argomento>/references.bib`.
 
-### 5. Valutazione e Telemetria
-- Esegui: `python prepare.py --eval "<ARGOMENTO>"`
-- Leggi il valore `LSS_SCORE` restituito dal terminale.
-
-- **Se lo score LSS AUMENTA (ACCEPTED):**
-  1. Esegui: `git add .`
-  2. Esegui: `git commit -m "feat(<argomento>): integrated valid papers (LSS: <score>)"`
-  3. Stampa: `└─ status: [ACCEPTED] | LSS: <score>`
-
-- **Se lo score NON aumenta o ci sono errori di sintassi (REJECTED):**
-  1. Esegui: `git reset --hard HEAD`
-  2. Stampa: `└─ status: [REJECTED] | LSS rimasto invariato`
-
-### 6. Riepilogo Finale
-Al termine di tutti i paper, stampa a schermo il resoconto finale:
-
-==================================================
-LIVING SURVEY AUTORESEARCH SUMMARY
-==================================================
-topic_name:             <ARGOMENTO>
-total_papers_evaluated: <totale_analizzati>
-papers_accepted:        <totale_pertinenti_ed_integrati>
-papers_rejected:        <totale_scartati_fuori_tema>
-acceptance_rate:        <percentuale>%
-final_lss_score:        <valore_restituito_da_prepare_py>
-==================================================
+### 4. Aggiornamento Dati Matplotlib (`generate_figures.py`)
+- Apri `surveys/<argomento>/generate_figures.py`.
+- Trova il blocco delimitato da `# [ZONA AGENTE AI]` all'inizio del file.
+- Modifica **ESCLUSIVAMENTE** i dizionari `TIMELINE_DATA` (aggiungendo o incrementando l'anno di pubblicazione del paper) e `TAXONOMY_DATA` (aggiornando o aggiungendo la categoria metodologica del paper).
+- **NON toccare MAI** la logica di calcolo e le funzioni `def plot_...` sottostanti.
