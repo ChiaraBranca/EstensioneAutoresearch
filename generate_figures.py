@@ -1,6 +1,5 @@
 import os
 import matplotlib.pyplot as plt
-import json
 
 # Assicurati che la directory di output esista
 os.makedirs("figures", exist_ok=True)
@@ -14,76 +13,72 @@ plt.rcParams.update({
     'figure.titlesize': 14
 })
 
+# ==============================================================================
+# [ZONA AGENTE AI] MODIFICA ESCLUSIVAMENTE QUESTI DUE DIZIONARI E I TITOLI
+# ==============================================================================
+SURVEY_TITLE = "Analisi Letteratura Scientifica"
+
+# Formato: "Anno": Numero_di_Paper
+TIMELINE_DATA = {
+    "2024": 0,
+    "2025": 0,
+    "2026": 0
+}
+
+# Formato: "Categoria / Metodo": Numero_di_Paper
+TAXONOMY_DATA = {
+    "Baseline Categorization": 1
+}
+# ==============================================================================
+# [ZONA INTOCCABILE] NON MODIFICARE LA LOGICA DI PLOT SOTTOSTANTE
+# ==============================================================================
+
 def plot_publication_timeline():
     """Genera la timeline dei paper inclusi nella survey."""
-    # Dati aggiornati per la survey sui dinosauri (2000-2026), buchi neri (2000) e telefoni (1999-2005)
-    data = {
-        "1999": 2, # 1 WAP, 1 SMS
-        "2000": 4, # 1 Dinosaur, 1 Black Hole, 1 Camera Phone, 1 Smartphone
-        "2001": 2, # 1 Dinosaur, 1 Smartphone
-        "2002": 0,
-        "2003": 1, # 1 Dinosaur
-        "2004": 1, # 1 Dinosaur
-        "2005": 1, # 1 Dinosaur
-        "2006": 0,
-        "2007": 0,
-        "2008": 1, # 1 Dinosaur
-        "2009": 0,
-        "2010": 1, # 1 Dinosaur
-        "2011": 0,
-        "2012": 1, # 1 Dinosaur
-        "2013": 0,
-        "2014": 0,
-        "2015": 1, # 1 Dinosaur
-        "2016": 0,
-        "2017": 0,
-        "2018": 1, # 1 Dinosaur
-        "2019": 0,
-        "2020": 1, # 1 Dinosaur
-        "2021": 0,
-        "2022": 1, # 1 Dinosaur
-        "2023": 0,
-        "2024": 1, # 1 Dinosaur
-        "2025": 0,
-        "2026": 1  # 1 Dinosaur
-    }
-    
-    years = list(data.keys())
-    counts = list(data.values())
+    years = list(TIMELINE_DATA.keys())
+    counts = list(TIMELINE_DATA.values())
     
     fig, ax = plt.subplots(figsize=(10, 3.5))
     ax.bar(years, counts, color='#2b5c8f', width=0.6)
-    ax.set_title("Evoluzione delle Pubblicazioni nel Dominio Dinosauri, Buchi Neri e Telefoni (1999-2026)")
+    ax.set_title(f"Evoluzione Temporale delle Pubblicazioni: {SURVEY_TITLE}")
     ax.set_xlabel("Anno")
     ax.set_ylabel("Numero di Paper Citati")
     ax.grid(axis='y', linestyle='--', alpha=0.7)
     
+    # Evita errori visivi se tutti i valori sono a zero
+    if max(counts if counts else [0]) == 0:
+        ax.set_ylim(0, 5)
+        
     plt.tight_layout()
     plt.savefig("figures/timeline.png", dpi=300)
     plt.close()
 
 def plot_taxonomy_distribution():
     """Genera la distribuzione dei metodi secondo la tassonomia della survey."""
-    # Dati aggiornati per la survey sui dinosauri, buchi neri e telefoni
-    # Tassonomia simulata basata sui temi trattati
-    categories = {
-        "Phylogeny & Evolution": 4,
-        "Physiology & Metabolism": 3,
-        "Biomechanics & Behavior": 3,
-        "Paleocolor & Soft Tissue": 2,
-        "AI & Reconstruction": 1,
-        "Accretion Dynamics": 1,
-        "Mobile Communication": 2,
-        "Smartphone & Internet": 2
-    }
+    labels = list(TAXONOMY_DATA.keys())
+    values = list(TAXONOMY_DATA.values())
     
-    labels = list(categories.keys())
-    values = list(categories.values())
+    # Se tutti i valori sono 0, imposta una baseline fittizia per evitare crash di Matplotlib
+    if sum(values) == 0:
+        labels = ["Nessun dato classificato"]
+        values = [1]
+        
+    # Palette colori estesa per supportare l'aggiunta di molte categorie senza crashare
+    colors = [
+        '#2b5c8f', '#d95f02', '#7570b3', '#e7298a', '#66a61e', 
+        '#ff7f0e', '#4e79a7', '#f28e2b', '#76b7b2', '#59a14f', 
+        '#edc948', '#b07aa1', '#ff9da7', '#9c755f', '#bab0ac'
+    ]
     
     fig, ax = plt.subplots(figsize=(6, 3.5))
-    ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=140, 
-           colors=['#2b5c8f', '#d95f02', '#7570b3', '#e7298a', '#66a61e', '#ff7f0e', '#4e79a7', '#f28e2b'])
-    ax.set_title("Distribuzione dei Paper per Tassonomia")
+    ax.pie(
+        values, 
+        labels=labels, 
+        autopct='%1.1f%%', 
+        startangle=140, 
+        colors=colors[:len(labels)]
+    )
+    ax.set_title(f"Distribuzione per Tassonomia: {SURVEY_TITLE}")
     
     plt.tight_layout()
     plt.savefig("figures/taxonomy.png", dpi=300)
