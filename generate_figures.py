@@ -16,18 +16,22 @@ plt.rcParams.update({
 # ==============================================================================
 # [ZONA AGENTE AI] MODIFICA ESCLUSIVAMENTE QUESTI DUE DIZIONARI E I TITOLI
 # ==============================================================================
-SURVEY_TITLE = "Analisi Letteratura Scientifica"
+SURVEY_TITLE = "Living Survey: dinosauri"
 
 # Formato: "Anno": Numero_di_Paper
 TIMELINE_DATA = {
+    "2023": 5,
     "2024": 0,
-    "2025": 0,
-    "2026": 0
+    "2025": 0
 }
 
 # Formato: "Categoria / Metodo": Numero_di_Paper
 TAXONOMY_DATA = {
-    "Baseline Categorization": 1
+    "Evoluzione e Piumaggio": 1,
+    "Biomeccanica": 1,
+    "Comportamento": 1,
+    "Estinzione": 1,
+    "Colorazione": 1
 }
 # ==============================================================================
 # [ZONA INTOCCABILE] NON MODIFICARE LA LOGICA DI PLOT SOTTOSTANTE
