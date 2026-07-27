@@ -4,10 +4,6 @@
 
 Questo documento raccoglie la letteratura scientifica sul tema **chatgpt**.
 
-## Letteratura Recente
-
-## Analisi Comparativa
-
 ## Applicazioni e Valutazioni Specifiche
 
 La letteratura recente evidenzia l'ampia adattabilità di ChatGPT e dei modelli linguistici di grandi dimensioni (LLM) a domini specialistici, sebbene con prestazioni variabili.
@@ -21,8 +17,15 @@ Nella generazione di codice, ChatGPT-4 mostra competenze superiori nelle lingue 
 ### Domini Specialistici: Matematica, Finanza e Salute
 *   **Matematica e Topologia:** ChatGPT è efficace come assistente per la ricerca di fatti e l'interfaccia di basi di conoscenza, ma fallisce su problemi di livello graduate-level. Tuttavia, può essere utilizzato da teorici per generare codice per l'analisi topologica computazionale, colmando il gap tra teoria e implementazione [^2301.13867v2] [^2310.07570v3].
 *   **Finanza:** L'integrazione di ChatGPT con le Graph Neural Networks (GNN) per inferire strutture dinamiche dalle notizie finanziarie ha mostrato risultati superiori ai benchmark deep learning tradizionali nella previsione dei movimenti azionari [^2306.03763v4].
-*   **Salute e Biometria:** ChatGPT può essere integrato in ensemble learning per migliorare il riconoscimento di entità non continue (DNER) nei corpora medici. Inoltre, mostra capacità sorprendenti nel riconoscimento facciale e nel rilevamento del genere/età, sebbene richieda strategie di prompting specifiche per bypassare i filtri di sicurezza [^2412.16976v3] [^2403.02965v2].
+*   **Salute e Biometria:** Per i corpora medici, l'integrazione di ChatGPT con ensemble learning è stata esplorata per migliorare il riconoscimento di entità non continue (DNER) [^2412.16976v3]. Riguardo alle biometrie, è stata condotta un'assessment delle capacità di ChatGPT nel riconoscimento facciale, nel rilevamento del genere e dell'età [^2403.02965v2].
 *   **Geoscienze e Telerilevamento:** ChatGPT agisce come agente per pianificare ed eseguire compiti di telerilevamento, connettendo vari modelli AI. Mostra anche buone capacità nella literacy spaziale e nella teoria GIS, ma debolezze nel ragionamento spaziale complesso e nella scrittura di codice [^2401.09083v1] [^2401.02404v4].
+
+### Applicazioni Mediche e Sanitarie (2024)
+Il 2024 ha visto un'esplosione di ricerche focalizzate sull'integrazione dei LLM in contesti clinici e sanitari, con particolare attenzione alla sicurezza, all'etica e alle prestazioni specifiche.
+
+*   **Sicurezza ed Etica nei Contesti Clinici:** Studi recenti sottolineano la necessità di una supervisione umana rigorosa e di linee guida etiche chiare per l'uso dei LLM in medicina. Sebbene i modelli mostrino potenziale nell'analisi dei dati e nel supporto decisionale, emergono preoccupazioni significative riguardo a bias, fairness, trasparenza e privacy. In particolare, la tendenza dei modelli a generare disinformazione dannosa o contenuti inaccurati ma convincenti richiede l'implementazione di "guardrail" di sicurezza robusti [^2403.14473v1] [^2411.14487v1].
+*   **Question Answering Biomedico e Multimodalità:** I LLM e i modelli multimodali (MLLM) stanno rivoluzionando il question answering (QA) biomedico. Questi modelli sono addestrati su dati medici specializzati per gestire compiti complessi come la comprensione della lettura, il ragionamento diagnostico e l'estrazione di relazioni. L'approccio multimodale permette di integrare testo, immagini e video, migliorando la capacità di gestire dati medici eterogenei e non strutturati [^2401.07510v3] [^2405.08603v3].
+*   **Valutazione delle Prestazioni in Pediatria:** Valutazioni comparative su consultazioni pediatriche reali mostrano che i modelli proprietari di grandi dimensioni (come ChatGPT-3.5) superano significativamente i modelli open-source leggeri in termini di accuratezza, completezza ed empatia. Tuttavia, i modelli open-source leggeri (es. ChatGLM3-6B) mostrano prestazioni competitive in termini di leggibilità e sicurezza, suggerendo che possono essere soluzioni valide per contesti con vincoli di privacy e risorse computazionali, pur richiedendo ulteriore sviluppo per colmare il divario di accuratezza [^2407.15862v1].
 
 ### Educazione e Interazione Umano-AI
 ChatGPT è utilizzato per simulazioni di role-playing nell'educazione per promuovere l'apprendimento attivo. Viene anche impiegato per fornire feedback prescrittivi agli studenti a rischio, integrando modelli predittivi trasparenti [^2402.09161v1] [^2208.14582v2].

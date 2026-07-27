@@ -9,13 +9,14 @@ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12
 # [ZONA AGENTE AI] MODIFICA ESCLUSIVAMENTE QUESTI DUE DIZIONARI E I TITOLI
 # ==============================================================================
 SURVEY_TITLE = "chatgpt"
-TIMELINE_DATA = {"2023": 20, "2024": 6, "2025": 3, "2026": 0}
+TIMELINE_DATA = {"2023": 20, "2024": 11, "2025": 3, "2026": 0}
 TAXONOMY_DATA = {
     "General Capabilities & Evaluation": 9,
     "Domain-Specific Applications": 13,
     "Ethics, Bias & Reliability": 5,
     "User Behavior & Interaction": 2,
-    "Detection & Security": 1
+    "Detection & Security": 1,
+    "Medical AI & Healthcare": 5
 }
 # ==============================================================================
 # [ZONA INTOCCABILE] NON MODIFICARE LA LOGICA DI PLOT SOTTOSTANTE
