@@ -8,32 +8,9 @@ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12
 # ==============================================================================
 # [ZONA AGENTE AI] MODIFICA ESCLUSIVAMENTE QUESTI DUE DIZIONARI E I TITOLI
 # ==============================================================================
-SURVEY_TITLE = "large language models memory"
-TIMELINE_DATA = {"2022": 1, "2023": 7, "2024": 7, "2025": 4, "2026": 5}
-TAXONOMY_DATA = {
-    "Baseline Categorization": 0, 
-    "Memory Debugging & Attribution": 1, 
-    "Parametric Memory Analysis": 1, 
-    "KV Cache Optimization": 2,
-    "Memory Dynamics & Acquisition": 1,
-    "Memory Augmentation": 1,
-    "Theoretical Memory": 3,
-    "Domain Adaptation Memory": 1,
-    "Computational Memory": 1,
-    "Working Memory": 2,
-    "Cognitive Memory": 1,
-    "External Memory": 1,
-    "Episodic Memory": 1,
-    "Memorization Mechanisms": 1,
-    "Memory Representation": 1,
-    "Multi-Agent Memory": 1,
-    "Long-term Memory": 1,
-    "Memory Integrity": 1,
-    "Memory Retention": 1,
-    "Memory Compression": 1,
-    "Personalized Memory": 1,
-    "Associative Memory": 1
-}
+SURVEY_TITLE = "large lanpython loop.py l"
+TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 0}
+TAXONOMY_DATA = {"Baseline Categorization": 1}
 # ==============================================================================
 # [ZONA INTOCCABILE] NON MODIFICARE LA LOGICA DI PLOT SOTTOSTANTE
 # ==============================================================================
