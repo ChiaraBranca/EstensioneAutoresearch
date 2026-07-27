@@ -86,23 +86,53 @@ if __name__ == "__main__":
             
     return topic_dir
 
-def fetch_arxiv_papers(query, max_results=30):
-    """Scarica un batch ampio di articoli da ArXiv via API Atom (ordinati per RILEVANZA)."""
+def get_existing_ids(topic_dir):
+    """MEMORIA STORICA: Legge references.bib e restituisce gli ID dei paper già integrati."""
+    bib_file = os.path.join(topic_dir, "references.bib")
+    if not os.path.exists(bib_file):
+        return set()
+    with open(bib_file, "r", encoding="utf-8") as f:
+        content = f.read()
+    # Trova tutte le chiavi BibTeX tipo @article{2605.28732v3, ...
+    ids = set(re.findall(r'@\w+\{([^,]+),', content))
+    # Per sicurezza, prendiamo anche la versione senza la 'v' (es. 2605.28732)
+    stripped_ids = {i.split('v')[0] for i in ids}
+    return ids.union(stripped_ids)
+
+def fetch_arxiv_papers(query, existing_ids=None, max_results=30):
+    """Scarica articoli da ArXiv escludendo automaticamente quelli già presenti in bibliografia!"""
+    if existing_ids is None:
+        existing_ids = set()
+        
     words = query.strip().split()
     arxiv_query = "+AND+".join([f"all:{urllib.parse.quote(w)}" for w in words])
     
-    url = f"http://export.arxiv.org/api/query?search_query={arxiv_query}&start=0&max_results={max_results}&sortBy=relevance&sortOrder=descending"
+    # Chiediamo il triplo dei risultati ad ArXiv (es. 45) per avere margine dopo aver filtrato i doppioni!
+    fetch_limit = max(45, max_results * 3)
+    url = f"http://export.arxiv.org/api/query?search_query={arxiv_query}&start=0&max_results={fetch_limit}&sortBy=relevance&sortOrder=descending"
+    
     try:
         data = urllib.request.urlopen(url).read()
         root = ET.fromstring(data)
         ns = {'arxiv': 'http://www.w3.org/2005/Atom'}
-        papers = []
+        new_papers = []
         for entry in root.findall('arxiv:entry', ns):
             paper_id = entry.find('arxiv:id', ns).text.split('/')[-1]
+            base_id = paper_id.split('v')[0] # ID senza versione
+            
+            # FILTRO DE-DUPLICAZIONE: Se il paper è già in bibliografia, SALTALO SUBITO!
+            if paper_id in existing_ids or base_id in existing_ids:
+                continue
+                
             title = entry.find('arxiv:title', ns).text.strip().replace('\n', ' ')
             summary = entry.find('arxiv:summary', ns).text.strip().replace('\n', ' ')
-            papers.append({'id': paper_id, 'title': title, 'abstract': summary})
-        return papers
+            new_papers.append({'id': paper_id, 'title': title, 'abstract': summary})
+            
+            # Appena raggiungiamo il numero di paper NUOVI richiesti (15), ci fermiamo
+            if len(new_papers) >= max_results:
+                break
+                
+        return new_papers
     except Exception as e:
         print(f"[ERRORE FETCH] Impossibile contattare ArXiv: {e}", file=sys.stderr)
         return []
@@ -153,11 +183,12 @@ if __name__ == "__main__":
         path = init_workspace(topic)
         print(f"WORKSPACE_READY:{path}")
     elif action == "--fetch":
-        init_workspace(topic)
-        papers = fetch_arxiv_papers(topic, max_results=30 )
+        topic_dir = init_workspace(topic)
+        existing_ids = get_existing_ids(topic_dir)
+        papers = fetch_arxiv_papers(topic, existing_ids=existing_ids, max_results=30)
         with open("new_papers.json", "w", encoding="utf-8") as f:
             json.dump(papers, f, indent=2)
-        print(f"[PREPARE] Recuperati {len(papers)} nuovi paper per '{topic}' in new_papers.json")
+        print(f"[PREPARE] Recuperati {len(papers)} nuovi paper per '{topic}' in new_papers.json (ignorati {len(existing_ids)} già presenti)")
     elif action == "--eval":
         score, count = compute_living_survey_score(topic)
         print(f"INTEGRATED_COUNT:{count}")

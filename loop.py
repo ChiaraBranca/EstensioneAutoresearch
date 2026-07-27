@@ -57,11 +57,12 @@ def run_autonomous_loop(topic, iterations=1):
 
         # 4. Costruzione del Prompt per Aider
         prompt = (
-            f"Leggi attentamente il file 'new_papers.json'. Per ogni paper all'interno: "
-            f"1) Valuta se è realmente pertinente al tema '{topic}'. Se non è pertinente, scartalo e ignoralo. "
-            f"2) Se è pertinente, aggiungi un'analisi sintetica in '{survey_file}' usando citazioni Markdown tipo [^id_paper]. "
-            f"3) Aggiungi la voce bibliografica in '{bib_file}'. "
-            f"4) Aggiorna SOLTANTO i dizionari TIMELINE_DATA e TAXONOMY_DATA all'inizio di '{fig_script}'. "
+            f"Leggi attentamente il file 'new_papers.json'. Contiene una lista di paper INEDITI. Per ogni paper all'interno:\n"
+            f"1) Valuta se è realmente pertinente al tema '{topic}'. Se non è pertinente, scartalo e ignoralo.\n"
+            f"2) Se è pertinente, INTEGRA un'analisi sintetica in '{survey_file}' usando citazioni Markdown tipo [^id_paper]. "
+            f"REGOLE DI ESPANSIONE: Se '{survey_file}' contiene già del testo dai cicli precedenti, NON CANCELLARE o riassumere nulla del lavoro passato! Aggiungi i nuovi paper arricchendo le sezioni esistenti o creando nuove sottosezioni in modo organico.\n"
+            f"3) Aggiungi le nuove voci bibliografiche in '{bib_file}' (mantenendo intatte le voci preesistenti).\n"
+            f"4) Aggiorna i dizionari TIMELINE_DATA e TAXONOMY_DATA all'inizio di '{fig_script}' SOMMANDO i nuovi conteggi ai valori già presenti nel codice.\n"
             f"NON inventare comandi terminale, NON scrivere codice LaTeX, limitati a modificare i file richiesti."
         )
 
