@@ -12,45 +12,37 @@ def get_topic_dir(topic_name):
     return os.path.join("surveys", clean_name)
 
 def init_workspace(topic_name):
-    """Inizializza la cartella di lavoro e crea i file di partenza se non esistono."""
     topic_dir = get_topic_dir(topic_name)
     os.makedirs(os.path.join(topic_dir, "figures"), exist_ok=True)
     
-    # IL NOME DEL FILE ORA COINCIDE CON IL NOME DELLA CARTELLA (es. dinosauri.md)
     clean_name = os.path.basename(topic_dir)
     survey_file = os.path.join(topic_dir, f"{clean_name}.md")
-    
     bib_file = os.path.join(topic_dir, "references.bib")
     fig_script = os.path.join(topic_dir, "generate_figures.py")
 
-    # 1. Scheletro Survey Markdown (con il nuovo nome dinamico)
     if not os.path.exists(survey_file):
         with open(survey_file, "w", encoding="utf-8") as f:
-            f.write(f"# Living Survey: {topic_name}\n\n## Introduzione\n\nQuesto documento raccoglie la letteratura scientifica sul tema **{topic_name}**.\n\n## Letteratura Recente\n\n## Analisi Comparativa\n")
+            f.write(f"# Living Survey: {topic_name}\n\n## Introduzione\n\nQuesto documento raccoglie la letteratura scientifica sul tema **{topic_name}**.\n")
         print(f"[INIT] Creato nuovo file survey in: {survey_file}")
 
-    # 2. File bibliografia vuoto
     if not os.path.exists(bib_file):
         open(bib_file, "a").close()
 
-    # 3. Script grafici baseline (stabile e senza crash su valori 0)
+    # SCRIPT GRAFICI CON PERCORSI ASSOLUTI (Salvataggio protetto nella cartella del topic)
     if not os.path.exists(fig_script):
         baseline_code = '''import os
 import matplotlib.pyplot as plt
 
-os.makedirs("figures", exist_ok=True)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FIG_DIR = os.path.join(BASE_DIR, "figures")
+os.makedirs(FIG_DIR, exist_ok=True)
+
 plt.style.use('seaborn-v0_8-paper' if 'seaborn-v0_8-paper' in plt.style.available else 'default')
 plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12, 'figure.titlesize': 14})
 
-# ==============================================================================
-# [ZONA AGENTE AI] MODIFICA ESCLUSIVAMENTE QUESTI DUE DIZIONARI E I TITOLI
-# ==============================================================================
 SURVEY_TITLE = "''' + topic_name + '''"
 TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 0}
 TAXONOMY_DATA = {"Baseline Categorization": 1}
-# ==============================================================================
-# [ZONA INTOCCABILE] NON MODIFICARE LA LOGICA DI PLOT SOTTOSTANTE
-# ==============================================================================
 
 def plot_publication_timeline():
     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())
@@ -62,7 +54,7 @@ def plot_publication_timeline():
     ax.grid(axis='y', linestyle='--', alpha=0.7)
     if max(counts if counts else [0]) == 0: ax.set_ylim(0, 5)
     plt.tight_layout()
-    plt.savefig("figures/timeline.png", dpi=300)
+    plt.savefig(os.path.join(FIG_DIR, "timeline.png"), dpi=300)
     plt.close()
 
 def plot_taxonomy_distribution():
@@ -73,19 +65,19 @@ def plot_taxonomy_distribution():
     ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=140, colors=colors[:len(labels)])
     ax.set_title(f"Tassonomia: {SURVEY_TITLE}")
     plt.tight_layout()
-    plt.savefig("figures/taxonomy.png", dpi=300)
+    plt.savefig(os.path.join(FIG_DIR, "taxonomy.png"), dpi=300)
     plt.close()
 
 if __name__ == "__main__":
     plot_publication_timeline()
     plot_taxonomy_distribution()
-    print("[GENERATE_FIGURES] Grafici aggiornati in figures/")
+    print(f"[GENERATE_FIGURES] Grafici aggiornati in {FIG_DIR}")
 '''
         with open(fig_script, "w", encoding="utf-8") as f:
             f.write(baseline_code)
             
     return topic_dir
-
+     
 def get_existing_ids(topic_dir):
     """MEMORIA STORICA: Legge references.bib e restituisce gli ID dei paper già integrati."""
     bib_file = os.path.join(topic_dir, "references.bib")
@@ -100,14 +92,22 @@ def get_existing_ids(topic_dir):
     return ids.union(stripped_ids)
 
 def fetch_arxiv_papers(query, existing_ids=None, max_results=30):
-    """Scarica articoli da ArXiv escludendo automaticamente quelli già presenti in bibliografia!"""
     if existing_ids is None:
         existing_ids = set()
         
-    words = query.strip().split()
-    arxiv_query = "+AND+".join([f"all:{urllib.parse.quote(w)}" for w in words])
+    # 1. Estrazione automatica di eventuali anni specificati nella query (es. 2024)
+    target_years = [int(y) for y in re.findall(r'\b(19\d\d|20\d\d)\b', query)]
     
-    # Chiediamo il triplo dei risultati ad ArXiv (es. 45) per avere margine dopo aver filtrato i doppioni!
+    # 2. Pulizia della query rimuovendo l'anno per non disturbare la ricerca testuale di ArXiv
+    clean_query = re.sub(r'\b(19\d\d|20\d\d)\b', '', query).strip()
+    if not clean_query:
+        clean_query = query
+        
+    print(f"[ARXIV] Query testuale: '{clean_query}' | Filtro anni attivo: {target_years if target_years else 'Nessuno'}")
+
+    words = clean_query.split()
+    arxiv_query = "+AND+".join([f"all:{urllib.parse.quote(w)}" for w in words]) if words else "all:research"
+    
     fetch_limit = max(45, max_results * 3)
     url = f"http://export.arxiv.org/api/query?search_query={arxiv_query}&start=0&max_results={fetch_limit}&sortBy=relevance&sortOrder=descending"
     
@@ -116,19 +116,25 @@ def fetch_arxiv_papers(query, existing_ids=None, max_results=30):
         root = ET.fromstring(data)
         ns = {'arxiv': 'http://www.w3.org/2005/Atom'}
         new_papers = []
+        
         for entry in root.findall('arxiv:entry', ns):
             paper_id = entry.find('arxiv:id', ns).text.split('/')[-1]
-            base_id = paper_id.split('v')[0] # ID senza versione
+            base_id = paper_id.split('v')[0]
             
-            # FILTRO DE-DUPLICAZIONE: Se il paper è già in bibliografia, SALTALO SUBITO!
             if paper_id in existing_ids or base_id in existing_ids:
+                continue
+                
+            published_str = entry.find('arxiv:published', ns).text
+            pub_year = int(published_str[:4])
+            
+            # FILTRO TEMPORALE OCCASIONALE: se l'utente ha messo un anno, lo applichiamo
+            if target_years and pub_year not in target_years:
                 continue
                 
             title = entry.find('arxiv:title', ns).text.strip().replace('\n', ' ')
             summary = entry.find('arxiv:summary', ns).text.strip().replace('\n', ' ')
             new_papers.append({'id': paper_id, 'title': title, 'abstract': summary})
             
-            # Appena raggiungiamo il numero di paper NUOVI richiesti (15), ci fermiamo
             if len(new_papers) >= max_results:
                 break
                 
@@ -173,7 +179,7 @@ def compute_living_survey_score(topic_name):
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print("Uso: python prepare.py [--init|--fetch|--eval] \"Nome Argomento\"")
+        print("Uso: python prepare.py [--init|--eval] \"Nome Argomento\" oppure python prepare.py --fetch \"Nome Argomento\" \"Query di Ricerca\"")
         sys.exit(1)
         
     action = sys.argv[1]
@@ -183,12 +189,13 @@ if __name__ == "__main__":
         path = init_workspace(topic)
         print(f"WORKSPACE_READY:{path}")
     elif action == "--fetch":
+        search_query = sys.argv[3] if len(sys.argv) > 3 else topic
         topic_dir = init_workspace(topic)
         existing_ids = get_existing_ids(topic_dir)
-        papers = fetch_arxiv_papers(topic, existing_ids=existing_ids, max_results=30)
+        papers = fetch_arxiv_papers(search_query, existing_ids=existing_ids, max_results=30)
         with open("new_papers.json", "w", encoding="utf-8") as f:
             json.dump(papers, f, indent=2)
-        print(f"[PREPARE] Recuperati {len(papers)} nuovi paper per '{topic}' in new_papers.json (ignorati {len(existing_ids)} già presenti)")
+        print(f"[PREPARE] Recuperati {len(papers)} nuovi paper per '{search_query}' in new_papers.json (ignorati {len(existing_ids)} già presenti)")
     elif action == "--eval":
         score, count = compute_living_survey_score(topic)
         print(f"INTEGRATED_COUNT:{count}")

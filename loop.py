@@ -25,9 +25,7 @@ def get_lss_score(topic):
         return float(match.group(1))
     return 0.0
 
-# MODIFICA 1: Aggiunto parametro opzionale 'search_query'
 def run_autonomous_loop(topic, iterations=1, search_query=None):
-    # Se non viene passata una query specifica, usa il nome del topic come default
     if not search_query:
         search_query = topic
 
@@ -35,7 +33,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
     print(f" AVVIO LIVING SURVEY: Progetto '{topic}' | Query ArXiv: '{search_query}'")
     print(f"==================================================")
     
-    # 1. Inizializzazione Workspace (Usa SEMPRE 'topic' per non frammentare le cartelle)
+    # 1. Inizializzazione Workspace
     run_command(f'python prepare.py --init "{topic}"')
     
     clean_name = re.sub(r'[^a-zA-Z0-9]', '_', topic.lower()).strip('_')
@@ -50,17 +48,19 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         print(f" CICLO {i}/{iterations} - RECUPERO LETTERATURA")
         print(f"──────────────────────────────────────────────────")
         
-        # 2. Fetch reale da ArXiv (Usa 'search_query' per permettere filtri temporali o di keyword!)
-        fetch_res = run_command(f'python prepare.py --fetch "{search_query}"')
+        # MODIFICA: Passiamo sia il topic che la search_query a prepare.py
+        fetch_res = run_command(f'python prepare.py --fetch "{topic}" "{search_query}"')
         if "Recuperati 0" in fetch_res.stdout or fetch_res.returncode != 0:
-            print("[STOP] Nessun nuovo paper recuperato da ArXiv. Termino il loop.")
+            print("[STOP] Nessun nuovo paper recuperato da ArXiv. Eseguo pulizia e termino.")
+            run_command("git checkout .")
+            run_command("git clean -fd")
             break
             
         # 3. Misurazione Baseline
         baseline_score = get_lss_score(topic)
         print(f"[METRICA] Punteggio LSS Baseline di partenza: {baseline_score}")
 
-        # 4.a Costruzione del Prompt per L'ATTORE (Con attenzione al filtro della query)
+        # 4.a Prompt Attore (Aggiunta la regola 5 di pulizia titoli vuoti)
         prompt_attore = (
             f"Leggi attentamente il file 'new_papers.json'. Contiene una lista di paper INEDITI. Per ogni paper all'interno:\n"
             f"1) SCREENING DI PERTINENZA: Valuta se è pertinente al tema e ai vincoli richiesti: '{search_query}'. Se è fuori tema o fuori dall'anno/periodo richiesto, scartalo e ignoralo.\n"
@@ -68,14 +68,14 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
             f"REGOLE DI ESPANSIONE: Se '{survey_file}' contiene già del testo dai cicli precedenti, NON CANCELLARE o riassumere nulla del lavoro passato! Aggiungi i nuovi paper arricchendo le sezioni esistenti o creando nuove sottosezioni in modo organico.\n"
             f"3) Aggiungi le nuove voci bibliografiche in '{bib_file}' (mantenendo intatte le voci preesistenti).\n"
             f"4) Aggiorna i dizionari TIMELINE_DATA e TAXONOMY_DATA all'inizio di '{fig_script}' SOMMANDO i nuovi conteggi ai valori già presenti nel codice.\n"
+            f"5) PULIZIA E FORMATTAZIONE: Rimuovi tassativamente dal file '{survey_file}' qualsiasi intestazione di sezione vuota o priva di testo sottostante (ad esempio '## Letteratura Recente' o '## Analisi Comparativa' se non hanno contenuto). Il documento deve contenere solo sezioni piene e argomentate!\n"
             f"NON inventare comandi terminale, NON scrivere codice LaTeX, limitati a modificare i file richiesti."
         )
 
-        # Esecuzione PASSO 1: L'Attore
         print("\n[AI AGENT - ATTORE] Scrittura e integrazione nuova letteratura...")
         run_command(f'uvx --from aider-chat aider --model openai/lab-main --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "{prompt_attore}" {survey_file} {bib_file} {fig_script}')
 
-        # MODIFICA 2: Prompt per IL CRITICO con MEMORIA STORICA
+        # 4.b Prompt Critico con Memoria Storica
         prompt_critico = (
             f"Agisci come un revisore scientifico spietato (Reviewer 2). "
             f"Confronta attentamente le ultime aggiunte fatte in '{survey_file}' con gli abstract reali presenti in 'new_papers.json'. "
@@ -86,11 +86,10 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
             f"NON inventare codice, limitati alla revisione mirata di '{survey_file}'."
         )
 
-        # MODIFICA 3: Il Critico ora LEGGE ANCHE references.bib per avere contesto!
         print("\n[AI AGENT - CRITICO] Peer-review e verifica veridicità scientifica...")
         run_command(f'uvx --from aider-chat aider --model openai/lab-main --read new_papers.json --read {bib_file} --yes-always --no-git --message "{prompt_critico}" {survey_file}')
 
-        # 5. Esecuzione reale dello script dei grafici
+        # 5. Esecuzione script dei grafici
         print("\n[SISTEMA] Ricreazione reale dei grafici su disco...")
         run_command(f'python "{fig_script}"')
 
@@ -111,7 +110,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
     print("\n==================================================")
     print(" LOOP COMPLETATO CON SUCCESSO!")
     print("==================================================")
-
+    
 # MODIFICA 4: Lettura del CLI per catturare il 3° argomento opzionale
 if __name__ == "__main__":
     if len(sys.argv) < 2:
