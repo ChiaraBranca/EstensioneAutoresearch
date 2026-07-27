@@ -55,7 +55,7 @@ def run_autonomous_loop(topic, iterations=1):
         baseline_score = get_lss_score(topic)
         print(f"[METRICA] Punteggio LSS Baseline di partenza: {baseline_score}")
 
-# 4.a Costruzione del Prompt per L'ATTORE (Scrittura e integrazione incrementale)
+        # 4.a Costruzione del Prompt per L'ATTORE (Scrittura e integrazione incrementale)
         prompt_attore = (
             f"Leggi attentamente il file 'new_papers.json'. Contiene una lista di paper INEDITI. Per ogni paper all'interno:\n"
             f"1) Valuta se è realmente pertinente al tema '{topic}'. Se non è pertinente, scartalo e ignoralo.\n"
@@ -85,30 +85,11 @@ def run_autonomous_loop(topic, iterations=1):
         print("\n[AI AGENT - CRITICO] Peer-review e verifica veridicità scientifica...")
         run_command(f'uvx --from aider-chat aider --model openai/lab-main --read new_papers.json --yes-always --no-git --message "{prompt_critico}" {survey_file}')
 
-        # 5. Esecuzione di Aider tramite uvx con il modello locale corretto
-        print("\n[AI AGENT] Passo il controllo a openai/lab-main per lo screening e la scrittura...")
-        aider_cmd = [
-            "uvx",
-            "--from", "aider-chat",
-            "aider",
-            "--model", "openai/lab-main",
-            "--read", "prepare.py",
-            "--read", "program.md",
-            "--read", "new_papers.json",
-            "--yes-always",
-            "--no-git",
-            "--message", prompt,
-            survey_file,
-            bib_file,
-            fig_script
-        ]
-        run_command(aider_cmd, capture_output=False)
-
-        # 6. Esecuzione reale dello script dei grafici
+        # 5. Esecuzione reale dello script dei grafici
         print("\n[SISTEMA] Ricreazione reale dei grafici su disco...")
         run_command(f'python "{fig_script}"')
 
-        # 7. Valutazione Reale e Verdetto
+        # 6. Valutazione Reale e Verdetto
         new_score = get_lss_score(topic)
         delta = round(new_score - baseline_score, 2)
         print(f"\n[VERDETTO] Baseline: {baseline_score} -> Nuovo Score: {new_score} (Δ {delta:+.2f})")
@@ -118,7 +99,7 @@ def run_autonomous_loop(topic, iterations=1):
             run_command("git add .")
             run_command(f'git commit -m "feat({clean_name}): integrated valid papers (LSS: {new_score})" ')
         else:
-            print("[REJECT] Nessun miglioramento (o errore di sintassi). Eseguo Git Reset!")
+            print("[REJECT] Nessun miglioramento (o errore di sintassi/allucinazione bloccata). Eseguo Git Reset!")
             run_command("git reset --hard HEAD")
             run_command("git clean -fd")
 
