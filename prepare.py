@@ -153,12 +153,10 @@ def count_actual_citations(survey_path):
     return len(citations)
 
 def compute_living_survey_score(topic_name):
-    """Calcola la vera Matrice di Verifica (LSS) basandosi sui file fisici presenti."""
     topic_dir = get_topic_dir(topic_name)
     clean_name = os.path.basename(topic_dir)
-    
-    # CERCA IL FILE <nome_argomento>.md INVECE DI survey.md
     survey_path = os.path.join(topic_dir, f"{clean_name}.md")
+    bib_file = os.path.join(topic_dir, "references.bib")
     
     fig_timeline = os.path.join(topic_dir, "figures", "timeline.png")
     fig_taxonomy = os.path.join(topic_dir, "figures", "taxonomy.png")
@@ -167,16 +165,29 @@ def compute_living_survey_score(topic_name):
         return 0.0, 0
         
     integrated_count = count_actual_citations(survey_path)
+    
+    # Leggiamo anche quante voci ci sono nel file .bib per dare valore alla bibliografia cumulativa
+    bib_count = 0
+    if os.path.exists(bib_file):
+        with open(bib_file, 'r', encoding='utf-8') as f:
+            bib_count = f.read().count("@article")
+
     figure_generated = os.path.exists(fig_timeline) and os.path.exists(fig_taxonomy)
     
     I = 100.0
-    C = min(100.0, integrated_count * 20.0) # 20 punti per ogni vera citazione trovata nel testo
+    # C cresce in modo graduale premiando il numero totale di paper in bib e citazioni, senza tetto stretto
+    C = min(100.0, (integrated_count * 3.0) + (bib_count * 1.5)) 
     V = 100.0 if figure_generated else 0.0
-    N = 80.0  # Baseline per la sintesi testuale
+    
+    # N (Sintesi) cresce leggermente se il file Markdown aumenta di lunghezza (numero di righe)
+    line_count = 0
+    with open(survey_path, 'r', encoding='utf-8') as f:
+        line_count = len(f.readlines())
+    N = min(100.0, 50.0 + (line_count * 0.2)) 
     
     score = (0.35 * C) + (0.30 * N) + (0.20 * V) + (0.15 * I)
     return round(score, 2), integrated_count
-
+    
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         print("Uso: python prepare.py [--init|--eval] \"Nome Argomento\" oppure python prepare.py --fetch \"Nome Argomento\" \"Query di Ricerca\"")
