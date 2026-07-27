@@ -86,14 +86,12 @@ if __name__ == "__main__":
             
     return topic_dir
 
-def fetch_arxiv_papers(query, max_results=5):
-    """Scarica articoli reali da ArXiv via API Atom (ordinati per RILEVANZA)."""
-    # 1. Puliamo la query per fare una ricerca esatta tra virgolette ed evitare paper a caso
-    exact_query = f'"{query}"' if " " in query else query
-    encoded_query = urllib.parse.quote(f"all:{exact_query}")
+def fetch_arxiv_papers(query, max_results=30):
+    """Scarica un batch ampio di articoli da ArXiv via API Atom (ordinati per RILEVANZA)."""
+    words = query.strip().split()
+    arxiv_query = "+AND+".join([f"all:{urllib.parse.quote(w)}" for w in words])
     
-    # 2. IMPORTANTE: Cambiato da 'submittedDate' a 'relevance' così scarica paper davvero inerenti al tema!
-    url = f"http://export.arxiv.org/api/query?search_query={encoded_query}&start=0&max_results={max_results}&sortBy=relevance&sortOrder=descending"
+    url = f"http://export.arxiv.org/api/query?search_query={arxiv_query}&start=0&max_results={max_results}&sortBy=relevance&sortOrder=descending"
     try:
         data = urllib.request.urlopen(url).read()
         root = ET.fromstring(data)
@@ -156,7 +154,7 @@ if __name__ == "__main__":
         print(f"WORKSPACE_READY:{path}")
     elif action == "--fetch":
         init_workspace(topic)
-        papers = fetch_arxiv_papers(topic)
+        papers = fetch_arxiv_papers(topic, max_results=30 )
         with open("new_papers.json", "w", encoding="utf-8") as f:
             json.dump(papers, f, indent=2)
         print(f"[PREPARE] Recuperati {len(papers)} nuovi paper per '{topic}' in new_papers.json")
