@@ -25,12 +25,17 @@ def get_lss_score(topic):
         return float(match.group(1))
     return 0.0
 
-def run_autonomous_loop(topic, iterations=1):
+# MODIFICA 1: Aggiunto parametro opzionale 'search_query'
+def run_autonomous_loop(topic, iterations=1, search_query=None):
+    # Se non viene passata una query specifica, usa il nome del topic come default
+    if not search_query:
+        search_query = topic
+
     print(f"==================================================")
-    print(f" AVVIO LIVING SURVEY AUTORESEARCH: '{topic}'")
+    print(f" AVVIO LIVING SURVEY: Progetto '{topic}' | Query ArXiv: '{search_query}'")
     print(f"==================================================")
     
-    # 1. Inizializzazione Workspace reale
+    # 1. Inizializzazione Workspace (Usa SEMPRE 'topic' per non frammentare le cartelle)
     run_command(f'python prepare.py --init "{topic}"')
     
     clean_name = re.sub(r'[^a-zA-Z0-9]', '_', topic.lower()).strip('_')
@@ -45,8 +50,8 @@ def run_autonomous_loop(topic, iterations=1):
         print(f" CICLO {i}/{iterations} - RECUPERO LETTERATURA")
         print(f"──────────────────────────────────────────────────")
         
-        # 2. Fetch reale da ArXiv
-        fetch_res = run_command(f'python prepare.py --fetch "{topic}"')
+        # 2. Fetch reale da ArXiv (Usa 'search_query' per permettere filtri temporali o di keyword!)
+        fetch_res = run_command(f'python prepare.py --fetch "{search_query}"')
         if "Recuperati 0" in fetch_res.stdout or fetch_res.returncode != 0:
             print("[STOP] Nessun nuovo paper recuperato da ArXiv. Termino il loop.")
             break
@@ -55,10 +60,10 @@ def run_autonomous_loop(topic, iterations=1):
         baseline_score = get_lss_score(topic)
         print(f"[METRICA] Punteggio LSS Baseline di partenza: {baseline_score}")
 
-        # 4.a Costruzione del Prompt per L'ATTORE (Scrittura e integrazione incrementale)
+        # 4.a Costruzione del Prompt per L'ATTORE (Con attenzione al filtro della query)
         prompt_attore = (
             f"Leggi attentamente il file 'new_papers.json'. Contiene una lista di paper INEDITI. Per ogni paper all'interno:\n"
-            f"1) Valuta se è realmente pertinente al tema '{topic}'. Se non è pertinente, scartalo e ignoralo.\n"
+            f"1) SCREENING DI PERTINENZA: Valuta se è pertinente al tema e ai vincoli richiesti: '{search_query}'. Se è fuori tema o fuori dall'anno/periodo richiesto, scartalo e ignoralo.\n"
             f"2) Se è pertinente, INTEGRA un'analisi sintetica in '{survey_file}' usando citazioni Markdown tipo [^id_paper]. "
             f"REGOLE DI ESPANSIONE: Se '{survey_file}' contiene già del testo dai cicli precedenti, NON CANCELLARE o riassumere nulla del lavoro passato! Aggiungi i nuovi paper arricchendo le sezioni esistenti o creando nuove sottosezioni in modo organico.\n"
             f"3) Aggiungi le nuove voci bibliografiche in '{bib_file}' (mantenendo intatte le voci preesistenti).\n"
@@ -70,20 +75,20 @@ def run_autonomous_loop(topic, iterations=1):
         print("\n[AI AGENT - ATTORE] Scrittura e integrazione nuova letteratura...")
         run_command(f'uvx --from aider-chat aider --model openai/lab-main --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "{prompt_attore}" {survey_file} {bib_file} {fig_script}')
 
-        # 4.b Costruzione del Prompt per IL CRITICO (Peer-review e anti-allucinazione)
+        # MODIFICA 2: Prompt per IL CRITICO con MEMORIA STORICA
         prompt_critico = (
             f"Agisci come un revisore scientifico spietato (Reviewer 2). "
             f"Confronta attentamente le ultime aggiunte fatte in '{survey_file}' con gli abstract reali presenti in 'new_papers.json'. "
-            f"Per ogni nuova citazione e affermazione rispondi a queste regole: "
-            f"1) VERIDICITÀ: L'abstract in 'new_papers.json' sostiene DAVVERO quanto scritto nel testo, o il modello precedente ha allucinato, esagerato o frainteso? "
-            f"2) CONSENSO SCIENTIFICO: Ci sono affermazioni palesemente assurde, errori matematici o fallacie metodologicamente inaccettabili? "
-            f"Se trovi una singola esagerazione, falsità o dato non supportato dall'abstract, CANCELLA COMPLETAMENTE il paragrafo incriminato da '{survey_file}' e rimuovi la relativa tag [^id]. "
-            f"Se è tutto rigorosamente verificato e fedele alla fonte, non toccare nulla. NON inventare codice, limitati alla revisione di '{survey_file}'."
+            f"REGOLE DI REVISIONE E MEMORIA STORICA:\n"
+            f"1) RISPETTO DEL PASSATO: Il file '{survey_file}' contiene citazioni di cicli precedenti (già registrate in '{bib_file}'). Se una citazione NON si trova in 'new_papers.json' ma fa parte del lavoro storico preesistente o è presente in '{bib_file}', NON CANCELLARLA ASSOLUTAMENTE! È letteratura già verificata in passato.\n"
+            f"2) VERIFICA NUOVI INSERIMENTI: Esamina ESCLUSIVAMENTE le affermazioni legate ai paper scaricati nel corrente 'new_papers.json'. Per questi, verifica se l'abstract sostiene DAVVERO quanto scritto o se ci sono allucinazioni/esagerazioni.\n"
+            f"3) Se trovi una singola esagerazione, falsità o dato non supportato tra i NUOVI paper, cancella SOLO quella frase o paragrafo incriminato senza toccare il resto del documento.\n"
+            f"NON inventare codice, limitati alla revisione mirata di '{survey_file}'."
         )
 
-        # Esecuzione PASSO 2: Il Critico
+        # MODIFICA 3: Il Critico ora LEGGE ANCHE references.bib per avere contesto!
         print("\n[AI AGENT - CRITICO] Peer-review e verifica veridicità scientifica...")
-        run_command(f'uvx --from aider-chat aider --model openai/lab-main --read new_papers.json --yes-always --no-git --message "{prompt_critico}" {survey_file}')
+        run_command(f'uvx --from aider-chat aider --model openai/lab-main --read new_papers.json --read {bib_file} --yes-always --no-git --message "{prompt_critico}" {survey_file}')
 
         # 5. Esecuzione reale dello script dei grafici
         print("\n[SISTEMA] Ricreazione reale dei grafici su disco...")
@@ -107,12 +112,14 @@ def run_autonomous_loop(topic, iterations=1):
     print(" LOOP COMPLETATO CON SUCCESSO!")
     print("==================================================")
 
+# MODIFICA 4: Lettura del CLI per catturare il 3° argomento opzionale
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Uso: python loop.py \"Nome Argomento\" [numero_cicli]")
+        print("Uso: python loop.py \"Nome Progetto\" [numero_cicli] [\"Query o Filtro Anno\"]")
         sys.exit(1)
     
     arg_topic = sys.argv[1]
     arg_iterations = int(sys.argv[2]) if len(sys.argv) > 2 else 1
+    arg_query = sys.argv[3] if len(sys.argv) > 3 else None
     
-    run_autonomous_loop(arg_topic, arg_iterations)
+    run_autonomous_loop(arg_topic, arg_iterations, arg_query)
