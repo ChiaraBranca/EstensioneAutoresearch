@@ -55,16 +55,22 @@ def run_autonomous_loop(topic, iterations=1):
         baseline_score = get_lss_score(topic)
         print(f"[METRICA] Punteggio LSS Baseline di partenza: {baseline_score}")
 
-        # 4. Costruzione del Prompt per Aider
-        prompt = (
-            f"Leggi attentamente il file 'new_papers.json'. Contiene una lista di paper INEDITI. Per ogni paper all'interno:\n"
-            f"1) Valuta se è realmente pertinente al tema '{topic}'. Se non è pertinente, scartalo e ignoralo.\n"
-            f"2) Se è pertinente, INTEGRA un'analisi sintetica in '{survey_file}' usando citazioni Markdown tipo [^id_paper]. "
-            f"REGOLE DI ESPANSIONE: Se '{survey_file}' contiene già del testo dai cicli precedenti, NON CANCELLARE o riassumere nulla del lavoro passato! Aggiungi i nuovi paper arricchendo le sezioni esistenti o creando nuove sottosezioni in modo organico.\n"
-            f"3) Aggiungi le nuove voci bibliografiche in '{bib_file}' (mantenendo intatte le voci preesistenti).\n"
-            f"4) Aggiorna i dizionari TIMELINE_DATA e TAXONOMY_DATA all'inizio di '{fig_script}' SOMMANDO i nuovi conteggi ai valori già presenti nel codice.\n"
-            f"NON inventare comandi terminale, NON scrivere codice LaTeX, limitati a modificare i file richiesti."
+        # 4.a PASSO 1: L'Attore scrive e integra i paper (il tuo comando attuale)
+        print("\n[AI AGENT - ATTORE] Scrittura e integrazione nuova letteratura...")
+        run_command(f'uvx --from aider-chat aider --model openai/lab-main --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "{prompt_attore}" {survey_file} {bib_file} {fig_script}')
+
+        # 4.b PASSO 2: Il Critico verifica la veridicità e taglia le allucinazioni
+        print("\n[AI AGENT - CRITICO] Peer-review e verifica veridicità scientifica...")
+        prompt_critico = (
+            f"Agisci come un revisore scientifico spietato (Reviewer 2). "
+            f"Confronta attentamente le ultime aggiunte fatte in '{survey_file}' con gli abstract reali presenti in 'new_papers.json'. "
+            f"Per ogni nuova citazione e affermazione rispondi a queste regole: "
+            f"1) VERIDICITÀ: L'abstract in 'new_papers.json' sostiene DAVVERO quanto scritto nel testo, o il modello precedente ha allucinato, esagerato o frainteso? "
+            f"2) CONSENSO SCIENTIFICO: Ci sono affermazioni palesemente assurde, errori matematici o fallacie metodologicamente inaccettabili? "
+            f"Se trovi una singola esagerazione, falsità o dato non supportato dall'abstract, CANCELLA COMPLETAMENTE il paragrafo incriminato da '{survey_file}' e rimuovi la relativa tag [^id]. "
+            f"Se è tutto rigorosamente verificato e fedele alla fonte, non toccare nulla. NON inventare codice, limitati alla revisione di '{survey_file}'."
         )
+        run_command(f'uvx --from aider-chat aider --model openai/lab-main --read new_papers.json --yes-always --no-git --message "{prompt_critico}" {survey_file}')
 
         # 5. Esecuzione di Aider tramite uvx con il modello locale corretto
         print("\n[AI AGENT] Passo il controllo a openai/lab-main per lo screening e la scrittura...")
