@@ -9,13 +9,13 @@ plt.style.use('seaborn-v0_8-paper' if 'seaborn-v0_8-paper' in plt.style.availabl
 plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12, 'figure.titlesize': 14})
 
 SURVEY_TITLE = "diabetes"
-TIMELINE_DATA = {"2015": 2, "2017": 2, "2018": 2, "2019": 2, "2020": 3, "2021": 5, "2022": 1, "2023": 2, "2024": 4, "2025": 5, "2026": 2}
+TIMELINE_DATA = {"2012": 1, "2015": 3, "2017": 3, "2018": 3, "2019": 3, "2020": 5, "2021": 8, "2022": 3, "2023": 6, "2024": 10, "2025": 10, "2026": 3}
 TAXONOMY_DATA = {
-    "Prediction & Diagnosis": 12,
-    "Management & Monitoring": 5,
-    "Complications & Comorbidities": 4,
+    "Prediction & Diagnosis": 21,
+    "Management & Monitoring": 15,
+    "Complications & Comorbidities": 12,
     "Data & Infrastructure": 2,
-    "Non-Invasive Methods": 1,
+    "Non-Invasive Methods": 4,
     "Social Media & Public Health": 2,
     "Therapeutics & Nanotech": 2,
     "Review & Systematic": 1

@@ -16,6 +16,8 @@ L'integrazione di fattori socio-economici è anche cruciale: uno studio ha anali
 
 Sistemi di supporto alle decisioni cliniche (AI-CDSS) stanno emergendo come strumenti vitali per i medici di base. Un recente studio ha sviluppato un AI-CDSS ibrido che ha raggiunto una precisione del 99.8% nella predizione del diabete di tipo 2, superando significativamente i non-endocrinologi[^2602.11237v1].
 
+Recenti ricerche hanno ulteriormente ampliato il panorama predittivo. L'uso di *Ensemble Classifier* basati su dati di sondaggi e stile di vita (NHANES) ha dimostrato alte prestazioni (AUC 0.834) nella predizione dell'insorgenza del diabete di tipo II[^1708.07480v1]. Un altro studio ha proposto un modello ensemble pesato (soft voting) che ha raggiunto l'85% di accuratezza nel predire il diabete di tipo 2, migliorando la capacità di recupero delle previsioni errate rispetto ai singoli algoritmi[^1910.09356v1]. Inoltre, l'integrazione di ontologie con algoritmi di machine learning ha mostrato che i classificatori basati su ontologie, combinati con SVM, offrono la migliore accuratezza nella diagnosi[^1205.5921v2]. Per affrontare lo sbilanciamento dei dati, tecniche avanzate come *CopulaSMOTE* hanno dimostrato di migliorare il recupero della classe minoritaria nei dataset tabellari di diabete[^2506.17326v3].
+
 ## Monitoraggio e Gestione Digitale
 
 La gestione del diabete sta beneficiando di piattaforme digitali e dispositivi indossabili. *Diabetes Link* è una piattaforma completa che permette il monitoraggio dei parametri clinici e la connessione con supervisori, offrendo funzionalità superiori rispetto ad altre proposte[^2011.02286v1].
@@ -25,6 +27,8 @@ Per i pazienti in terapia insulinica, la sicurezza alla guida è un tema critico
 Dispositivi indossabili intelligenti, come gli smartwatch, possono essere utilizzati per rilevare condizioni di emergenza come il coma diabetico, analizzando mobilità, frequenza cardiaca e umidità cutanea per allertare i soccorsi[^1510.02196v1]. Un altro sistema, *The Diabetic Buddy*, integra sensori per il monitoraggio continuo del glucosio e riconoscimento del cibo tramite deep learning, sviluppato con un dataset specifico per la dieta mediorientale[^2101.03203v1].
 
 In contesti di pandemia, soluzioni di smart healthcare sono state proposte per il controllo glicemico e insulinico dei pazienti diabetici, considerati ad alto rischio per il COVID-19[^2008.11153v1].
+
+L'evoluzione verso agenti conversazionali basati su LLM sta rivoluzionando l'assistenza personalizzata. *DM-Bench* ha introdotto un benchmark specifico per valutare le prestazioni dei LLM nelle decisioni quotidiane per i pazienti diabetici, evidenziando la variabilità delle prestazioni tra i modelli attuali[^2510.00038v2]. Un approccio *Knowledge-Infused* ha proposto un agente conversazionale (CHA) potenziato da linee guida dietetiche e strumenti analitici, dimostrando prestazioni superiori nella gestione dei nutrienti rispetto a GPT-4[^2402.10153v2]. Inoltre, framework come *HealthEdge* integrano IoT, edge e cloud computing per la predizione del diabete di tipo 2, mostrando come il Random Forest possa superare la Regressione Logistica in accuratezza[^2301.10450v1]. La gestione dell'esercizio fisico è stata affrontata con modelli di controllo robusti a ciclo chiuso per la progressione a lungo termine del diabete di tipo 2[^2501.12892v1], mentre l'analisi dei fattori che influenzano la durata del ricovero ospedaliero ha offerto insight per una migliore gestione delle risorse[^2406.05189v2]. Anche la riabilitazione fisica è stata modellata matematicamente tramite FAHP per personalizzare le prescrizioni di esercizio[^2201.07884v1]. Infine, fattori culturali influenzano l'adozione delle app di auto-gestione, come evidenziato in studi condotti in Sudafrica[^2108.09953v1].
 
 ## Complicanze, Comorbidità e Fattori Ambientali
 
@@ -36,11 +40,15 @@ Nanotecnologie, come le nanoparticelle di ossido di zinco (ZnO NPs), stanno send
 
 L'analisi dei social media, in particolare Twitter, rivela come il diabete sia spesso discusso in correlazione con obesità, dieta ed esercizio fisico, con temi emergenti come la pressione sanguigna e l'Alzheimer[^1709.07916v1] e una rete complessa di autori influenti (blog, ONG) che guidano la conversazione[^1508.05764v4].
 
+Le complicanze oftalmiche, come la retinopatia diabetica, sono state analizzate attraverso l'uso di reti bayesiane per comprendere le relazioni tra biomarcatori[^2406.17090v1]. Metodi di spiegabilità (XAI) basati su concetti (CAV e Concept Bottleneck) sono stati applicati per migliorare l'interpretabilità delle reti neurali nella classificazione della retinopatia[^2410.03188v1]. L'uso di ensemble di classificatori su immagini del fondo oculare ha migliorato il rilevamento della gravità della retinopatia[^2307.16622v1], mentre l'analisi di foto esterne dell'occhio ha rivelato segnali nascosti di controllo glicemico e retinopatia[^2011.11732v1]. La fusione multimodale di dati OCT, OCTA e LSO ha mostrato potenziale per la diagnosi automatica della retinopatia proliferativa[^2304.00003v1]. Inoltre, lo studio della morfologia del pancreas su larga scala ha confermato che le dimensioni e la forma del pancreas sono alterate nel diabete di tipo 2[^2508.14878v1], e l'interazione tra diabete e ictro è stata esaminata per identificare target terapeutici comuni[^2011.06962v1].
+
 ## Infrastruttura Dati e Metodi Non Invasivi
 
-La standardizzazione dei dati è fondamentale per la ricerca. Il formato *DIAX* (DIAbetes eXchange) propone uno standard JSON unificato per i dati temporali del diabete (CGM, insulina, pasti), facilitando l'interoperabilità e la ricerca su grandi dataset[^2604.11944v1]. La collezione *Glucose-ML* fornisce 10 dataset pubblici per lo sviluppo di AI robuste, evidenziando come le prestazioni degli algoritmi varino significativamente tra dataset diversi[^2507.14077v1].
+La standardizzazione dei dati è fondamentale per la ricerca. Il formato *DIAX* (DIAbetes eXchange) propone uno standard JSON unificato per i dati temporali del diabete (CGM, insulina, pasti), facilitando l'interoperabilità e la ricerca su grandi dataset[^2604.11944v1]. La collezione *Glucose-ML* fornisce dataset pubblici per lo sviluppo di AI robuste, evidenziando come le prestazioni degli algoritmi varino significativamente tra dataset diversi[^2507.14077v1].
 
 Metodi diagnostici non invasivi stanno guadagnando attenzione. L'uso di segnali di fotopletismografia (PPG) combinati con machine learning (Logistic Regression, XGBoost) ha mostrato potenziale per il rilevamento remoto del diabete, sebbene con accuratezze ancora da migliorare[^2308.01930v1].
+
+L'analisi del respiro per il rilevamento di biomarcatori come l'acetone sta emergendo come metodo non invasivo. Sensori a nanofili di ossido di indio-fosfuro funzionalizzati con chitosano hanno permesso il rilevamento ultra-sensibile dell'acetone nel respiro, utile per il monitoraggio della chetoacidosi[^2312.00510v1]. Studi causali hanno investigato l'influenza dei composti organici volatili (VOC) sui livelli di glucosio, proponendo classificatori per lo screening precoce[^2605.22075v1]. Inoltre, l'indice *maxSpeed* (velocità massima di cambiamento del glucosio) derivato dai dati CGM ha dimostrato di distinguere significativamente tra prediabete e diabete[^2506.12567v1].
 
 ## Riferimenti Bibliografici
 
@@ -74,3 +82,33 @@ Metodi diagnostici non invasivi stanno guadagnando attenzione. L'uso di segnali 
 [^2103.08186v1]: Hybrid stacked ensemble combined with genetic algorithms for Prediction of Diabetes
 [^1508.05764v4]: The 'who' and 'what' of #diabetes on Twitter
 [^1901.10530v1]: An Advanced Conceptual Diagnostic Healthcare Framework for Diabetes and Cardiovascular Disorders
+[^2409.13191v2]: Diabetica: Adapting Large Language Model to Enhance Multiple Medical Tasks in Diabetes Care and Management
+[^2104.07820v2]: Machine Learning Approaches for Type 2 Diabetes Prediction and Care Management
+[^2406.00993v1]: Detection of Acetone as a Gas Biomarker for Diabetes Based on Gas Sensor Technology
+[^2406.05189v2]: Analyzing the factors that are involved in length of inpatient stay at the hospital for diabetes patients
+[^2406.17090v1]: Exploring Biomarker Relationships in Both Type 1 and Type 2 Diabetes Mellitus Through a Bayesian Network Analysis Approach
+[^2506.17326v3]: CopulaSMOTE: A Copula-Based Oversampling Approach for Imbalanced Classification in Diabetes Prediction
+[^1910.09356v1]: Supervised Machine Learning based Ensemble Model for Accurate Prediction of Type 2 Diabetes
+[^1708.07480v1]: An Ensemble Classifier for Predicting the Onset of Type II Diabetes
+[^2101.07350v1]: Update on the genetic and epigenetic etiology of gestational diabetes mellitus: a review
+[^2410.03188v1]: Looking into Concept Explanation Methods for Diabetic Retinopathy Classification
+[^2201.07884v1]: FAHP-based Mathematical Model for Exercise Rehabilitation Management of Diabetes Mellitus
+[^2307.16622v1]: Detecting diabetic retinopathy severity through fundus images using an ensemble of classifiers
+[^2011.11732v1]: Detecting hidden signs of diabetes in external eye photographs
+[^2510.00038v2]: DM-Bench: Benchmarking LLMs for Personalized Decision Making in Diabetes Management
+[^2402.10153v2]: Knowledge-Infused LLM-Powered Conversational Health Agent: A Case Study for Diabetes Patients
+[^2506.12567v1]: Maximal Speed of Glucose Change Significantly Distinguishes Prediabetes from Diabetes
+[^2411.00858v1]: DiabML: AI-assisted diabetes diagnosis method with meta-heuristic-based feature selection
+[^2508.14878v1]: Lifespan Pancreas Morphology for Control vs Type 2 Diabetes using AI on Largescale Clinical Imaging
+[^2208.06354v1]: A novel solution of deep learning for enhanced support vector machine for predicting the onset of type 2 diabetes
+[^2301.03093v1]: Prognosis and Treatment Prediction of Type-2 Diabetes Using Deep Neural Network and Machine Learning Classifiers
+[^1205.5921v2]: Diabetes prediction using Machine Learning algorithms and ontology
+[^1810.03044v3]: Artificial Intelligence for Diabetes Case Management: The Intersection of Physical and Mental Health
+[^2011.06962v1]: Bridging the Gap Between Diabetes and Stroke in Search of High Clinical Relevance Therapeutic Targets
+[^2605.22075v1]: Can Breath Biomarkers Causally Influence Blood Glucose? Investigating VOC-Mediated Modulation in Diabetes
+[^2312.00510v1]: Nanowire Array Breath Acetone Sensor for Diabetes Monitoring
+[^2501.12892v1]: Closed-loop robust control of long-term diabetes progression via physical activity management
+[^2304.00003v1]: Multimodal Information Fusion For The Diagnosis Of Diabetic Retinopathy
+[^1502.03774v1]: Diagnosis of diabetes using classification mining techniques
+[^2301.10450v1]: HealthEdge: A Machine Learning-Based Smart Healthcare Framework for Prediction of Type 2 Diabetes in an Integrated IoT, Edge, and Cloud Computing System
+[^2108.09953v1]: Impact of Culture on the Adoption of Diabetes Self-Management Applications: Cape Flats, South Africa
