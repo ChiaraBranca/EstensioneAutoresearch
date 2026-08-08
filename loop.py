@@ -2,6 +2,8 @@ import os
 import sys
 import subprocess
 import re
+import shutil
+from datetime import datetime
 
 # Configurazione automatica ambiente locale
 os.environ["OPENAI_API_BASE"] = "http://127.0.0.1:9000/v1"
@@ -48,7 +50,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         print(f" CICLO {i}/{iterations} - RECUPERO LETTERATURA")
         print(f"──────────────────────────────────────────────────")
         
-        # MODIFICA: Passiamo sia il topic che la search_query a prepare.py
+        # Recupero nuovi paper
         fetch_res = run_command(f'python prepare.py --fetch "{topic}" "{search_query}"')
         if "Recuperati 0" in fetch_res.stdout or fetch_res.returncode != 0:
             print("[STOP] Nessun nuovo paper recuperato da ArXiv. Eseguo pulizia e termino.")
@@ -56,11 +58,17 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
             run_command("git clean -fd")
             break
             
-        # 3. Misurazione Baseline
+        # Misurazione Baseline
         baseline_score = get_lss_score(topic)
         print(f"[METRICA] Punteggio LSS Baseline di partenza: {baseline_score}")
 
-        # 4.a Prompt Attore (Aggiunta la regola 5 di pulizia titoli vuoti)
+        # =======================================================
+        # [NUOVO] GENERAZIONE GROUND TRUTH TRAMITE ORACOLO
+        # =======================================================
+        print("\n[ORACLE] Generazione Ground Truth (LLM-as-a-Judge)...")
+        run_command(f'python auto_evaluator.py "{search_query}"')
+
+        # Prompt Attore
         prompt_attore = (
             f"Leggi attentamente il file 'new_papers.json'. Contiene una lista di paper INEDITI. Per ogni paper all'interno:\n"
             f"1) SCREENING DI PERTINENZA: Valuta se è pertinente al tema e ai vincoli richiesti: '{search_query}'. Se è fuori tema o fuori dall'anno/periodo richiesto, scartalo e ignoralo.\n"
@@ -75,7 +83,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         print("\n[AI AGENT - ATTORE] Scrittura e integrazione nuova letteratura...")
         run_command(f'uvx --from aider-chat aider --model openai/lab-main --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "{prompt_attore}" {survey_file} {bib_file} {fig_script}')
 
-        # 4.b Prompt Critico con Memoria Storica
+        # Prompt Critico con Memoria Storica
         prompt_critico = (
             f"Agisci come un revisore scientifico spietato (Reviewer 2). "
             f"Confronta attentamente le ultime aggiunte fatte in '{survey_file}' con gli abstract reali presenti in 'new_papers.json'. "
@@ -89,11 +97,19 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         print("\n[AI AGENT - CRITICO] Peer-review e verifica veridicità scientifica...")
         run_command(f'uvx --from aider-chat aider --model openai/lab-main --read new_papers.json --read {bib_file} --yes-always --no-git --message "{prompt_critico}" {survey_file}')
 
-        # 5. Esecuzione script dei grafici
+        # Esecuzione script dei grafici
         print("\n[SISTEMA] Ricreazione reale dei grafici su disco...")
         run_command(f'python "{fig_script}"')
 
-        # 6. Valutazione Reale e Verdetto
+        # =======================================================
+        # [NUOVO] CALCOLO METRICHE DI VALIDAZIONE
+        # =======================================================
+        # Lo mettiamo qui in modo da misurare l'effettivo lavoro degli agenti
+        # prima di fare eventuali rollback con git reset
+        print("\n[METRICHE] Calcolo Precision, Recall e F1-Measure...")
+        run_command(f'python evaluate_metrics.py "{clean_name}"')
+
+        # Valutazione Reale e Verdetto
         new_score = get_lss_score(topic)
         delta = round(new_score - baseline_score, 2)
         print(f"\n[VERDETTO] Baseline: {baseline_score} -> Nuovo Score: {new_score} (Δ {delta:+.2f})")
@@ -107,11 +123,28 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
             run_command("git reset --hard HEAD")
             run_command("git clean -fd")
 
+        # =======================================================
+        # [NUOVO] SISTEMA DI ARCHIVIAZIONE LOG JSON
+        # =======================================================
+        logs_dir = os.path.join(topic_dir, "eval_logs")
+        os.makedirs(logs_dir, exist_ok=True)
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+        if os.path.exists("new_papers.json"):
+            new_papers_archive = os.path.join(logs_dir, f"new_papers_{timestamp}.json")
+            shutil.move("new_papers.json", new_papers_archive)
+            
+        if os.path.exists("ground_truth.json"):
+            gt_archive = os.path.join(logs_dir, f"ground_truth_{timestamp}.json")
+            shutil.move("ground_truth.json", gt_archive)
+            
+        print(f"[LOG] File JSON archiviati con successo in: {logs_dir} (Timestamp: {timestamp})")
+
     print("\n==================================================")
     print(" LOOP COMPLETATO CON SUCCESSO!")
     print("==================================================")
     
-# MODIFICA 4: Lettura del CLI per catturare il 3° argomento opzionale
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Uso: python loop.py \"Nome Progetto\" [numero_cicli] [\"Query o Filtro Anno\"]")
