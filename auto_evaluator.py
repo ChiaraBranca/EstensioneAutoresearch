@@ -19,7 +19,7 @@ def classify_with_llm(topic, abstract):
     )
     
     data = {
-        "model": "openai/lab-main", 
+        "model": "model", 
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.01  # Alzato leggermente: molti server locali rifiutano lo 0.0 assoluto
         # max_tokens rimosso per prevenire problemi di compatibilità con le API locali
