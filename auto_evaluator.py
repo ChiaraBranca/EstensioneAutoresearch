@@ -9,7 +9,6 @@ def classify_with_llm(topic, abstract):
     api_base = os.environ.get("OPENAI_API_BASE", "http://127.0.0.1:9000/v1")
     api_key = os.environ.get("OPENAI_API_KEY", "none")
     
-    # Prompt migliorato: diamo respiro al modello
     prompt = (
         f"Sei un valutatore scientifico. Leggi il seguente abstract e valuta se è "
         f"pertinente (anche in senso lato) al tema: '{topic}'.\n\n"
@@ -22,8 +21,8 @@ def classify_with_llm(topic, abstract):
     data = {
         "model": "openai/lab-main", 
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.0, 
-        "max_tokens": 10 # Leggermente alzato nel caso il modello parli prima di dire il numero
+        "temperature": 0.01  # Alzato leggermente: molti server locali rifiutano lo 0.0 assoluto
+        # max_tokens rimosso per prevenire problemi di compatibilità con le API locali
     }
     
     req = urllib.request.Request(
@@ -36,10 +35,16 @@ def classify_with_llm(topic, abstract):
         with urllib.request.urlopen(req) as response:
             result = json.loads(response.read().decode())
             reply = result['choices'][0]['message']['content'].strip()
-            # Cerca esplicitamente il carattere '1' nella risposta, ignorando eventuali chiacchiere extra
             return 1 if '1' in reply else 0
     except Exception as e:
-        print(f"[ERRORE ORACLE] Fallita classificazione: {e}")
+        # Estrazione del messaggio di errore reale dal corpo della risposta
+        error_detail = str(e)
+        if hasattr(e, 'read'):
+            try:
+                error_detail = e.read().decode('utf-8')
+            except:
+                pass
+        print(f"[ERRORE ORACLE] Fallita classificazione. Dettaglio: {error_detail}")
         return 0
 
 if __name__ == "__main__":
