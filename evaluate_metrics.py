@@ -29,8 +29,11 @@ def evaluate_performance(ground_truth_file, bib_file):
     TP, FP, FN, TN = 0, 0, 0, 0
 
     for paper_id, is_relevant_gt in ground_truth.items():
-        # L'AI l'ha ritenuto rilevante se l'ID è presente nel file .bib
-        is_relevant_ai = 1 if str(paper_id) in integrated_ai else 0
+        # [NUOVO] Togliamo la 'v' (es. 2409.13191v2 -> 2409.13191) per fare un confronto pulito
+        base_id = str(paper_id).split('v')[0]
+        
+        # Ora cerchiamo il base_id pulito dentro la lista dell'AI
+        is_relevant_ai = 1 if base_id in integrated_ai else 0
 
         if is_relevant_ai == 1 and is_relevant_gt == 1:
             TP += 1
@@ -40,7 +43,6 @@ def evaluate_performance(ground_truth_file, bib_file):
             FN += 1
         elif is_relevant_ai == 0 and is_relevant_gt == 0:
             TN += 1
-
     # Prevenzione divisione per zero
     precision = TP / (TP + FP) if (TP + FP) > 0 else 0.0
     recall = TP / (TP + FN) if (TP + FN) > 0 else 0.0

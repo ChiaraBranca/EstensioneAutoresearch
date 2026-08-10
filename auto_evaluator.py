@@ -6,21 +6,24 @@ import urllib.parse
 
 def classify_with_llm(topic, abstract):
     """Usa il LLM locale come Oracolo binario."""
-    # Prende le stesse variabili d'ambiente di loop.py
     api_base = os.environ.get("OPENAI_API_BASE", "http://127.0.0.1:9000/v1")
     api_key = os.environ.get("OPENAI_API_KEY", "none")
     
+    # Prompt migliorato: diamo respiro al modello
     prompt = (
-        f"Sei un classificatore binario accademico. Valuta se questo abstract è pertinente "
-        f"all'argomento '{topic}'.\n\nAbstract: {abstract}\n\n"
-        f"Rispondi ESCLUSIVAMENTE con il numero '1' (se pertinente) o '0' (se non pertinente). Non aggiungere nessun altro carattere o parola."
+        f"Sei un valutatore scientifico. Leggi il seguente abstract e valuta se è "
+        f"pertinente (anche in senso lato) al tema: '{topic}'.\n\n"
+        f"Abstract: {abstract}\n\n"
+        f"Rispondi '1' se il paper tratta argomenti utili o correlati a questo tema.\n"
+        f"Rispondi '0' se il paper è completamente fuori tema.\n"
+        f"Devi stampare come risposta finale ESCLUSIVAMENTE il numero 1 o il numero 0."
     )
     
     data = {
         "model": "openai/lab-main", 
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.0, # Deve essere 0.0 per essere deterministico e oggettivo
-        "max_tokens": 5
+        "temperature": 0.0, 
+        "max_tokens": 10 # Leggermente alzato nel caso il modello parli prima di dire il numero
     }
     
     req = urllib.request.Request(
@@ -33,6 +36,7 @@ def classify_with_llm(topic, abstract):
         with urllib.request.urlopen(req) as response:
             result = json.loads(response.read().decode())
             reply = result['choices'][0]['message']['content'].strip()
+            # Cerca esplicitamente il carattere '1' nella risposta, ignorando eventuali chiacchiere extra
             return 1 if '1' in reply else 0
     except Exception as e:
         print(f"[ERRORE ORACLE] Fallita classificazione: {e}")
