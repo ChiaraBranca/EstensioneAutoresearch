@@ -4,7 +4,22 @@ import json
 import urllib.request
 import urllib.parse
 
-def classify_with_llm(topic, abstract):
+def get_valid_model_name(api_base, api_key):
+    """Interroga il server locale per scoprire il nome esatto del modello in esecuzione."""
+    try:
+        req = urllib.request.Request(
+            f"{api_base}/models",
+            headers={"Authorization": f"Bearer {api_key}"}
+        )
+        with urllib.request.urlopen(req) as response:
+            data = json.loads(response.read().decode())
+            # Prende l'ID del primo modello disponibile nella lista
+            return data['data'][0]['id']
+    except Exception as e:
+        print(f"[ORACLE WARNING] Impossibile recuperare il nome del modello, tento fallback. Dettaglio: {e}")
+        return "lab-main" # Fallback nel caso in cui fallisca
+
+def classify_with_llm(topic, abstract, valid_model_name):
     """Usa il LLM locale come Oracolo binario."""
     api_base = os.environ.get("OPENAI_API_BASE", "http://127.0.0.1:9000/v1")
     api_key = os.environ.get("OPENAI_API_KEY", "none")
@@ -19,10 +34,9 @@ def classify_with_llm(topic, abstract):
     )
     
     data = {
-        "model": "model", 
+        "model": valid_model_name, # <-- Ora usa il nome certificato dal server stesso!
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.01  # Alzato leggermente: molti server locali rifiutano lo 0.0 assoluto
-        # max_tokens rimosso per prevenire problemi di compatibilità con le API locali
+        "temperature": 0.01 
     }
     
     req = urllib.request.Request(
@@ -37,7 +51,6 @@ def classify_with_llm(topic, abstract):
             reply = result['choices'][0]['message']['content'].strip()
             return 1 if '1' in reply else 0
     except Exception as e:
-        # Estrazione del messaggio di errore reale dal corpo della risposta
         error_detail = str(e)
         if hasattr(e, 'read'):
             try:
@@ -56,14 +69,22 @@ if __name__ == "__main__":
     if not os.path.exists("new_papers.json"):
         sys.exit(0)
         
+    api_base = os.environ.get("OPENAI_API_BASE", "http://127.0.0.1:9000/v1")
+    api_key = os.environ.get("OPENAI_API_KEY", "none")
+    
+    # 1. Trova il nome giusto del modello
+    valid_model_name = get_valid_model_name(api_base, api_key)
+    print(f"\n[ORACLE] Identificato modello API valido: '{valid_model_name}'")
+        
     with open("new_papers.json", "r", encoding="utf-8") as f:
         papers = json.load(f)
         
     truth_dict = {}
-    print(f"\n[ORACLE] Autogenerazione Ground Truth per {len(papers)} paper...")
+    print(f"[ORACLE] Autogenerazione Ground Truth per {len(papers)} paper...")
     
     for p in papers:
-        is_relevant = classify_with_llm(topic, p['abstract'])
+        # 2. Passa il nome giusto alla funzione
+        is_relevant = classify_with_llm(topic, p['abstract'], valid_model_name)
         truth_dict[p['id']] = is_relevant
         
     with open("ground_truth.json", "w", encoding="utf-8") as f:
