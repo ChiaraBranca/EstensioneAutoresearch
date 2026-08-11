@@ -16,7 +16,9 @@ L'AI generativa presenta sfide specifiche. AdaPhish introduce una piattaforma ba
 
 Un'analisi critica delle dieci tappe fondamentali per l'AI nella cybersecurity evidenzia questioni etiche, di privacy e di spiegabilità delle decisioni AI nei centri operativi di sicurezza, oltre alle implicazioni dell'uso dell'AI da parte degli attaccanti [^1912.06817v1].
 
-Recentemente, sono stati sviluppati modelli LLM specifici per il dominio della cybersecurity. SecureBERT, un modello linguistico di dominio specifico, è stato addestrato su un ampio corpus di testo di cybersecurity per catturare le connotazioni del testo in questo dominio, migliorando le prestazioni in compiti di NLP critici come l'intelligence sulle minacce informatiche (CTI) [^2204.02685v3]. Inoltre, RedSage, un modello generalista di cybersecurity, è stato addestrato utilizzando dati di pre-addestramento continui focalizzati sulla cybersecurity e un pipeline di augmentation agentic, raggiungendo risultati superiori sui benchmark di cybersecurity rispetto ai modelli baseline [^2601.22159v2]. Per valutare le capacità degli agenti AI in cybersecurity, è stato introdotto CAIBench, un meta-benchmark modulare che valuta le capacità offensive e difensive degli LLM, rivelando un divario significativo tra la conoscenza concettuale e la capacità adattiva in scenari multi-step [^2510.24317v1].
+Recentemente, sono stati sviluppati modelli LLM specifici per il dominio della cybersecurity. SecureBERT, un modello linguistico di dominio specifico, è stato addestrato su un ampio corpus di testo di cybersecurity per catturare le connotazioni del testo in questo dominio, migliorando le prestazioni in compiti di NLP critici come l'intelligence sulle minacce informatiche (CTI) [^2204.02685v3]. Inoltre, RedSage, un modello generalista di cybersecurity, è stato addestrato utilizzando dati di pre-addestramento continui focalizzati sulla cybersecurity e un pipeline di augmentation agentic, raggiungendo risultati superiori sui benchmark di cybersecurity rispetto ai modelli baseline [^2601.04940v1]. Per valutare le capacità degli agenti AI in cybersecurity, è stato introdotto CAIBench, un meta-benchmark modulare che valuta le capacità offensive e difensive degli LLM, rivelando un divario significativo tra la conoscenza concettuale e la capacità adattiva in scenari multi-step [^2510.24317v1].
+
+Un nuovo benchmark, SECURE (Security Extraction, Understanding & Reasoning Evaluation), è stato proposto per valutare le prestazioni dei LLM in scenari realistici di cybersecurity, in particolare nel settore dei sistemi di controllo industriale (ICS). Lo studio evidenzia come i benchmark generali non siano sufficienti per catturare le competenze pratiche e applicate necessarie in contesti specifici, mostrando punti di forza e debolezza nei modelli attuali [^2405.20441v4].
 
 L'uso di tecniche avanzate di analisi dei dati, come l'Analisi Topologica dei Dati (TDA), sta guadagnando attenzione per rilevare attività malevole combinando indicatori deboli, sfruttando la struttura ad alto livello dei dati [^2202.08037v1]. Inoltre, l'Intelligenza Artificiale Spiegabile (XAI) sta emergendo come campo cruciale per comprendere il comportamento delle minacce cyber e progettare difese più efficaci, affrontando la natura "black-box" dei modelli AI [^2303.12942v2]. Infine, la valutazione dinamica del rischio per gli agenti di cybersecurity offensivi sta diventando essenziale, poiché gli avversari possono migliorare le capacità degli agenti in modo iterativo, richiedendo valutazioni che tengano conto della libertà d'azione dell'avversario in ambienti stateful e non-stateful [^2505.18384v5].
 
@@ -39,6 +41,10 @@ Il settore automobilistico sta affrontando sfide simili con l'adozione di veicol
 Anche l'agricoltura e il settore alimentare sono vulnerabili. Un'iniziativa educativa propone un corso modulare per formare la forza lavoro agricola alla cybersecurity, un settore storicamente trascurato ma sempre più integrato con tecnologie digitali [^2503.16292v1]. Una review degli incidenti di cybersecurity nel settore alimentare e agricolo evidenzia un aumento della frequenza delle minacce e propone il framework Farmer-Centered AI (FCAI) per supportare i agricoltori nelle decisioni di produzione incorporando l'assicurazione AI [^2403.08036v1].
 
 Nel settore sanitario, la proliferazione di soluzioni IT ha aumentato gli incidenti di cybersecurity. Una systematizzazione di 49 documenti normativi e standard chiave, basata sul framework NIST, aiuta gli operatori a implementare misure di sicurezza efficaci [^2304.14955v1]. Inoltre, la compliance con le normative UE per i dispositivi medici richiede una rigorosa aderenza ai requisiti di cybersecurity, con quattro concetti fondamentali che formano la base per la conformità [^2103.06809v1].
+
+Un framework guidato dai valori per l'innovazione nella cybersecurity è stato proposto per il settore dei trasporti e delle infrastrutture, spostando il focus dall'appeal di mercato al valore strategico e agli obiettivi aziendali. Questo approccio mira a integrare la cybersecurity come abilitatore di business piuttosto che come onere, migliorando l'efficacia operativa e l'allineamento con gli obiettivi critici [^2405.07358v1].
+
+Il settore dell'aviazione affronta vulnerabilità significative sia fisiche che cyber. Uno studio applica la matrice MITRE ATT&CK ai rischi di sicurezza aeroportuale per la prima volta, mappando le tattiche e le tecniche degli attaccanti e proponendo modelli di difesa moderni come l'architettura Zero Trust e la gestione del rischio della catena di approvvigionamento [^2604.23545v1].
 
 ## Governance, Norme e Consapevolezza
 
@@ -63,6 +69,18 @@ L'ecosistema della cybersecurity in Asia Sud-Est è valutato tramite indici di p
 L'analisi del rischio adversarial è essenziale per la cybersecurity. Un framework proposto copre sia minacce adversarial che non intenzionali, includendo l'uso di assicurazione nel portafoglio di sicurezza [^1903.07727v1]. L'approccio comportamentale alla cybersecurity evidenzia come i fattori umani siano la principale vulnerabilità, richiedendo un miglioramento dei comportamenti degli utenti e delle organizzazioni [^2303.13621v1].
 
 La valutazione delle competenze e la creazione di inventari concettuali per la cybersecurity sono sfide complesse. Un progetto CATS ha creato inventari concettuali per misurare l'efficacia dell'insegnamento, evidenziando le difficoltà nella costruzione di domande a scelta multipla per problemi cybersecurity sottili [^2004.05248v1].
+
+Per comprendere le percezioni dei genitori riguardo alla cybersecurity dei bambini, uno studio qualitativo in Norvegia ha identificato le esigenze di consapevolezza, le risorse di apprendimento e le sfide affrontate dai genitori, fornendo indicazioni per sviluppatori ed educatori per creare soluzioni più efficaci [^2108.02512v1].
+
+Un framework basato su LLM, CurricuLLM, è stato sviluppato per automatizzare la classificazione dei contenuti dei curricula di cybersecurity in aree di conoscenza standardizzate, offrendo una soluzione efficiente per l'analisi dei programmi educativi [^2601.04940v1].
+
+Uno studio di caso nel Regno Unito ha analizzato come l'accreditamento nazionale influenzi l'insegnamento della cybersecurity nei corsi di informatica generale, dimostrando che i requisiti di accreditamento possono migliorare significativamente la qualità e la rilevanza dell'educazione [^1906.09584v2].
+
+Un'analisi del sentiment sui contenuti di cybersecurity su Twitter e Reddit ha rivelato che la maggior parte dei contenuti è positiva o neutrale, con VADER che ha mostrato una buona accuratezza nel classificare il sentiment rispetto agli annotatori umani, suggerendo l'uso di questi strumenti per monitorare la percezione pubblica [^2204.12267v1].
+
+Un'analisi delle soluzioni CTF ha mappato le competenze tecniche insegnate (come crittografia e sicurezza di rete) rispetto ai curricula formali, evidenziando la mancanza di focus sugli aspetti umani come l'ingegneria sociale e la consapevolezza, suggerendo l'integrazione di questi temi per attrarre un pubblico più ampio [^2101.01421v1].
+
+Uno studio sulla Virginia ha sviluppato un modello di maturità per valutare l'educazione alla cybersecurity nelle università, mostrando un aumento delle offerte formative dopo l'inizio del Commonwealth Cyber Initiative, con potenziali impatti sulla riduzione del gap di competenze [^2502.18456v1].
 
 ## Difesa Collaborativa e Architetture
 
@@ -101,6 +119,8 @@ I programmi di bug bounty offrono una piattaforma per il crowdsourcing della sic
 ## Smart Home e IoT
 
 La sicurezza delle smart home è un'area critica. Una review delle linee guida governative per gli utenti di smart home mostra che, sebbene ci sia abbondanza di consigli preventivi, manca una guida strutturata per la risposta agli incidenti e il recupero per gli utenti non esperti [^2603.21703v1].
+
+Per migliorare la trasparenza e la tracciabilità delle certificazioni di cybersecurity per i dispositivi IoT, è stata proposta una piattaforma basata su blockchain, in linea con l'Atto sulla Cybersecurity dell'UE, per facilitare lo scambio fidato di informazioni di certificazione [^1909.07039v1].
 
 ## Smart Cities e Blockchain
 
