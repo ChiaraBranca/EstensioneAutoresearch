@@ -9,8 +9,8 @@ plt.style.use('seaborn-v0_8-paper' if 'seaborn-v0_8-paper' in plt.style.availabl
 plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12, 'figure.titlesize': 14})
 
 SURVEY_TITLE = "cybersecurity"
-TIMELINE_DATA = {"2024": 1, "2025": 6, "2026": 5}
-TAXONOMY_DATA = {"AI & Automation": 4, "Quantum Security": 2, "Critical Infrastructure": 4, "Governance & SMEs": 3, "Collaborative Defense": 2, "IoT & Edge": 1, "Other": 1}
+TIMELINE_DATA = {"2026": 7, "2025": 12, "2024": 5, "2023": 4, "2022": 4, "2021": 6, "2020": 3, "2019": 1, "2017": 1, "2016": 1, "2015": 2, "2014": 1}
+TAXONOMY_DATA = {"AI & Automation": 11, "Quantum Security": 2, "Critical Infrastructure": 9, "Governance & SMEs": 10, "Collaborative Defense": 3, "IoT & Edge": 2, "Other": 9}
 
 def plot_publication_timeline():
     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())
