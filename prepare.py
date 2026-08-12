@@ -4,7 +4,6 @@ import json
 import re
 import urllib.request
 import urllib.parse
-import xml.etree.ElementTree as ET
 
 def get_topic_dir(topic_name):
     """Converte 'agenti llm e memoria' nella cartella sicura 'surveys/agenti_llm_e_memoria'"""
@@ -28,7 +27,6 @@ def init_workspace(topic_name):
     if not os.path.exists(bib_file):
         open(bib_file, "a").close()
 
-    # SCRIPT GRAFICI CON PERCORSI ASSOLUTI (Salvataggio protetto nella cartella del topic)
     if not os.path.exists(fig_script):
         baseline_code = '''import os
 import matplotlib.pyplot as plt
@@ -85,66 +83,78 @@ def get_existing_ids(topic_dir):
         return set()
     with open(bib_file, "r", encoding="utf-8") as f:
         content = f.read()
-    # Trova tutte le chiavi BibTeX tipo @article{2605.28732v3, ...
     ids = set(re.findall(r'@\w+\{([^,]+),', content))
-    # Per sicurezza, prendiamo anche la versione senza la 'v' (es. 2605.28732)
-    stripped_ids = {i.split('v')[0] for i in ids}
-    return ids.union(stripped_ids)
+    return ids
 
-def fetch_arxiv_papers(query, existing_ids=None, max_results=30):
+def fetch_semantic_scholar_papers(query, existing_ids=None, target_count=100):
+    """
+    Estrae paper dal motore multidisciplinare Semantic Scholar.
+    Usa l'ordinamento decrescente per Data di Pubblicazione per la Living Survey.
+    Continua a pescare finché non raccoglie 'target_count' paper INEDITI (non in existing_ids) o finisce le pagine.
+    """
     if existing_ids is None:
         existing_ids = set()
         
-    # 1. Estrazione automatica di eventuali anni specificati nella query (es. 2024)
-    target_years = [int(y) for y in re.findall(r'\b(19\d\d|20\d\d)\b', query)]
+    # Pulizia query per URL
+    clean_query = urllib.parse.quote(query.strip())
     
-    # 2. Pulizia della query rimuovendo l'anno per non disturbare la ricerca testuale di ArXiv
-    clean_query = re.sub(r'\b(19\d\d|20\d\d)\b', '', query).strip()
-    if not clean_query:
-        clean_query = query
+    print(f"[SEMANTIC SCHOLAR] Ricerca in corso per: '{query}' | Ordinamento: Nuove Pubblicazioni")
+    
+    new_papers = []
+    offset = 0
+    # Limite massimo API S2 per chiamata è 100
+    limit = 100 
+    
+    # Ciclo di paginazione: continuiamo a chiedere pagine finché non riempiamo il nostro cesto
+    while len(new_papers) < target_count:
+        url = f"https://api.semanticscholar.org/graph/v1/paper/search?query={clean_query}&offset={offset}&limit={limit}&fields=title,abstract,year,externalIds&sort=publicationDate:desc"
         
-    print(f"[ARXIV] Query testuale: '{clean_query}' | Filtro anni attivo: {target_years if target_years else 'Nessuno'}")
-
-    words = clean_query.split()
-    arxiv_query = "+AND+".join([f"all:{urllib.parse.quote(w)}" for w in words]) if words else "all:research"
-    
-    fetch_limit = max(45, max_results * 3)
-    url = f"http://export.arxiv.org/api/query?search_query={arxiv_query}&start=0&max_results={fetch_limit}&sortBy=relevance&sortOrder=descending"
-    
-    try:
-        data = urllib.request.urlopen(url).read()
-        root = ET.fromstring(data)
-        ns = {'arxiv': 'http://www.w3.org/2005/Atom'}
-        new_papers = []
-        
-        for entry in root.findall('arxiv:entry', ns):
-            paper_id = entry.find('arxiv:id', ns).text.split('/')[-1]
-            base_id = paper_id.split('v')[0]
-            
-            if paper_id in existing_ids or base_id in existing_ids:
-                continue
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
+            with urllib.request.urlopen(req) as response:
+                data = json.loads(response.read().decode())
                 
-            published_str = entry.find('arxiv:published', ns).text
-            pub_year = int(published_str[:4])
-            
-            # FILTRO TEMPORALE OCCASIONALE: se l'utente ha messo un anno, lo applichiamo
-            if target_years and pub_year not in target_years:
-                continue
-                
-            title = entry.find('arxiv:title', ns).text.strip().replace('\n', ' ')
-            summary = entry.find('arxiv:summary', ns).text.strip().replace('\n', ' ')
-            new_papers.append({'id': paper_id, 'title': title, 'abstract': summary})
-            
-            if len(new_papers) >= max_results:
+            batch = data.get('data', [])
+            if not batch: # Non ci sono più risultati sul motore di ricerca
+                print("[SEMANTIC SCHOLAR] Nessun altro risultato trovato dal motore di ricerca.")
                 break
                 
-        return new_papers
-    except Exception as e:
-        print(f"[ERRORE FETCH] Impossibile contattare ArXiv: {e}", file=sys.stderr)
-        return []
+            for paper in batch:
+                if len(new_papers) >= target_count:
+                    break
+                    
+                # Scartiamo i paper senza abstract
+                if not paper.get('abstract'):
+                    continue
+                    
+                # Definiamo l'ID univoco: Preferiamo DOI o ArXiv se esistono, altrimenti ID interno di S2
+                paper_id = paper['paperId']
+                if 'externalIds' in paper:
+                    if 'DOI' in paper['externalIds']:
+                        paper_id = paper['externalIds']['DOI'].replace('/', '_') # Niente slash per non rompere il Markdown
+                    elif 'ArXiv' in paper['externalIds']:
+                        paper_id = paper['externalIds']['ArXiv']
+                
+                # Se è già in memoria storica, lo saltiamo
+                if paper_id in existing_ids:
+                    continue
+                    
+                new_papers.append({
+                    'id': paper_id,
+                    'title': paper['title'].strip().replace('\n', ' '),
+                    'abstract': paper['abstract'].strip().replace('\n', ' '),
+                    'year': paper.get('year', '2026') # Fallback year
+                })
+                
+            offset += limit # Passiamo alla pagina successiva
+            
+        except Exception as e:
+            print(f"[ERRORE FETCH S2] Impossibile contattare Semantic Scholar (Offset {offset}): {e}", file=sys.stderr)
+            break # Usciamo dal loop in caso di errore (es. rate limit)
+            
+    return new_papers
 
 def count_actual_citations(survey_path):
-    """CONTEGGIO REALE ANTI-ALLUCINAZIONE: conta le tag Markdown [^...] uniche nel file."""
     if not os.path.exists(survey_path):
         return 0
     with open(survey_path, 'r', encoding='utf-8') as f:
@@ -166,7 +176,6 @@ def compute_living_survey_score(topic_name):
         
     integrated_count = count_actual_citations(survey_path)
     
-    # Leggiamo anche quante voci ci sono nel file .bib per dare valore alla bibliografia cumulativa
     bib_count = 0
     if os.path.exists(bib_file):
         with open(bib_file, 'r', encoding='utf-8') as f:
@@ -175,11 +184,9 @@ def compute_living_survey_score(topic_name):
     figure_generated = os.path.exists(fig_timeline) and os.path.exists(fig_taxonomy)
     
     I = 100.0
-    # C cresce in modo graduale premiando il numero totale di paper in bib e citazioni, senza tetto stretto
     C = min(100.0, (integrated_count * 3.0) + (bib_count * 1.5)) 
     V = 100.0 if figure_generated else 0.0
     
-    # N (Sintesi) cresce leggermente se il file Markdown aumenta di lunghezza (numero di righe)
     line_count = 0
     with open(survey_path, 'r', encoding='utf-8') as f:
         line_count = len(f.readlines())
@@ -203,10 +210,18 @@ if __name__ == "__main__":
         search_query = sys.argv[3] if len(sys.argv) > 3 else topic
         topic_dir = init_workspace(topic)
         existing_ids = get_existing_ids(topic_dir)
-        papers = fetch_arxiv_papers(search_query, existing_ids=existing_ids, max_results=30)
+        
+        # ORA CERCHIAMO ESATTAMENTE 100 PAPER INEDITI!
+        target_papers = 100
+        
+        papers = fetch_semantic_scholar_papers(search_query, existing_ids=existing_ids, target_count=target_papers)
+        
         with open("new_papers.json", "w", encoding="utf-8") as f:
             json.dump(papers, f, indent=2)
-        print(f"[PREPARE] Recuperati {len(papers)} nuovi paper per '{search_query}' in new_papers.json (ignorati {len(existing_ids)} già presenti)")
+            
+        print(f"[PREPARE] Recuperati {len(papers)} nuovi paper INEDITI per '{search_query}' in new_papers.json. "
+              f"Il motore ha automaticamente ignorato gli ID già presenti nella memoria storica ({len(existing_ids)} paper).")
+              
     elif action == "--eval":
         score, count = compute_living_survey_score(topic)
         print(f"INTEGRATED_COUNT:{count}")
