@@ -90,28 +90,22 @@ def get_existing_ids(topic_dir):
 def fetch_semantic_scholar_papers(query, existing_ids=None, target_count=100):
     """
     Estrae paper dal motore multidisciplinare Semantic Scholar.
-    Permette di specificare un anno o un range di anni direttamente nella query.
-    Es: 'brain 2015' -> Cerca 'brain' solo nel 2015.
+    Include logica di Retry (Exponential Backoff) per gestire gli Errori 429 (Rate Limit).
     """
     if existing_ids is None:
         existing_ids = set()
         
-    # 1. Estrazione automatica di eventuali anni dalla query (es. "2015" o "2018 2021")
     target_years = [int(y) for y in re.findall(r'\b(19\d\d|20\d\d)\b', query)]
-    
-    # 2. Pulizia della query (togliamo gli anni dal testo per non confondere la ricerca semantica)
     clean_query_text = re.sub(r'\b(19\d\d|20\d\d)\b', '', query).strip()
     if not clean_query_text:
-        clean_query_text = query # Fallback
+        clean_query_text = query 
         
     clean_query = urllib.parse.quote(clean_query_text)
     
-    # 3. Costruzione dinamica del parametro anno per Semantic Scholar
     year_param = ""
     if len(target_years) == 1:
         year_param = f"&year={target_years[0]}"
     elif len(target_years) >= 2:
-        # Se metti due anni (es. "brain 2015 2020"), cerca in quel range
         year_param = f"&year={min(target_years)}-{max(target_years)}"
         
     print(f"[SEMANTIC SCHOLAR] Query: '{clean_query_text}' | Filtro Anno: {year_param.replace('&year=', '') if year_param else 'Nessuno (Tutta la storia)'}")
@@ -119,57 +113,70 @@ def fetch_semantic_scholar_papers(query, existing_ids=None, target_count=100):
     new_papers = []
     offset = 0
     limit = 100 
+    max_retries = 3 # Numero massimo di tentativi in caso di blocco
     
     while len(new_papers) < target_count:
-        # Costruiamo l'URL unendo la query pulita e il parametro anno (se presente)
         url = f"https://api.semanticscholar.org/graph/v1/paper/search?query={clean_query}&offset={offset}&limit={limit}&fields=title,abstract,year,externalIds{year_param}"
         
-        try:
-            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'})
-            with urllib.request.urlopen(req) as response:
-                data = json.loads(response.read().decode())
-                
-            batch = data.get('data', [])
-            if not batch: 
-                print("[SEMANTIC SCHOLAR] Nessun altro risultato trovato dal motore di ricerca.")
+        retries = 0
+        success = False
+        data = {}
+        
+        # Ciclo di Retry per gestire l'Errore 429
+        while retries < max_retries and not success:
+            try:
+                req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'})
+                with urllib.request.urlopen(req) as response:
+                    data = json.loads(response.read().decode())
+                    success = True
+            except urllib.error.HTTPError as e:
+                if e.code == 429: # Too Many Requests
+                    retries += 1
+                    wait_time = retries * 3 # Aspetta 3s, poi 6s, poi 9s...
+                    print(f"  [S2 RATE LIMIT] Raggiunto limite API. Attendo {wait_time} secondi (Tentativo {retries}/{max_retries})...")
+                    time.sleep(wait_time)
+                else:
+                    print(f"[ERRORE HTTP S2] Codice {e.code}")
+                    break
+            except Exception as e:
+                print(f"[ERRORE S2] {e}")
                 break
                 
-            for paper in batch:
-                if len(new_papers) >= target_count:
-                    break
-                    
-                if not paper.get('abstract'):
-                    continue
-                    
-                paper_id = paper['paperId']
-                if 'externalIds' in paper and paper['externalIds']:
-                    if 'DOI' in paper['externalIds']:
-                        paper_id = paper['externalIds']['DOI'].replace('/', '_')
-                    elif 'ArXiv' in paper['externalIds']:
-                        paper_id = paper['externalIds']['ArXiv']
-                
-                if paper_id in existing_ids:
-                    continue
-                    
-                new_papers.append({
-                    'id': paper_id,
-                    'title': paper.get('title', '').strip().replace('\n', ' '),
-                    'abstract': paper.get('abstract', '').strip().replace('\n', ' '),
-                    'year': str(paper.get('year', '2026'))
-                })
-                
-            offset += limit
-            time.sleep(1.5) # Pausa rate-limit
-            
-        except Exception as e:
-            error_detail = str(e)
-            if hasattr(e, 'read'):
-                try:
-                    error_detail = e.read().decode('utf-8')
-                except:
-                    pass
-            print(f"[ERRORE FETCH S2] Fallita connessione (Offset {offset}). Dettaglio: {error_detail}")
+        if not success:
+            print(f"[ERRORE FETCH S2] Fallita connessione dopo {max_retries} tentativi all'offset {offset}.")
             break 
+            
+        batch = data.get('data', [])
+        if not batch: 
+            print("[SEMANTIC SCHOLAR] Nessun altro risultato trovato dal motore di ricerca.")
+            break
+            
+        for paper in batch:
+            if len(new_papers) >= target_count:
+                break
+                
+            if not paper.get('abstract'):
+                continue
+                
+            paper_id = paper['paperId']
+            if 'externalIds' in paper and paper['externalIds']:
+                if 'DOI' in paper['externalIds']:
+                    paper_id = paper['externalIds']['DOI'].replace('/', '_')
+                elif 'ArXiv' in paper['externalIds']:
+                    paper_id = paper['externalIds']['ArXiv']
+            
+            if paper_id in existing_ids:
+                continue
+                
+            new_papers.append({
+                'id': paper_id,
+                'title': paper.get('title', '').strip().replace('\n', ' '),
+                'abstract': paper.get('abstract', '').strip().replace('\n', ' '),
+                'year': str(paper.get('year', '2026'))
+            })
+            
+        offset += limit
+        time.sleep(1.5) # Pausa di cortesia standard tra una pagina e l'altra
             
     return new_papers
 
