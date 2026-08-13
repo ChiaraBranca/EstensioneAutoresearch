@@ -9,13 +9,14 @@ plt.style.use('seaborn-v0_8-paper' if 'seaborn-v0_8-paper' in plt.style.availabl
 plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12, 'figure.titlesize': 14})
 
 SURVEY_TITLE = "brain"
-TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 60, "2027": 3, "2028": 2, "2031": 2, "2036": 1}
+TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 62, "2027": 4, "2028": 2, "2031": 2, "2036": 1}
 TAXONOMY_DATA = {
     "Medical Imaging (MRI/PET)": 19,
     "EEG & BCI": 17,
     "Neurodegeneration & Pathology": 17,
     "Computational Neuroscience & SNNs": 9,
-    "Therapeutics & Drug Delivery": 5
+    "Therapeutics & Drug Delivery": 5,
+    "Brain Metastasis & Neuro-Oncology": 3
 }
 
 def plot_publication_timeline():
