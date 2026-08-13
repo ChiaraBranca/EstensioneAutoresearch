@@ -2,9 +2,10 @@ import os
 import sys
 import json
 import re
+import time
 import urllib.request
 import urllib.parse
-import time 
+import xml.etree.ElementTree as ET
 
 def get_topic_dir(topic_name):
     """Converte 'agenti llm e memoria' nella cartella sicura 'surveys/agenti_llm_e_memoria'"""
@@ -87,97 +88,100 @@ def get_existing_ids(topic_dir):
     ids = set(re.findall(r'@\w+\{([^,]+),', content))
     return ids
 
-def fetch_semantic_scholar_papers(query, existing_ids=None, target_count=100):
-    """
-    Estrae paper dal motore multidisciplinare Semantic Scholar.
-    Include logica di Retry (Exponential Backoff) per gestire gli Errori 429 (Rate Limit).
-    """
-    if existing_ids is None:
-        existing_ids = set()
-        
-    target_years = [int(y) for y in re.findall(r'\b(19\d\d|20\d\d)\b', query)]
-    clean_query_text = re.sub(r'\b(19\d\d|20\d\d)\b', '', query).strip()
-    if not clean_query_text:
-        clean_query_text = query 
-        
-    clean_query = urllib.parse.quote(clean_query_text)
-    
-    year_param = ""
-    if len(target_years) == 1:
-        year_param = f"&year={target_years[0]}"
-    elif len(target_years) >= 2:
-        year_param = f"&year={min(target_years)}-{max(target_years)}"
-        
-    print(f"[SEMANTIC SCHOLAR] Query: '{clean_query_text}' | Filtro Anno: {year_param.replace('&year=', '') if year_param else 'Nessuno (Tutta la storia)'}")
+def fetch_arxiv_papers(query, existing_ids=None, target_count=50):
+    """SERVER 1: ArXiv (Focalizzato su STEM, AI, Fisica). Paginato per Data."""
+    if existing_ids is None: existing_ids = set()
+    clean_query = urllib.parse.quote(query.strip())
+    print(f"[SERVER 1 - ARXIV] Ricerca in corso per: '{query}'...")
     
     new_papers = []
-    offset = 0
-    limit = 100 
-    max_retries = 3 # Numero massimo di tentativi in caso di blocco
+    start = 0
+    limit = 50
     
     while len(new_papers) < target_count:
-        url = f"https://api.semanticscholar.org/graph/v1/paper/search?query={clean_query}&offset={offset}&limit={limit}&fields=title,abstract,year,externalIds{year_param}"
-        
-        retries = 0
-        success = False
-        data = {}
-        
-        # Ciclo di Retry per gestire l'Errore 429
-        while retries < max_retries and not success:
-            try:
-                req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'})
-                with urllib.request.urlopen(req) as response:
-                    data = json.loads(response.read().decode())
-                    success = True
-            except urllib.error.HTTPError as e:
-                if e.code == 429: # Too Many Requests
-                    retries += 1
-                    wait_time = retries * 3 # Aspetta 3s, poi 6s, poi 9s...
-                    print(f"  [S2 RATE LIMIT] Raggiunto limite API. Attendo {wait_time} secondi (Tentativo {retries}/{max_retries})...")
-                    time.sleep(wait_time)
-                else:
-                    print(f"[ERRORE HTTP S2] Codice {e.code}")
-                    break
-            except Exception as e:
-                print(f"[ERRORE S2] {e}")
-                break
-                
-        if not success:
-            print(f"[ERRORE FETCH S2] Fallita connessione dopo {max_retries} tentativi all'offset {offset}.")
-            break 
+        # Usa sortBy=submittedDate per prendere sempre le novità assolute
+        url = f"http://export.arxiv.org/api/query?search_query=all:{clean_query}&start={start}&max_results={limit}&sortBy=submittedDate&sortOrder=descending"
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            data = urllib.request.urlopen(req).read()
+            root = ET.fromstring(data)
+            ns = {'arxiv': 'http://www.w3.org/2005/Atom'}
+            entries = root.findall('arxiv:entry', ns)
             
-        batch = data.get('data', [])
-        if not batch: 
-            print("[SEMANTIC SCHOLAR] Nessun altro risultato trovato dal motore di ricerca.")
+            if not entries: 
+                break # Fine dei risultati
+                
+            for entry in entries:
+                if len(new_papers) >= target_count: break
+                
+                paper_id = entry.find('arxiv:id', ns).text.split('/')[-1].split('v')[0]
+                if paper_id in existing_ids: continue
+                
+                title = entry.find('arxiv:title', ns).text.strip().replace('\n', ' ')
+                summary = entry.find('arxiv:summary', ns).text.strip().replace('\n', ' ')
+                pub_year = entry.find('arxiv:published', ns).text[:4]
+                
+                new_papers.append({'id': paper_id, 'title': title, 'abstract': summary, 'year': pub_year})
+                
+            start += limit
+            time.sleep(1) # Pausa di cortesia
+        except Exception as e:
+            print(f"[ERRORE ARXIV] {e}")
             break
+    return new_papers
+
+def fetch_openalex_papers(query, existing_ids=None, target_count=50):
+    """SERVER 2: OpenAlex (Focalizzato su Medicina, Scienze Umane, Multidisciplinare)."""
+    if existing_ids is None: existing_ids = set()
+    clean_query = urllib.parse.quote(query.strip())
+    print(f"[SERVER 2 - OPENALEX] Ricerca in corso per: '{query}'...")
+    
+    new_papers = []
+    page = 1
+    
+    while len(new_papers) < target_count:
+        # Il parametro 'mailto' ci inserisce nella "Polite Pool" gratuita da 100.000 req/day
+        url = f"https://api.openalex.org/works?search={clean_query}&per-page=50&page={page}&sort=publication_date:desc&mailto=tesi.multiagente@example.com"
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req) as response:
+                data = json.loads(response.read().decode())
             
-        for paper in batch:
-            if len(new_papers) >= target_count:
-                break
+            results = data.get('results', [])
+            if not results: break
                 
-            if not paper.get('abstract'):
-                continue
+            for paper in results:
+                if len(new_papers) >= target_count: break
                 
-            paper_id = paper['paperId']
-            if 'externalIds' in paper and paper['externalIds']:
-                if 'DOI' in paper['externalIds']:
-                    paper_id = paper['externalIds']['DOI'].replace('/', '_')
-                elif 'ArXiv' in paper['externalIds']:
-                    paper_id = paper['externalIds']['ArXiv']
-            
-            if paper_id in existing_ids:
-                continue
+                # OpenAlex restituisce l'abstract come "Inverted Index" (una mappa parola-posizioni). Lo ricostruiamo:
+                inv_index = paper.get('abstract_inverted_index')
+                if not inv_index: continue
                 
-            new_papers.append({
-                'id': paper_id,
-                'title': paper.get('title', '').strip().replace('\n', ' '),
-                'abstract': paper.get('abstract', '').strip().replace('\n', ' '),
-                'year': str(paper.get('year', '2026'))
-            })
-            
-        offset += limit
-        time.sleep(1.5) # Pausa di cortesia standard tra una pagina e l'altra
-            
+                word_pos = []
+                for word, positions in inv_index.items():
+                    for pos in positions:
+                        word_pos.append((pos, word))
+                word_pos.sort(key=lambda x: x[0])
+                abstract = " ".join([w[1] for w in word_pos])
+                
+                # Creiamo un ID univoco
+                paper_id = paper.get('doi') or paper.get('id')
+                if not paper_id: continue
+                paper_id = paper_id.replace('https://doi.org/', '').replace('/', '_')
+                
+                if paper_id in existing_ids: continue
+                
+                new_papers.append({
+                    'id': paper_id,
+                    'title': paper.get('title', '').strip().replace('\n', ' '),
+                    'abstract': abstract.replace('\n', ' '),
+                    'year': str(paper.get('publication_year', '2026'))
+                })
+            page += 1
+            time.sleep(0.5)
+        except Exception as e:
+            print(f"[ERRORE OPENALEX] {e}")
+            break
     return new_papers
 
 def count_actual_citations(survey_path):
@@ -237,17 +241,27 @@ if __name__ == "__main__":
         topic_dir = init_workspace(topic)
         existing_ids = get_existing_ids(topic_dir)
         
-        # ORA CERCHIAMO ESATTAMENTE 100 PAPER INEDITI!
-        target_papers = 100
+        print("\n--- AVVIO RICERCA FEDERATA MULTI-SERVER ---")
         
-        papers = fetch_semantic_scholar_papers(search_query, existing_ids=existing_ids, target_count=target_papers)
+        # 1. Chiediamo 50 paper al Server 1 (ArXiv)
+        arxiv_papers = fetch_arxiv_papers(search_query, existing_ids, target_count=50)
+        
+        # Aggiorniamo la memoria per non pescare doppioni sul secondo server!
+        for p in arxiv_papers:
+            existing_ids.add(p['id'])
+            
+        # 2. Chiediamo 50 paper al Server 2 (OpenAlex)
+        openalex_papers = fetch_openalex_papers(search_query, existing_ids, target_count=50)
+        
+        # 3. Uniamo il tutto in un unico mega-dataset da 100 paper
+        all_papers = arxiv_papers + openalex_papers
         
         with open("new_papers.json", "w", encoding="utf-8") as f:
-            json.dump(papers, f, indent=2)
+            json.dump(all_papers, f, indent=2)
             
-        print(f"[PREPARE] Recuperati {len(papers)} nuovi paper INEDITI per '{search_query}' in new_papers.json. "
-              f"Il motore ha automaticamente ignorato gli ID già presenti nella memoria storica ({len(existing_ids)} paper).")
-              
+        print(f"[PREPARE] Recuperati {len(all_papers)} nuovi paper INEDITI ")
+        print(f"          Dettaglio: {len(arxiv_papers)} da ArXiv, {len(openalex_papers)} da OpenAlex.")
+        
     elif action == "--eval":
         score, count = compute_living_survey_score(topic)
         print(f"INTEGRATED_COUNT:{count}")
