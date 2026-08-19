@@ -160,7 +160,7 @@ def fetch_arxiv_papers(query, existing_ids=None, target_count=50):
                 new_papers.append({'id': paper_id, 'title': title, 'abstract': summary, 'year': pub_year_str})
                 
             start += limit
-            time.sleep(5) # Courtesy delay
+            time.sleep(2) # Courtesy delay
         except Exception as e:
             print(f"[ARXIV ERROR] {e}")
             break
