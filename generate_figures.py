@@ -1,10 +1,22 @@
+"""
+=============================================================================
+FILE: generate_figures.py
+DESCRIPTION: 
+This script generates the statistical charts for the Living Survey.
+It is divided into two strict zones:
+1. The AI Agent Zone: Dictionaries that the AI Actor dynamically updates.
+2. The Untouchable Zone: The underlying Matplotlib plotting logic that 
+   translates the dictionaries into .png images.
+=============================================================================
+"""
+
 import os
 import matplotlib.pyplot as plt
 
-# Assicurati che la directory di output esista
+# Ensure the output directory exists
 os.makedirs("figures", exist_ok=True)
 
-# Impostazioni stile pulito per pubblicazioni scientifiche
+# Clean style settings for scientific publications
 plt.style.use('seaborn-v0_8-paper' if 'seaborn-v0_8-paper' in plt.style.available else 'default')
 plt.rcParams.update({
     'font.size': 10,
@@ -14,42 +26,38 @@ plt.rcParams.update({
 })
 
 # ==============================================================================
-# [ZONA AGENTE AI] MODIFICA ESCLUSIVAMENTE QUESTI DUE DIZIONARI E I TITOLI
+# [AI AGENT ZONE] MODIFY EXCLUSIVELY THESE TWO DICTIONARIES AND THE TITLE
 # ==============================================================================
-SURVEY_TITLE = "Living Survey: dinosauri"
+SURVEY_TITLE = "Living Survey: cancer"
 
-# Formato: "Anno": Numero_di_Paper
+# Format: "Year": Number_of_Papers
 TIMELINE_DATA = {
-    "2023": 5,
     "2024": 0,
-    "2025": 0
+    "2025": 0,
+    "2026": 0
 }
 
-# Formato: "Categoria / Metodo": Numero_di_Paper
+# Format: "Category / Method": Number_of_Papers
 TAXONOMY_DATA = {
-    "Evoluzione e Piumaggio": 1,
-    "Biomeccanica": 1,
-    "Comportamento": 1,
-    "Estinzione": 1,
-    "Colorazione": 1
+    "Baseline Categorization": 1
 }
 # ==============================================================================
-# [ZONA INTOCCABILE] NON MODIFICARE LA LOGICA DI PLOT SOTTOSTANTE
+# [UNTOUCHABLE ZONE] DO NOT MODIFY THE PLOTTING LOGIC BELOW
 # ==============================================================================
 
 def plot_publication_timeline():
-    """Genera la timeline dei paper inclusi nella survey."""
+    """Generates the timeline of the papers included in the survey."""
     years = list(TIMELINE_DATA.keys())
     counts = list(TIMELINE_DATA.values())
     
     fig, ax = plt.subplots(figsize=(10, 3.5))
     ax.bar(years, counts, color='#2b5c8f', width=0.6)
-    ax.set_title(f"Evoluzione Temporale delle Pubblicazioni: {SURVEY_TITLE}")
-    ax.set_xlabel("Anno")
-    ax.set_ylabel("Numero di Paper Citati")
+    ax.set_title(f"Publication Timeline: {SURVEY_TITLE}")
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Number of Cited Papers")
     ax.grid(axis='y', linestyle='--', alpha=0.7)
     
-    # Evita errori visivi se tutti i valori sono a zero
+    # Avoid visual errors if all values are zero
     if max(counts if counts else [0]) == 0:
         ax.set_ylim(0, 5)
         
@@ -58,16 +66,16 @@ def plot_publication_timeline():
     plt.close()
 
 def plot_taxonomy_distribution():
-    """Genera la distribuzione dei metodi secondo la tassonomia della survey."""
+    """Generates the methodology distribution according to the survey's taxonomy."""
     labels = list(TAXONOMY_DATA.keys())
     values = list(TAXONOMY_DATA.values())
     
-    # Se tutti i valori sono 0, imposta una baseline fittizia per evitare crash di Matplotlib
+    # If all values are 0, set a dummy baseline to avoid Matplotlib crashes
     if sum(values) == 0:
-        labels = ["Nessun dato classificato"]
+        labels = ["No classified data"]
         values = [1]
         
-    # Palette colori estesa per supportare l'aggiunta di molte categorie senza crashare
+    # Extended color palette to support adding many categories without crashing
     colors = [
         '#2b5c8f', '#d95f02', '#7570b3', '#e7298a', '#66a61e', 
         '#ff7f0e', '#4e79a7', '#f28e2b', '#76b7b2', '#59a14f', 
@@ -82,7 +90,7 @@ def plot_taxonomy_distribution():
         startangle=140, 
         colors=colors[:len(labels)]
     )
-    ax.set_title(f"Distribuzione per Tassonomia: {SURVEY_TITLE}")
+    ax.set_title(f"Taxonomy Distribution: {SURVEY_TITLE}")
     
     plt.tight_layout()
     plt.savefig("figures/taxonomy.png", dpi=300)
@@ -91,4 +99,4 @@ def plot_taxonomy_distribution():
 if __name__ == "__main__":
     plot_publication_timeline()
     plot_taxonomy_distribution()
-    print("[GENERATE_FIGURES] Grafici aggiornati con successo in figures/")
+    print("[GENERATE_FIGURES] Charts successfully updated in figures/")

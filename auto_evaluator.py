@@ -1,3 +1,15 @@
+"""
+=============================================================================
+FILE: auto_evaluator.py
+DESCRIPTION: 
+This script acts as the "Oracle" (LLM-as-a-Judge) in the framework.
+It operates in a Zero-Shot manner, analyzing the raw abstracts downloaded
+by prepare.py and assigning a binary relevance score (1 or 0) based on the topic.
+This generates a "Ground Truth" (ground_truth.json) that is completely independent
+from the Actor agent, allowing for objective mathematical evaluation later.
+=============================================================================
+"""
+
 import os
 import sys
 import json
@@ -5,7 +17,7 @@ import urllib.request
 import urllib.parse
 
 def get_valid_model_name(api_base, api_key):
-    """Interroga il server locale per scoprire il nome esatto del modello in esecuzione."""
+    """Queries the local server to dynamically discover the running model ID."""
     try:
         req = urllib.request.Request(
             f"{api_base}/models",
@@ -13,28 +25,27 @@ def get_valid_model_name(api_base, api_key):
         )
         with urllib.request.urlopen(req) as response:
             data = json.loads(response.read().decode())
-            # Prende l'ID del primo modello disponibile nella lista
             return data['data'][0]['id']
     except Exception as e:
-        print(f"[ORACLE WARNING] Impossibile recuperare il nome del modello, tento fallback. Dettaglio: {e}")
-        return "lab-main" # Fallback nel caso in cui fallisca
+        print(f"[ORACLE WARNING] Unable to fetch model name, attempting fallback. Detail: {e}")
+        return "lab-main"
 
 def classify_with_llm(topic, abstract, valid_model_name):
-    """Usa il LLM locale come Oracolo binario."""
+    """Uses the local LLM as a binary Oracle judge."""
     api_base = os.environ.get("OPENAI_API_BASE", "http://127.0.0.1:9000/v1")
     api_key = os.environ.get("OPENAI_API_KEY", "none")
     
     prompt = (
-        f"Sei un valutatore scientifico. Leggi il seguente abstract e valuta se è "
-        f"pertinente (anche in senso lato) al tema: '{topic}'.\n\n"
+        f"You are a scientific evaluator. Read the following abstract and assess if it is "
+        f"relevant (even broadly) to the theme: '{topic}'.\n\n"
         f"Abstract: {abstract}\n\n"
-        f"Rispondi '1' se il paper tratta argomenti utili o correlati a questo tema.\n"
-        f"Rispondi '0' se il paper è completamente fuori tema.\n"
-        f"Devi stampare come risposta finale ESCLUSIVAMENTE il numero 1 o il numero 0."
+        f"Reply '1' if the paper discusses topics useful or related to this theme.\n"
+        f"Reply '0' if the paper is completely off-topic.\n"
+        f"You must output EXCLUSIVELY the number 1 or the number 0 as your final response."
     )
     
     data = {
-        "model": valid_model_name, # <-- Ora usa il nome certificato dal server stesso!
+        "model": valid_model_name,
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.01 
     }
@@ -57,7 +68,7 @@ def classify_with_llm(topic, abstract, valid_model_name):
                 error_detail = e.read().decode('utf-8')
             except:
                 pass
-        print(f"[ERRORE ORACLE] Fallita classificazione. Dettaglio: {error_detail}")
+        print(f"[ORACLE ERROR] Classification failed. Detail: {error_detail}")
         return 0
 
 if __name__ == "__main__":
@@ -72,22 +83,20 @@ if __name__ == "__main__":
     api_base = os.environ.get("OPENAI_API_BASE", "http://127.0.0.1:9000/v1")
     api_key = os.environ.get("OPENAI_API_KEY", "none")
     
-    # 1. Trova il nome giusto del modello
     valid_model_name = get_valid_model_name(api_base, api_key)
-    print(f"\n[ORACLE] Identificato modello API valido: '{valid_model_name}'")
+    print(f"\n[ORACLE] Valid API model identified: '{valid_model_name}'")
         
     with open("new_papers.json", "r", encoding="utf-8") as f:
         papers = json.load(f)
         
     truth_dict = {}
-    print(f"[ORACLE] Autogenerazione Ground Truth per {len(papers)} paper...")
+    print(f"[ORACLE] Auto-generating Ground Truth for {len(papers)} papers...")
     
     for p in papers:
-        # 2. Passa il nome giusto alla funzione
         is_relevant = classify_with_llm(topic, p['abstract'], valid_model_name)
         truth_dict[p['id']] = is_relevant
         
     with open("ground_truth.json", "w", encoding="utf-8") as f:
         json.dump(truth_dict, f, indent=2)
         
-    print("[ORACLE] ground_truth.json generato in automatico!")
+    print("[ORACLE] ground_truth.json generated successfully!")
