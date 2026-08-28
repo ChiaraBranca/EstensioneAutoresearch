@@ -10,8 +10,8 @@ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12
 
 SURVEY_TITLE = "gemini"
 # [AI AGENT ZONE] Edit only these dictionaries
-TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 45, "2027": 3}
-TAXONOMY_DATA = {"Model Evaluation": 15, "Multimodal/Vision": 8, "Agentic Systems": 10, "Safety/Alignment": 7, "Education/Multilingual": 5}
+TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 95, "2027": 3}
+TAXONOMY_DATA = {"Model Evaluation": 25, "Multimodal/Vision": 15, "Agentic Systems": 18, "Safety/Alignment": 12, "Education/Multilingual": 10}
 
 def plot_publication_timeline():
     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())
