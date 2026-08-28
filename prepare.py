@@ -113,7 +113,7 @@ def get_existing_ids(topic_dir):
     ids = set(re.findall(r'@\w+\{([^,]+),', content))
     return ids
 
-def fetch_arxiv_papers(query, existing_ids=None, target_count=50):
+def fetch_arxiv_papers(query, existing_ids=None, target_count=30):
     """
     SERVER 1: ArXiv. Focused on STEM, AI, and Physics.
     Includes Regex filtering to extract the target year directly from the query string.
@@ -129,7 +129,7 @@ def fetch_arxiv_papers(query, existing_ids=None, target_count=50):
     print(f"[SERVER 1 - ARXIV] Searching for: '{clean_query_text}'...")
     
     new_papers = []
-    start, limit = 0, 50
+    start, limit = 0, 30
     
     while len(new_papers) < target_count:
         url = f"http://export.arxiv.org/api/query?search_query=all:{clean_query}&start={start}&max_results={limit}&sortBy=submittedDate&sortOrder=descending"
@@ -166,7 +166,7 @@ def fetch_arxiv_papers(query, existing_ids=None, target_count=50):
             break
     return new_papers
 
-def fetch_openalex_papers(query, existing_ids=None, target_count=50):
+def fetch_openalex_papers(query, existing_ids=None, target_count=30):
     """
     SERVER 2: OpenAlex. Focused on Medicine, Humanities, and multidisciplinary research.
     Parses the abstract from an Inverted Index structure.
@@ -196,7 +196,7 @@ def fetch_openalex_papers(query, existing_ids=None, target_count=50):
     
     while len(new_papers) < target_count:
         # Using 'mailto' parameter grants access to the fast 'polite pool'
-        url = f"https://api.openalex.org/works?search={clean_query}{year_filter}&per-page=50&page={page}&sort=publication_date:desc&mailto=tesi.multiagente@example.com"
+        url = f"https://api.openalex.org/works?search={clean_query}{year_filter}&per-page=30&page={page}&sort=publication_date:desc&mailto=tesi.multiagente@example.com"
         try:
             req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
             with urllib.request.urlopen(req) as response:
@@ -224,9 +224,13 @@ def fetch_openalex_papers(query, existing_ids=None, target_count=50):
                 
                 if paper_id in existing_ids: continue
                 
+                # Defensive check for null titles
+                raw_title = paper.get('title')
+                safe_title = raw_title.strip().replace('\n', ' ') if raw_title else "Untitled Paper"
+
                 new_papers.append({
                     'id': paper_id,
-                    'title': paper.get('title', '').strip().replace('\n', ' '),
+                    'title': safe_title,
                     'abstract': abstract.replace('\n', ' '),
                     'year': str(paper.get('publication_year', '2026'))
                 })
@@ -307,13 +311,13 @@ if __name__ == "__main__":
         print("\n--- INITIATING FEDERATED MULTI-SERVER SEARCH ---")
         
         # 1. Fetch from ArXiv
-        arxiv_papers = fetch_arxiv_papers(search_query, existing_ids, target_count=50)
+        arxiv_papers = fetch_arxiv_papers(search_query, existing_ids, target_count=30)
         
         # Cross-server deduplication
         for p in arxiv_papers: existing_ids.add(p['id'])
             
         # 2. Fetch from OpenAlex
-        openalex_papers = fetch_openalex_papers(search_query, existing_ids, target_count=50)
+        openalex_papers = fetch_openalex_papers(search_query, existing_ids, target_count=30)
         
         # 3. Combine datasets
         all_papers = arxiv_papers + openalex_papers
