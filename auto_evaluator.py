@@ -15,6 +15,10 @@ import sys
 import json
 import urllib.request
 import urllib.parse
+import time
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def get_valid_model_name(api_base, api_key):
     """Queries the local server to dynamically discover the running model ID."""
@@ -77,13 +81,17 @@ if __name__ == "__main__":
         
     topic = sys.argv[1]
     
-    if not os.path.exists("new_papers.json"):
+   if not os.path.exists("new_papers.json"):
         sys.exit(0)
         
-    api_base = os.environ.get("OPENAI_API_BASE", "http://127.0.0.1:9000/v1")
-    api_key = os.environ.get("OPENAI_API_KEY", "none")
+    api_base = os.environ.get("OPENAI_API_BASE", "https://api.ailabroma3.it/v1")
+    api_key = os.environ.get("OPENAI_API_KEY", "")
     
     valid_model_name = get_valid_model_name(api_base, api_key)
+    # If the server fails to return the model name, force the new default
+    if valid_model_name == "lab-main": 
+        valid_model_name = "lab-qwen36"
+        
     print(f"\n[ORACLE] Valid API model identified: '{valid_model_name}'")
         
     with open("new_papers.json", "r", encoding="utf-8") as f:
@@ -91,12 +99,16 @@ if __name__ == "__main__":
         
     truth_dict = {}
     print(f"[ORACLE] Auto-generating Ground Truth for {len(papers)} papers...")
+    print(f"[ORACLE] Rate Limiting Active: Waiting 8 seconds between requests.")
     
     for p in papers:
         is_relevant = classify_with_llm(topic, p['abstract'], valid_model_name)
         truth_dict[p['id']] = is_relevant
+        print(f" -> Processed {p['id']} | Relevant: {is_relevant}")
+        # SAFETY LOCK: pause the script for 8 seconds to respect rate limits (max 8 req/min)
+        time.sleep(8) 
         
     with open("ground_truth.json", "w", encoding="utf-8") as f:
         json.dump(truth_dict, f, indent=2)
-        
+
     print("[ORACLE] ground_truth.json generated successfully!")
