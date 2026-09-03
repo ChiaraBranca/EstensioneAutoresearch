@@ -22,8 +22,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Relevance threshold (Information Retrieval)
-# Embedding values typically range between -1 and 1. A value > 0.55 usually indicates good semantic relevance.
-RELEVANCE_THRESHOLD = 0.55 
+# Embedding values typically range between -1 and 1. A value > 0.35 usually indicates good semantic relevance.
+RELEVANCE_THRESHOLD = 0.35 
 
 def get_embedding(text, api_base, api_key):
     """Fetches the mathematical vector (embedding) for a given text from the API."""
@@ -73,7 +73,8 @@ if __name__ == "__main__":
     print(f"Using 'lab-embed' to compute vector similarities (Threshold: {RELEVANCE_THRESHOLD})")
     
     # 1. Compute the embedding for the Topic (our reference Query)
-    topic_embedding = get_embedding(topic, api_base, api_key)
+    enriched_topic = f"Scientific research, studies, benchmarks, and evaluations about the AI model {topic}."
+    topic_embedding = get_embedding(enriched_topic, api_base, api_key)
     if not topic_embedding:
         print("[ORACLE FATAL] Could not compute embedding for the topic. Exiting.")
         sys.exit(1)
