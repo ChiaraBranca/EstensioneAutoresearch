@@ -36,8 +36,9 @@ def get_valid_model_name(api_base, api_key):
 
 def classify_with_llm(topic, abstract, valid_model_name):
     """Uses the local LLM as a binary Oracle judge."""
-    api_base = os.environ.get("OPENAI_API_BASE", "http://127.0.0.1:9000/v1")
-    api_key = os.environ.get("OPENAI_API_KEY", "none")
+    # CORREZIONE: Ora usa il nuovo server come fallback di sicurezza invece del vecchio 127.0.0.1
+    api_base = os.environ.get("OPENAI_API_BASE", "https://api.ailabroma3.it/v1")
+    api_key = os.environ.get("OPENAI_API_KEY", "")
     
     prompt = (
         f"You are a scientific evaluator. Read the following abstract and assess if it is "
@@ -81,7 +82,7 @@ if __name__ == "__main__":
         
     topic = sys.argv[1]
     
-    if not os.path.exists("new_papers.json"): # <-- Messo a posto lo spazio qui!
+    if not os.path.exists("new_papers.json"): 
         sys.exit(0)
         
     api_base = os.environ.get("OPENAI_API_BASE", "https://api.ailabroma3.it/v1")
@@ -105,10 +106,12 @@ if __name__ == "__main__":
         is_relevant = classify_with_llm(topic, p['abstract'], valid_model_name)
         truth_dict[p['id']] = is_relevant
         print(f" -> Processed {p['id']} | Relevant: {is_relevant}")
+        
+        # CORREZIONE: Salvataggio progressivo. Aggiorna il JSON ad ogni paper.
+        with open("ground_truth.json", "w", encoding="utf-8") as f:
+            json.dump(truth_dict, f, indent=2)
+            
         # SAFETY LOCK: pause the script for 8 seconds to respect rate limits (max 8 req/min)
         time.sleep(8) 
-        
-    with open("ground_truth.json", "w", encoding="utf-8") as f:
-        json.dump(truth_dict, f, indent=2)
         
     print("[ORACLE] ground_truth.json generated successfully!")
