@@ -96,7 +96,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
             f"If it is off-topic or outside the required timeframe, discard and ignore it.\n"
             f"2) INTEGRATION: If relevant, integrate a concise analysis into '{survey_file}' using Markdown citations like [^paper_id]. "
             f"EXPANSION RULE: Do NOT delete or summarize any existing text from previous cycles! Add new content by organically expanding existing sections or creating new ones.\n"
-            f"3) BIBLIOGRAPHY: Add the new bibliographic entries into '{bib_file}' (leaving existing entries intact).\n"
+            f"3) BIBLIOGRAPHY: Add the new bibliographic entries into '{bib_file}'. CRITICAL: The BibTeX key MUST be the exact 'id' field from the JSON! Do NOT invent new keys (e.g. use @article{{10.5281_zenodo.1234, NOT @article{{smith2026,).\n"
             f"4) DATA UPDATE: Update TIMELINE_DATA and TAXONOMY_DATA at the beginning of '{fig_script}' by ADDING the new counts to the existing values.\n"
             f"5) CLEANUP: Strictly remove any empty headers without underlying text from '{survey_file}'. The document must only contain fully argued sections!\n"
             f"Do NOT execute terminal commands, do NOT write LaTeX code, just edit the requested files."
