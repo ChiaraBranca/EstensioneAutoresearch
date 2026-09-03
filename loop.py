@@ -81,12 +81,13 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         print(f"[METRIC] Starting Baseline LSS Score: {baseline_score}")
 
         # =======================================================
-        # ORACLE: GROUND TRUTH GENERATION (LLM-as-a-Judge)
+        # ORACLE: GROUND TRUTH GENERATION (Vector Embeddings IR))
         # =======================================================
-        print("\n[ORACLE] Generating Ground Truth (LLM-as-a-Judge)...")
+        #print("\n[ORACLE] Generating Ground Truth (LLM-as-a-Judge)...")
         # Passing both the topic and the search query to ensure context-aware evaluation
+        #run_command(f'python auto_evaluator.py "Main Topic: {topic}. Specific Query: {search_query}"')
+        print("\n[ORACLE] Generating Ground Truth via Cosine Similarity (Vector IR)...")
         run_command(f'python auto_evaluator.py "Main Topic: {topic}. Specific Query: {search_query}"')
-
         # =======================================================
         # ACTOR AGENT PROMPT
         # =======================================================
@@ -104,7 +105,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
 
         print("\n[AI AGENT - ACTOR] Writing and integrating new literature...")
         #run_command(f'uvx --from aider-chat aider --model openai/lab-main --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "{prompt_actor}" {survey_file} {bib_file} {fig_script}')
-        run_command(f'uvx --from aider-chat aider --model openai/lab-qwen36 --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "{prompt_actor}" {survey_file} {bib_file} {fig_script}')
+        run_command(f'uvx --from aider-chat aider --model openai/lab-qwen36 --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "{prompt_actor}" {survey_file} {bib_file} {fig_script}',capture_output=False)
         # =======================================================
         # CRITIC AGENT PROMPT (Reviewer 2)
         # =======================================================
@@ -122,7 +123,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
 
         print("\n[AI AGENT - CRITIC] Peer-reviewing and verifying scientific accuracy...")
         #run_command(f'uvx --from aider-chat aider --model openai/lab-main --read new_papers.json --read {bib_file} --yes-always --no-git --message "{prompt_critic}" {survey_file}')
-        run_command(f'uvx --from aider-chat aider --model openai/lab-qwen36 --read new_papers.json --read {bib_file} --yes-always --no-git --message "{prompt_critic}" {survey_file}')
+        run_command(f'uvx --from aider-chat aider --model openai/lab-qwen36 --read new_papers.json --read {bib_file} --yes-always --no-git --message "{prompt_critic}" {survey_file}',capture_output=False)
         # Generate charts
         print("\n[SYSTEM] Rendering actual charts to disk...")
         run_command(f'python "{fig_script}"')
