@@ -2,11 +2,12 @@
 =============================================================================
 FILE: auto_evaluator.py
 DESCRIPTION: 
-This script acts as the "Oracle" (LLM-as-a-Judge) in the framework.
-It operates in a Zero-Shot manner, analyzing the raw abstracts downloaded
-by prepare.py and assigning a binary relevance score (1 or 0) based on the topic.
-This generates a "Ground Truth" (ground_truth.json) that is completely independent
-from the Actor agent, allowing for objective mathematical evaluation later.
+This script acts as the "Oracle" in the framework, but uses CLASSICAL INFORMATION RETRIEVAL.
+Instead of asking an LLM to judge (which causes self-preference bias), it uses a 
+Transformer Embedding model ('lab-embed') to convert the topic and abstracts into vectors.
+It then calculates the Cosine Similarity. If the similarity is above a threshold, 
+the paper is Ground Truth = 1, otherwise 0. This provides a completely external 
+and mathematical baseline to calculate Precision, Recall, and F1-Score.
 =============================================================================
 """
 
@@ -14,67 +15,47 @@ import os
 import sys
 import json
 import urllib.request
-import urllib.parse
+import math
 import time
 from dotenv import load_dotenv
 
 load_dotenv()
 
-def get_valid_model_name(api_base, api_key):
-    """Queries the local server to dynamically discover the running model ID."""
-    try:
-        req = urllib.request.Request(
-            f"{api_base}/models",
-            headers={"Authorization": f"Bearer {api_key}"}
-        )
-        with urllib.request.urlopen(req) as response:
-            data = json.loads(response.read().decode())
-            return data['data'][0]['id']
-    except Exception as e:
-        print(f"[ORACLE WARNING] Unable to fetch model name, attempting fallback. Detail: {e}")
-        return "lab-main"
+# Relevance threshold (Information Retrieval)
+# Embedding values typically range between -1 and 1. A value > 0.55 usually indicates good semantic relevance.
+RELEVANCE_THRESHOLD = 0.55 
 
-def classify_with_llm(topic, abstract, valid_model_name):
-    """Uses the local LLM as a binary Oracle judge."""
-    # CORREZIONE: Ora usa il nuovo server come fallback di sicurezza invece del vecchio 127.0.0.1
-    api_base = os.environ.get("OPENAI_API_BASE", "https://api.ailabroma3.it/v1")
-    api_key = os.environ.get("OPENAI_API_KEY", "")
-    
-    prompt = (
-        f"You are a scientific evaluator. Read the following abstract and assess if it is "
-        f"relevant (even broadly) to the theme: '{topic}'.\n\n"
-        f"Abstract: {abstract}\n\n"
-        f"Reply '1' if the paper discusses topics useful or related to this theme.\n"
-        f"Reply '0' if the paper is completely off-topic.\n"
-        f"You must output EXCLUSIVELY the number 1 or the number 0 as your final response."
-    )
-    
-    data = {
-        "model": valid_model_name,
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.01 
+def get_embedding(text, api_base, api_key):
+    """Fetches the mathematical vector (embedding) for a given text from the API."""
+    url = f"{api_base}/embeddings"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
     }
-    
-    req = urllib.request.Request(
-        f"{api_base}/chat/completions",
-        data=json.dumps(data).encode('utf-8'),
-        headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"}
-    )
+    data = json.dumps({
+        "model": "lab-embed", # Using the specific embedding model indicated for the server
+        "input": text
+    }).encode('utf-8')
     
     try:
+        req = urllib.request.Request(url, data=data, headers=headers)
         with urllib.request.urlopen(req) as response:
             result = json.loads(response.read().decode())
-            reply = result['choices'][0]['message']['content'].strip()
-            return 1 if '1' in reply else 0
+            return result['data'][0]['embedding']
     except Exception as e:
-        error_detail = str(e)
-        if hasattr(e, 'read'):
-            try:
-                error_detail = e.read().decode('utf-8')
-            except:
-                pass
-        print(f"[ORACLE ERROR] Classification failed. Detail: {error_detail}")
-        return 0
+        print(f"[EMBEDDING ERROR] Failed to fetch embedding: {e}")
+        return None
+
+def cosine_similarity(vec1, vec2):
+    """Calculates the Cosine Similarity between two vectors (Classical Information Retrieval formula)."""
+    if not vec1 or not vec2:
+        return 0.0
+    dot_product = sum(a * b for a, b in zip(vec1, vec2))
+    norm_a = math.sqrt(sum(a * a for a in vec1))
+    norm_b = math.sqrt(sum(b * b for b in vec2))
+    if norm_a == 0 or norm_b == 0:
+        return 0.0
+    return dot_product / (norm_a * norm_b)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -88,30 +69,39 @@ if __name__ == "__main__":
     api_base = os.environ.get("OPENAI_API_BASE", "https://api.ailabroma3.it/v1")
     api_key = os.environ.get("OPENAI_API_KEY", "")
     
-    valid_model_name = get_valid_model_name(api_base, api_key)
-    # If the server fails to return the model name, force the new default
-    if valid_model_name == "lab-main": 
-        valid_model_name = "lab-qwen36"
-        
-    print(f"\n[ORACLE] Valid API model identified: '{valid_model_name}'")
+    print(f"\n[ORACLE - INFORMATION RETRIEVAL MODE]")
+    print(f"Using 'lab-embed' to compute vector similarities (Threshold: {RELEVANCE_THRESHOLD})")
+    
+    # 1. Compute the embedding for the Topic (our reference Query)
+    topic_embedding = get_embedding(topic, api_base, api_key)
+    if not topic_embedding:
+        print("[ORACLE FATAL] Could not compute embedding for the topic. Exiting.")
+        sys.exit(1)
         
     with open("new_papers.json", "r", encoding="utf-8") as f:
         papers = json.load(f)
         
     truth_dict = {}
-    print(f"[ORACLE] Auto-generating Ground Truth for {len(papers)} papers...")
-    print(f"[ORACLE] Rate Limiting Active: Waiting 8 seconds between requests.")
+    print(f"[ORACLE] Auto-generating Ground Truth for {len(papers)} papers using Cosine Similarity...")
     
     for p in papers:
-        is_relevant = classify_with_llm(topic, p['abstract'], valid_model_name)
-        truth_dict[p['id']] = is_relevant
-        print(f" -> Processed {p['id']} | Relevant: {is_relevant}")
+        # 2. Compute the embedding for the abstract
+        abstract_emb = get_embedding(p['abstract'], api_base, api_key)
         
-        # CORREZIONE: Salvataggio progressivo. Aggiorna il JSON ad ogni paper.
+        # 3. Calculate the similarity metric
+        sim_score = cosine_similarity(topic_embedding, abstract_emb)
+        
+        # 4. Assign 1 or 0 based on the threshold
+        is_relevant = 1 if sim_score >= RELEVANCE_THRESHOLD else 0
+        truth_dict[p['id']] = is_relevant
+        
+        print(f" -> Processed {p['id']} | Cosine Sim: {sim_score:.3f} | Relevant: {is_relevant}")
+        
+        # Progressive saving to avoid data loss
         with open("ground_truth.json", "w", encoding="utf-8") as f:
             json.dump(truth_dict, f, indent=2)
             
-        # SAFETY LOCK: pause the script for 8 seconds to respect rate limits (max 8 req/min)
+        # Safety pause to respect API rate limits (max 8 req/min)
         time.sleep(8) 
         
     print("[ORACLE] ground_truth.json generated successfully!")
