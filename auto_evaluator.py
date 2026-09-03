@@ -81,7 +81,7 @@ if __name__ == "__main__":
         
     topic = sys.argv[1]
     
-   if not os.path.exists("new_papers.json"):
+    if not os.path.exists("new_papers.json"): # <-- Messo a posto lo spazio qui!
         sys.exit(0)
         
     api_base = os.environ.get("OPENAI_API_BASE", "https://api.ailabroma3.it/v1")
@@ -110,5 +110,5 @@ if __name__ == "__main__":
         
     with open("ground_truth.json", "w", encoding="utf-8") as f:
         json.dump(truth_dict, f, indent=2)
-
+        
     print("[ORACLE] ground_truth.json generated successfully!")
