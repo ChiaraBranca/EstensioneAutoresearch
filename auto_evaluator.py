@@ -22,8 +22,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Relevance threshold (Information Retrieval)
-# Embedding values typically range between -1 and 1. A value > 0.35 usually indicates good semantic relevance.
-RELEVANCE_THRESHOLD = 0.35 
+# Embedding values typically range between -1 and 1. A value > 0.45 usually indicates good semantic relevance.
+RELEVANCE_THRESHOLD = 0.45 
 
 def get_embedding(text, api_base, api_key):
     """Fetches the mathematical vector (embedding) for a given text from the API."""
