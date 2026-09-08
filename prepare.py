@@ -151,13 +151,15 @@ def fetch_arxiv_papers(query, existing_ids=None, target_count=30):
                 pub_year_str = entry.find('arxiv:published', ns).text[:4]
                 pub_year = int(pub_year_str)
                 
-                # Apply local year filter 
+                # Apply local year filter
                 if target_years:
-                    if len(target_years) == 1:
-                        if pub_year != target_years[0]: continue
-                    else:
+                    # CASE A: If two dates are provided (e.g., 2024-2026), apply range filtering
+                    if len(target_years) > 1:
                         min_y, max_y = min(target_years), max(target_years)
                         if not (min_y <= pub_year <= max_y): continue
+                    # CASE B: If a single date is provided, restore the original exact-match logic
+                    else:
+                        if pub_year not in target_years: continue
                 
                 title = entry.find('arxiv:title', ns).text.strip().replace('\n', ' ')
                 summary = entry.find('arxiv:summary', ns).text.strip().replace('\n', ' ')
