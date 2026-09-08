@@ -22,8 +22,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Relevance threshold (Information Retrieval)
-# Embedding values typically range between -1 and 1. A value > 0.45 usually indicates good semantic relevance.
-RELEVANCE_THRESHOLD = 0.45 
+# Embedding values typically range between -1 and 1. A value > 0.50 usually indicates good semantic relevance.
+RELEVANCE_THRESHOLD = 0.50
 
 def get_embedding(text, api_base, api_key):
     """Fetches the mathematical vector (embedding) for a given text from the API."""
@@ -103,6 +103,6 @@ if __name__ == "__main__":
             json.dump(truth_dict, f, indent=2)
             
         # Safety pause to respect API rate limits (max 8 req/min)
-        time.sleep(8) 
+        time.sleep(10) 
         
     print("[ORACLE] ground_truth.json generated successfully!")
