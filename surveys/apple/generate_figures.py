@@ -10,8 +10,8 @@ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12
 
 SURVEY_TITLE = "apple"
 # [AI AGENT ZONE] Edit only these dictionaries
-TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 7, "2028": 1}
-TAXONOMY_DATA = {"Baseline Categorization": 1, "Fruit Science": 4, "Financial Modeling": 2, "AI Hardware & Security": 2}
+TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 13, "2028": 1}
+TAXONOMY_DATA = {"Baseline Categorization": 1, "Agricultural Robotics & Computer Vision": 3, "Hardware Optimization & Apple Silicon": 4, "Financial Time Series & Stock Prediction": 2, "Post-Harvest & Metabolomics": 4, "Security & Privacy": 1}
 
 def plot_publication_timeline():
     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())
