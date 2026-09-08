@@ -88,6 +88,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         #run_command(f'python auto_evaluator.py "Main Topic: {topic}. Specific Query: {search_query}"')
         print("\n[ORACLE] Generating Ground Truth via Cosine Similarity (Vector IR)...")
         run_command(f'python auto_evaluator.py "Main Topic: {topic}. Specific Query: {search_query}"')
+        time.sleep(15)
         # =======================================================
         # ACTOR AGENT PROMPT
         # =======================================================
@@ -106,6 +107,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         print("\n[AI AGENT - ACTOR] Writing and integrating new literature...")
         #run_command(f'uvx --from aider-chat aider --model openai/lab-main --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "{prompt_actor}" {survey_file} {bib_file} {fig_script}')
         run_command(f'uvx --from aider-chat aider --model openai/lab-qwen36 --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "{prompt_actor}" {survey_file} {bib_file} {fig_script}',capture_output=False)
+        time.sleep(15)
         # =======================================================
         # CRITIC AGENT PROMPT (Reviewer 2)
         # =======================================================

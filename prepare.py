@@ -102,7 +102,7 @@ def get_existing_ids(topic_dir):
     ids = set(re.findall(r'@\w+\{([^,]+),', content))
     return ids
 
-def fetch_arxiv_papers(query, existing_ids=None, target_count=30):
+def fetch_arxiv_papers(query, existing_ids=None, target_count=25):
     if existing_ids is None: existing_ids = set()
     
     target_years = [int(y) for y in re.findall(r'\b(19\d\d|20\d\d)\b', query)]
@@ -122,7 +122,7 @@ def fetch_arxiv_papers(query, existing_ids=None, target_count=30):
     print(f"[SERVER 1 - ARXIV] Searching for: '{clean_query_text}' (Filter: {target_years if target_years else 'Latest'})...")
     
     new_papers = []
-    start, limit = 0, 30
+    start, limit = 0, 25
     
     while len(new_papers) < target_count:
         url = f"http://export.arxiv.org/api/query?search_query=all:{clean_query}{arxiv_year_query}&start={start}&max_results={limit}&sortBy=submittedDate&sortOrder=descending"
@@ -164,7 +164,7 @@ def fetch_arxiv_papers(query, existing_ids=None, target_count=30):
             break
     return new_papers
 
-def fetch_openalex_papers(query, existing_ids=None, target_count=30):
+def fetch_openalex_papers(query, existing_ids=None, target_count=25):
     if existing_ids is None: existing_ids = set()
     
     target_years = [int(y) for y in re.findall(r'\b(19\d\d|20\d\d)\b', query)]
@@ -301,10 +301,10 @@ if __name__ == "__main__":
         
         print("\n--- INITIATING FEDERATED MULTI-SERVER SEARCH ---")
         
-        arxiv_papers = fetch_arxiv_papers(search_query, existing_ids, target_count=30)
+        arxiv_papers = fetch_arxiv_papers(search_query, existing_ids, target_count=25)
         for p in arxiv_papers: existing_ids.add(p['id'])
             
-        openalex_papers = fetch_openalex_papers(search_query, existing_ids, target_count=30)
+        openalex_papers = fetch_openalex_papers(search_query, existing_ids, target_count=25)
         
         all_papers = arxiv_papers + openalex_papers
         

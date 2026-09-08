@@ -1973,3 +1973,45 @@ Do NOT invent code, limit yourself to the targeted revision of 'surveys/transfor
 [METRICS] Calculating Precision, Recall, and F1-Measure...
 
 [SYSTEM] Executing: python evaluate_metrics.py "transformers_attention_nlp"
+==================================================
+ 📊 EXTERNAL VALIDATION: INFORMATION RETRIEVAL METRICS
+==================================================
+Total papers evaluated in sample: 26
+
+Confusion Matrix:
+  - True Positives (TP):  22 (Correctly Included)
+  - False Positives (FP): 0 (Hallucinations/Off-topic Included)
+  - False Negatives (FN): 4 (Useful papers missed/discarded)
+  - True Negatives (TN):  0 (Correctly Discarded)
+
+Metrics:
+  🎯 Precision: 1.0000 (When AI includes a paper, 100.0% of the time it is correct)
+  🔍 Recall:    0.8462 (The AI successfully finds 84.6% of all useful literature)
+  ⚖️  F1-Score:  0.9167 (Harmonic mean of Precision and Recall)
+  ✅ Accuracy:  0.8462 (Total correct decisions)
+==================================================
+
+[SYSTEM] Executing: python prepare.py --eval "transformers attention NLP"
+INTEGRATED_COUNT:12
+LSS_SCORE:69.92
+
+[VERDICT] Baseline: 30.3 -> New Score: 69.92 (Δ +39.62)
+[SUCCESS] Improvement confirmed! Executing Git Commit.
+
+[SYSTEM] Executing: git add .
+
+[SYSTEM] Executing: git commit -m "feat(transformers_attention_nlp): integrated valid papers (LSS: 69.92)" 
+[main 368c45a] feat(transformers_attention_nlp): integrated valid papers (LSS: 69.92)
+ 8 files changed, 2297 insertions(+), 4 deletions(-)
+ create mode 100644 ground_truth.json
+ create mode 100644 new_papers.json
+ create mode 100644 surveys/transformers_attention_nlp/figures/taxonomy.png
+ create mode 100644 surveys/transformers_attention_nlp/figures/timeline.png
+ create mode 100644 surveys/transformers_attention_nlp/generate_figures.py
+ create mode 100644 surveys/transformers_attention_nlp/references.bib
+ create mode 100644 surveys/transformers_attention_nlp/transformers_attention_nlp.md
+[LOG] JSON files successfully archived in: surveys/transformers_attention_nlp/eval_logs (Timestamp: 20260908_213814)
+
+==================================================
+ LOOP SUCCESSFULLY COMPLETED!
+==================================================
