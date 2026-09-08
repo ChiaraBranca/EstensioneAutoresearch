@@ -116,7 +116,7 @@ def get_existing_ids(topic_dir):
 def fetch_arxiv_papers(query, existing_ids=None, target_count=30):
     """
     SERVER 1: ArXiv. Focused on STEM, AI, and Physics.
-    Includes Regex filtering to extract the target year directly from the query string.
+    Includes Regex filtering and native API date range parameters.
     """
     if existing_ids is None: existing_ids = set()
     
@@ -126,13 +126,23 @@ def fetch_arxiv_papers(query, existing_ids=None, target_count=30):
     if not clean_query_text: clean_query_text = query
         
     clean_query = urllib.parse.quote(clean_query_text)
-    print(f"[SERVER 1 - ARXIV] Searching for: '{clean_query_text}'...")
+    
+    # Dynamic year filtering for ArXiv API (Native Query Syntax)
+    arxiv_year_query = ""
+    if target_years:
+        if len(target_years) == 1:
+            arxiv_year_query = f"+AND+submittedDate:[{target_years[0]}01010000+TO+{target_years[0]}12312359]"
+        else:
+            min_y, max_y = min(target_years), max(target_years)
+            arxiv_year_query = f"+AND+submittedDate:[{min_y}01010000+TO+{max_y}12312359]"
+
+    print(f"[SERVER 1 - ARXIV] Searching for: '{clean_query_text}' (Filter: {target_years if target_years else 'Latest'})...")
     
     new_papers = []
     start, limit = 0, 30
     
     while len(new_papers) < target_count:
-        url = f"http://export.arxiv.org/api/query?search_query=all:{clean_query}&start={start}&max_results={limit}&sortBy=submittedDate&sortOrder=descending"
+        url = f"http://export.arxiv.org/api/query?search_query=all:{clean_query}{arxiv_year_query}&start={start}&max_results={limit}&sortBy=submittedDate&sortOrder=descending"
         try:
             req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
             data = urllib.request.urlopen(req).read()
@@ -149,17 +159,6 @@ def fetch_arxiv_papers(query, existing_ids=None, target_count=30):
                 if paper_id in existing_ids: continue
                 
                 pub_year_str = entry.find('arxiv:published', ns).text[:4]
-                pub_year = int(pub_year_str)
-                
-                # Apply local year filter
-                if target_years:
-                    # CASE A: If two dates are provided (e.g., 2024-2026), apply range filtering
-                    if len(target_years) > 1:
-                        min_y, max_y = min(target_years), max(target_years)
-                        if not (min_y <= pub_year <= max_y): continue
-                    # CASE B: If a single date is provided, restore the original exact-match logic
-                    else:
-                        if pub_year not in target_years: continue
                 
                 title = entry.find('arxiv:title', ns).text.strip().replace('\n', ' ')
                 summary = entry.find('arxiv:summary', ns).text.strip().replace('\n', ' ')
