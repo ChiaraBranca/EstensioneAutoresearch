@@ -10,19 +10,20 @@ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12
 
 SURVEY_TITLE = "rag architecture"
 # [AI AGENT ZONE] Edit only these dictionaries
-TIMELINE_DATA = {"2024": 26, "2025": 0, "2026": 0}
+TIMELINE_DATA = {"2024": 26, "2025": 10, "2026": 0}
 TAXONOMY_DATA = {
     "Baseline Categorization": 1,
     "GraphRAG": 2,
     "Multi-Agent RAG": 1,
     "Optimization": 2,
-    "Domain Application": 6,
+    "Domain Application": 12,
     "Multimodal RAG": 2,
-    "Security": 1,
+    "Security": 2,
     "Instruction Tuning": 1,
     "Agent Integration": 3,
-    "Knowledge Graph Integration": 1,
-    "Vector Search": 1
+    "Knowledge Graph Integration": 2,
+    "Vector Search": 1,
+    "RAG Architectures": 2
 }
 
 def plot_publication_timeline():
