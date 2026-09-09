@@ -10,8 +10,8 @@ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12
 
 SURVEY_TITLE = "transformers attention NLP"
 # [AI AGENT ZONE] Edit only these dictionaries
-TIMELINE_DATA = {"2019": 12, "2024": 0, "2025": 0, "2026": 0}
-TAXONOMY_DATA = {"Baseline Categorization": 1, "Pre-trained Language Models": 7, "Architectural Innovations": 2, "Domain-Specific Adaptations": 2, "Theoretical Foundations": 1}
+TIMELINE_DATA = {"2019": 20, "2024": 0, "2025": 0, "2026": 0}
+TAXONOMY_DATA = {"Baseline Categorization": 1, "Pre-trained Language Models": 8, "Architectural Innovations": 5, "Domain-Specific Adaptations": 2, "Theoretical Foundations": 2, "Document-Level Context": 2, "Robustness and Adversarial NLP": 1}
 
 def plot_publication_timeline():
     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())
