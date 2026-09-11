@@ -8,23 +8,10 @@ os.makedirs(FIG_DIR, exist_ok=True)
 plt.style.use('seaborn-v0_8-paper' if 'seaborn-v0_8-paper' in plt.style.available else 'default')
 plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12, 'figure.titlesize': 14})
 
-SURVEY_TITLE = "rag architecture"
+SURVEY_TITLE = "brain"
 # [AI AGENT ZONE] Edit only these dictionaries
-TIMELINE_DATA = {"2024": 26, "2025": 10, "2026": 0}
-TAXONOMY_DATA = {
-    "Baseline Categorization": 1,
-    "GraphRAG": 2,
-    "Multi-Agent RAG": 1,
-    "Optimization": 2,
-    "Domain Application": 12,
-    "Multimodal RAG": 2,
-    "Security": 2,
-    "Instruction Tuning": 1,
-    "Agent Integration": 3,
-    "Knowledge Graph Integration": 2,
-    "Vector Search": 1,
-    "RAG Architectures": 2
-}
+TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 24, "2027": 9, "2028": 8, "2031": 2, "2036": 1}
+TAXONOMY_DATA = {"Brain-Computer Interfaces & EEG/MEG": 7, "Neuroimaging & Metastasis Detection": 11, "Computational Neuroscience & Networks": 12, "Brain Aging & Biomarkers": 8, "Glioblastoma & Therapeutics": 5}
 
 def plot_publication_timeline():
     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())
