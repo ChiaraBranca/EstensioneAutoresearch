@@ -93,7 +93,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         # =======================================================
         # ACTOR AGENT PROMPT
         # =======================================================
-       prompt_actor = (
+        prompt_actor = (
             f"Carefully read the 'new_papers.json' file containing unreleased papers.\n"
             f"1) STRICT TOPIC RELEVANCE: The main topic of this Living Survey is strictly '{topic}'. "
             f"The papers were retrieved using the search query '{search_query}'. "
