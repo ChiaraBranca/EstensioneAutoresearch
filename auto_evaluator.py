@@ -73,7 +73,8 @@ if __name__ == "__main__":
     print(f"Using 'lab-embed' to compute vector similarities (Threshold: {RELEVANCE_THRESHOLD})")
     
     # 1. Compute the embedding for the Topic (our reference Query)
-    enriched_topic = f"Scientific research, studies, benchmarks, and evaluations about the AI model {topic}."
+    # VERSIONE UNIVERSALE (DOMINIO-AGNOSTICA)
+    enriched_topic = f"Academic research paper, scientific study, technical literature, and state-of-the-art developments strictly concerning {topic}."
     topic_embedding = get_embedding(enriched_topic, api_base, api_key)
     if not topic_embedding:
         print("[ORACLE FATAL] Could not compute embedding for the topic. Exiting.")
