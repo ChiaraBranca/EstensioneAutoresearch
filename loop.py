@@ -46,6 +46,45 @@ def get_lss_score(topic):
         return float(match.group(1))
     return 0.0
 
+def sync_bibliography(survey_file, bib_file):
+    """
+    Garbage Collector: Scans the surviving citations in the Markdown file
+    and removes any orphaned entries from the .bib database.
+    """
+    if not os.path.exists(survey_file) or not os.path.exists(bib_file):
+        return
+
+    # 1. Extract IDs actually cited in the Markdown (e.g., [^10.5281_zenodo.123])
+    with open(survey_file, "r", encoding="utf-8") as f:
+        md_content = f.read()
+    cited_ids = set(re.findall(r'\[\^([^\]]+)\]', md_content))
+
+    # 2. Read the current bibliography
+    with open(bib_file, "r", encoding="utf-8") as f:
+        bib_content = f.read()
+
+    # 3. Extract individual BibTeX entries (splits on the '@' symbol)
+    entries = re.findall(r'(@\w+\{[^@]+)', bib_content)
+    
+    valid_entries = []
+    for entry in entries:
+        # Find the primary key (ID) of the entry
+        match = re.search(r'@\w+\{([^,]+),', entry)
+        if match:
+            bib_id = match.group(1).strip()
+            # Keep the entry ONLY if the ID is present in the markdown text
+            if bib_id in cited_ids:
+                valid_entries.append(entry.strip())
+
+    # 4. Overwrite the cleaned .bib file
+    with open(bib_file, "w", encoding="utf-8") as f:
+        if valid_entries:
+            f.write("\n\n".join(valid_entries) + "\n")
+        else:
+            f.write("") # Empty the file if no citations remain
+            
+    print("[SYSTEM] Garbage Collector executed: bibliography successfully synchronized.")
+
 def run_autonomous_loop(topic, iterations=1, search_query=None):
     if not search_query:
         search_query = topic
@@ -98,7 +137,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
             f"1) STRICT TOPIC RELEVANCE: The main topic of this Living Survey is strictly '{topic}'. "
             f"The papers were retrieved using the search query '{search_query}'. "
             f"CRITICAL: Evaluate if each paper is strictly relevant to the MAIN TOPIC '{topic}'. "
-            f"If a paper matches the search query '{search_query}' (e.g., general cancer, lung/breast cancer) but IS NOT specifically about '{topic}' (brain/neurology), "
+            f"If a paper matches the search query '{search_query}' (e.g., general cancer, lung/breast cancer) but IS NOT specifically about '{topic}'. "
             f"you MUST DISCARD AND IGNORE IT COMPLETELY. Do NOT attempt to force off-topic papers into '{survey_file}'!\n"
             f"2) INTEGRATION: For relevant papers only, integrate a concise analysis into '{survey_file}' using Markdown citations like [^paper_id]. "
             f"EXPANSION RULE: Do NOT delete or summarize any existing text from previous cycles! Add new content by organically expanding existing sections or creating new ones.\n"
@@ -186,3 +225,4 @@ if __name__ == "__main__":
     arg_query = sys.argv[3] if len(sys.argv) > 3 else None
     
     run_autonomous_loop(arg_topic, arg_iterations, arg_query)
+
