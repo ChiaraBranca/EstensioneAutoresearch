@@ -25,3 +25,7 @@ results.tsv
 
 # Secrets and environment variables
 .env
+
+eval_logs/
+new_papers.json
+ground_truth.json

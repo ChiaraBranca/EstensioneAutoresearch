@@ -94,12 +94,39 @@ if __name__ == "__main__":
     return topic_dir
      
 def get_existing_ids(topic_dir):
+    """
+    Extracts the IDs of previously downloaded papers, including both 
+    successfully integrated ones (.bib) and discarded ones (eval_logs).
+    """
+    ids = set()
+    
+    # 1. Accepted Memory: Read papers successfully integrated into the survey
     bib_file = os.path.join(topic_dir, "references.bib")
-    if not os.path.exists(bib_file):
-        return set()
-    with open(bib_file, "r", encoding="utf-8") as f:
-        content = f.read()
-    ids = set(re.findall(r'@\w+\{([^,]+),', content))
+    if os.path.exists(bib_file):
+        with open(bib_file, "r", encoding="utf-8") as f:
+            content = f.read()
+        # Extract BibTeX keys using Regex
+        bib_ids = set(re.findall(r'@\w+\{([^,]+),', content))
+        # Strip ArXiv versioning (e.g., 'v1', 'v2') for safe comparison
+        ids.update({i.split('v')[0] for i in bib_ids})
+
+    # 2. Encountered Memory: Read papers already processed in previous (or failed) cycles
+    logs_dir = os.path.join(topic_dir, "eval_logs")
+    if os.path.exists(logs_dir):
+        for filename in os.listdir(logs_dir):
+            if filename.startswith("new_papers_") and filename.endswith(".json"):
+                filepath = os.path.join(logs_dir, filename)
+                try:
+                    with open(filepath, "r", encoding="utf-8") as f:
+                        old_papers = json.load(f)
+                        for p in old_papers:
+                            # Safely extract and clean the ID
+                            clean_id = p.get('id', '').split('v')[0]
+                            if clean_id:
+                                ids.add(clean_id)
+                except Exception as e:
+                    print(f"[MEMORY WARNING] Could not read log file {filename}: {e}")
+                    
     return ids
 
 def fetch_arxiv_papers(query, existing_ids=None, target_count=25):
