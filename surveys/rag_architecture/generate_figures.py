@@ -10,8 +10,8 @@ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12
 
 SURVEY_TITLE = "rag_architecture"
 # [AI AGENT ZONE] Edit only these dictionaries
-TIMELINE_DATA = {"2024": 11, "2025": 8, "2026": 0}
-TAXONOMY_DATA = {"GraphRAG & Knowledge Graphs": 3, "Multi-Agent & Dynamic Filtering": 2, "Dynamic Chunking & Vector Search": 1, "Instruction Tuning & Data Synthesis": 1, "Chunk-Distilled Generation": 1, "Human-Centered AI & Optimization": 1, "Document Classification": 1, "Hallucination & Faithfulness Evaluation": 1, "Governance & Privacy in RAG": 2, "Domain-Specific & Adaptive RAG": 3, "Low-Resource & Specialized Language RAG": 1, "Pedagogical & Provenance-Aware RAG": 1, "Semantic Retrieval & Sentiment Analysis": 1}
+TIMELINE_DATA = {"2024": 11, "2025": 8, "2026": 7}
+TAXONOMY_DATA = {"GraphRAG & Knowledge Graphs": 3, "Multi-Agent & Dynamic Filtering": 2, "Dynamic Chunking & Vector Search": 1, "Instruction Tuning & Data Synthesis": 1, "Chunk-Distilled Generation": 1, "Human-Centered AI & Optimization": 1, "Document Classification": 1, "Hallucination & Faithfulness Evaluation": 2, "Governance & Privacy in RAG": 3, "Domain-Specific & Adaptive RAG": 3, "Low-Resource & Specialized Language RAG": 1, "Pedagogical & Provenance-Aware RAG": 2, "Semantic Retrieval & Sentiment Analysis": 1, "Multimodal & Document Intelligence RAG": 1, "Enterprise & Serving RAG Architectures": 1, "Safety-Gated & Resource-Aware RAG": 1, "Verification & Gated RAG Architectures": 1}
 
 def plot_publication_timeline():
     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())
