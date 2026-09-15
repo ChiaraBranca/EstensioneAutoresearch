@@ -90,6 +90,13 @@ if __name__ == "__main__":
 '''
         with open(fig_script, "w", encoding="utf-8") as f:
             f.write(baseline_code)
+        
+        try:
+            import subprocess
+            subprocess.run([sys.executable, "generate_figures.py"], cwd=topic_dir, capture_output=True)
+            print(f"[INIT] Baseline figures generated in {topic_dir}/figures")
+        except Exception as e:
+            print(f"[INIT WARNING] Could not pre-generate figures: {e}")
             
     return topic_dir
      
