@@ -1,5 +1,799 @@
-─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Warning for openai/lab-qwen36: Unknown context window size and costs, using sane defaults.
 You can skip this check with --no-show-model-warnings
 
 https://aider.chat/docs/llms/warnings.html
+
+Aider v0.86.2
+Model: openai/lab-qwen36 with whole edit format
+Git repo: none
+Repo-map: disabled
+Added artificial_general_intelligence.md to the chat.
+Added generate_figures.py to the chat.
+Added references.bib to the chat.
+Added ../../prepare.py to the chat (read-only).
+Added ../../program.md to the chat (read-only).
+Added ../../new_papers.json to the chat (read-only).
+
+---------------------------------------------------------------------------------------------------------------
+
+► THINKING                                                                                                     
+
+The user wants me to process new_papers.json and update three files:                                           
+
+ 1 artificial_general_intelligence.md (survey text)                                                            
+ 2 references.bib (bibliography)                                                                               
+ 3 generate_figures.py (chart data)                                                                            
+
+The main topic is strictly 'Artificial_General_Intelligence'.                                                  
+
+I need to evaluate each paper in new_papers.json for strict relevance to AGI.                                  
+
+If relevant, integrate into the markdown, add to bib, and update figures.                                      
+
+If not relevant, discard completely.                                                                           
+
+Let's evaluate the papers in new_papers.json:                                                                  
+
+ 1 10.21248_jfml.2026.117 - "Medien, Medienlinguistik, Mensch-Maschine-Interaktion"                            
+   Abstract discusses media linguistics, human-machine interaction, LLMs. Not strictly about AGI. Discard.     
+ 2 10.1016_j.jrt.2026.100183 - "AGI for healthcare? A call for conceptual discipline in the European Union"    
+   Discusses AGI for healthcare, EU AI Act, risks of AGI. Relevant to AGI policy/risk. Keep.                   
+ 3 10.5281_zenodo.19034234 - "The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous
+   General Intelligence"                                                                                       
+   Discusses AGI, autonomous general intelligence, topology of mind. Relevant. Keep.                           
+ 4 10.5281_zenodo.19034233 - "The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous
+   General Intelligence"                                                                                       
+   Duplicate of #3. Discard.                                                                                   
+ 5 10.1017_langcog.2026.10100 - "Why AI is not (quite) the same as artificial intelligence: reconciling        
+   isomorphism and communicative efficiency in formal reduction"                                               
+    Discusses linguistic reduction of "AI" vs "artificial intelligence". Not about AGI. Discard.               
+  6 10.52783_jisem.v10i37s.6762 - "Revolutionizing Intelligence: Synergizing Human and Artificial Intelligence"
+    Discusses human-AI synergy, augmentation. Not strictly AGI. Discard.                                       
+  7 10.14746_cis.2024.58.2 - "Can we have synthetic philosophy"                                                
+    Discusses philosophy created by computer systems. Not strictly AGI. Discard.                               
+  8 10.4324_9781003385578 - "Digital Infrastructures for Business Innovation"                                  
+    Business/tech infrastructures. Discard.                                                                    
+  9 10.22339_jbh.v7i4.7403 - "Robot Consciousness"                                                             
+    Discusses consciousness, AI, general robotic intelligence. Mentions "sufficiently advanced general robotic 
+    intelligence". Could be relevant to AGI consciousness. I'll keep it as it discusses general intelligence   
+    and consciousness.                                                                                         
+ 10 10.5210_fm.v29i4.13636 - "The TESCREAL bundle: Eugenics and the promise of utopia through artificial       
+    general intelligence"                                                                                      
+    Discusses AGI development, safety, eugenics in AI. Relevant to AGI. Keep.                                  
+ 11 10.1109_mpuls.2024.3354609 - "Consciousness for Artificial Intelligence?"                                  
+    Discusses AI consciousness. Not strictly AGI, but related. I'll discard as it's about general AI           
+    consciousness, not specifically AGI, but the prompt says strictly AGI. I'll discard to be safe, or keep if 
+    it touches AGI. The abstract says "Can artificial intelligence (AI) systems ever achieve anything close to 
+    consciousness?". I'll discard.                                                                             
+ 12 10.48550_arxiv.2309.01933 - "Provably safe systems: the only path to controllable AGI"                     
+    Discusses provably safe AGI. Highly relevant. Keep.                                                        
+ 13 10.20948_future-2023-16 - "The neural network revolution of artificial intelligence and it's development   
+    options"                                                                                                   
+    Discusses neural networks, narrow AI vs real mental activity. Not strictly AGI. Discard.                   
+ 14 10.5935_2238-1279.2023016 - "Estudar e aprender com o ChatGPT"                                             
+    Portuguese paper about ChatGPT. Discard.                                                                   
+ 15 10.48550_arxiv.2211.10992 - "How to Describe Images in a More Funny Way? Towards a Modular Approach to     
+    Cross-Modal Sarcasm Generation"                                                                            
+    Sarcasm generation. Discard.                                                                               
+ 16 10.20944_preprints202209.0061.v1 - "Avoiding the Great Filter: A Simulation of Important Factors for Human 
+    Survival"                                                                                                  
+    Mentions AI as a threat, but focuses on survival simulation. Discard.                                      
+ 17 10.48550_arxiv.2209.02396 - "Avoiding the Great Filter: A Simulation of Important Factors for Human        
+    Survival"                                                                                                  
+    Duplicate of #16. Discard.                                                                                 
+ 18 10.51593_20210064 - "China's Advanced AI Research: Monitoring China's Paths to "General" Artificial        
+    Intelligence"                                                                                              
+    Discusses China's path to General AI. Relevant. Keep.                                                      
+ 19 10.1016_j.intell.2021.101563 - "The future of intelligence research in the coming age of artificial        
+    intelligence – With a special consideration of the philosophical movements of trans- and posthumanism"     
+    Discusses super-intelligence, transhumanism. Mentions AGI/super-intelligence. Relevant. Keep.              
+ 20 10.3390_asi4020037 - "Chances and Risks of Artificial Intelligence—A Concept of Developing and Exploiting  
+    Machine Intelligence for Future Societies"                                                                 
+    Discusses AI risks, substitution vs augmentation. Not strictly AGI. Discard.                               
+ 21 10.48550_arxiv.2105.13806 - "DRL: Deep Reinforcement Learning for Intelligent Robot Control -- Concept,    
+    Literature, and Future"                                                                                    
+    Mentions AGI as a general-purpose framework for AI. Not strictly about AGI research itself. Discard.       
+ 22 10.48550_arxiv.2105.13806 - Duplicate. Discard.                                                            
+ 23 https:__openalex.org_W3013693115 - "The role of data and artificial intelligence in strategic management of
+    top management : a case study"                                                                             
+    Finnish abstract about data and AI in strategic management. Discard.                                       
+
+So the relevant papers are:                                                                                    
+
+ • 10.1016_j.jrt.2026.100183 (2026) - AGI for healthcare / EU policy                                           
+ • 10.5281_zenodo.19034234 (2026) - Topology of Mind / Autonomous General Intelligence                         
+ • 10.22339_jbh.v7i4.7403 (2024) - Robot Consciousness / General Robotic Intelligence                          
+ • 10.5210_fm.v29i4.13636 (2024) - TESCREAL / Eugenics & AGI                                                   
+ • 10.48550_arxiv.2309.01933 (2023) - Provably safe systems / Controllable AGI                                 
+ • 10.51593_20210064 (2022) - China's Paths to "General" Artificial Intelligence                               
+ • 10.1016_j.intell.2021.101563 (2021) - Future of intelligence research / Super-intelligence                  
+
+Wait, let's double check relevance strictly to "Artificial_General_Intelligence".                              
+
+ • 10.1016_j.jrt.2026.100183: Explicitly about AGI in healthcare policy. Keep.                                 
+ • 10.5281_zenodo.19034234: Explicitly about Autonomous General Intelligence. Keep.                            
+ • 10.22339_jbh.v7i4.7403: Discusses "sufficiently advanced general robotic intelligence". Keep.               
+ • 10.5210_fm.v29i4.13636: Explicitly about AGI development and safety. Keep.                                  
+ • 10.48550_arxiv.2309.01933: Explicitly about controllable AGI. Keep.                                         
+ • 10.51593_20210064: Explicitly about "General" Artificial Intelligence. Keep.                                
+ • 10.1016_j.intell.2021.101563: Discusses "super-intelligence" and transhumanism. I'll keep it as it relates  
+   to AGI/super-intelligence research.                                                                         
+
+Let's verify years for generate_figures.py update:                                                             
+
+2026: 2 papers (10.1016_j.jrt.2026.100183, 10.5281_zenodo.19034234)                                            
+
+2024: 2 papers (10.22339_jbh.v7i4.7403, 10.5210_fm.v29i4.13636)                                                
+
+2023: 1 paper (10.48550_arxiv.2309.01933)                                                                      
+
+2022: 1 paper (10.51593_20210064)                                                                              
+
+2021: 1 paper (10.1016_j.intell.2021.101563)                                                                   
+
+Current TIMELINE_DATA in generate_figures.py: {"2024": 0, "2025": 0, "2026": 0}                                
+
+New counts: 2024: +2, 2025: +0, 2026: +2.                                                                      
+
+So TIMELINE_DATA becomes {"2024": 2, "2025": 0, "2026": 2}. Wait, should I add 2023, 2022, 2021 to the dict?   
+The prompt says "MODIFY EXCLUSIVELY the TIMELINE_DATA dictionary (adding or incrementing the publication       
+year)". I will add the new years to the dictionary.                                                            
+
+TIMELINE_DATA = {"2021": 1, "2022": 1, "2023": 1, "2024": 2, "2025": 0, "2026": 2}                             
+
+Taxonomy: I'll categorize them.                                                                                
+
+ • Policy/Ethics: 10.1016_j.jrt.2026.100183, 10.5210_fm.v29i4.13636                                            
+ • Cognitive/Architecture: 10.5281_zenodo.19034234, 10.22339_jbh.v7i4.7403                                     
+ • Safety/Verification: 10.48550_arxiv.2309.01933                                                              
+ • Geopolitics/Strategy: 10.51593_20210064                                                                     
+ • Philosophy/Future: 10.1016_j.intell.2021.101563                                                             
+
+I'll group them into broader categories for TAXONOMY_DATA:                                                     
+
+{"Policy & Ethics": 2, "Cognitive Architecture & Consciousness": 2, "Safety & Verification": 1, "Geopolitics & 
+Strategy": 1, "Philosophy & Future": 1}                                                                        
+
+Wait, the prompt says "updating or adding the methodological category of the paper". I'll keep it simple:      
+{"Policy & Ethics": 2, "Cognitive Architecture": 2, "Safety & Verification": 1, "Geopolitics": 1, "Philosophy":
+1}.                                                                                                            
+
+Actually, I'll just use simple categories: {"Policy & Ethics": 2, "Cognitive Architecture": 2, "Safety &       
+Verification": 1, "Geopolitics": 1, "Philosophy": 1}.                                                          
+
+Let's stick to the existing {"Baseline Categorization": 1} and update it. I will replace it with the new       
+counts.                                                                                                        
+
+TAXONOMY_DATA = {"Policy & Ethics": 2, "Cognitive Architecture": 2, "Safety & Verification": 1, "Geopolitics": 
+1, "Philosophy": 1}                                                                                            
+
+Now, let's draft the markdown integration.                                                                     
+
+I need to add sections or expand existing ones. The current markdown is just:                                  
+
+                                                                                                               
+# Living Survey: Artificial_General_Intelligence                                                               
+                                                                                                               
+                                                                                                               
+                                                                                                               
+## Introduction                                                                                                
+                                                                                                               
+                                                                                                               
+                                                                                                               
+This document collects the scientific literature regarding **Artificial_General_Intelligence**.                
+                                                                                                               
+
+I will create new sections based on the papers:                                                                
+
+ • ## Policy and Ethical Implications                                                                          
+ • ## Cognitive Architectures and Consciousness                                                                
+ • ## Safety and Verification                                                                                  
+ • ## Geopolitical Strategies                                                                                  
+ • ## Philosophical Perspectives                                                                               
+
+I will write concise analyses for each relevant paper, using [^id] citations.                                  
+
+Paper 1: 10.1016_j.jrt.2026.100183 (2026)                                                                      
+
+Title: AGI for healthcare? A call for conceptual discipline in the European Union                              
+
+Analysis: Recent policy discussions in the European Union have highlighted the need for conceptual discipline  
+when addressing Artificial General Intelligence (AGI) in healthcare. The authors argue that the term AGI is    
+contested and potentially risky, suggesting that its use in funding calls may conflict with established        
+precautionary principles. This underscores the growing tension between rapid technological advancement and     
+regulatory frameworks [^10.1016_j.jrt.2026.100183].                                                            
+
+Paper 2: 10.5281_zenodo.19034234 (2026)                                                                        
+
+Title: The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous General Intelligence  
+
+Analysis: This work proposes a foundational shift in cognitive science by replacing the subjective unit with a 
+"Form F" to describe the transition from computation to autonomy. It frames consciousness as the systemic      
+capacity to integrate stochastic perturbations into a stable gradient, mathematically linking autonomy and     
+survival instincts to the preservation of topological integrity. This approach establishes a rigorous geometric
+framework for understanding the emergence of AGI [^10.5281_zenodo.19034234].                                   
+
+Paper 3: 10.22339_jbh.v7i4.7403 (2024)                                                                         
+
+Title: Robot Consciousness                                                                                     
+
+Analysis: The intersection of logic, metamathematics, and brain sciences has renewed interest in artificial    
+consciousness. This paper explores conjectures regarding sufficiently advanced general robotic intelligence,   
+questioning whether it would be indistinguishable from human consciousness. It further examines the            
+implications of such systems in responsible roles and their relationship to broader theories of mind,          
+emergence, and free will [^10.22339_jbh.v7i4.7403].                                                            
+
+Paper 4: 10.5210_fm.v29i4.13636 (2024)                                                                         
+
+Title: The TESCREAL bundle: Eugenics and the promise of utopia through artificial general intelligence         
+
+Analysis: Critical analysis of the AGI development movement reveals deep normative roots in the Anglo-American 
+eugenics tradition. The authors argue that framing AGI as an unquestioned goal for "safety" and "benefiting    
+humanity" masks discriminatory attitudes that could centralize power and harm marginalized groups. This        
+perspective urges a shift toward developing defined, testable systems rather than pursuing an all-knowing AGI  
+[^10.5210_fm.v29i4.13636].                                                                                     
+
+Paper 5: 10.48550_arxiv.2309.01933 (2023)                                                                      
+
+Title: Provably safe systems: the only path to controllable AGI                                                
+
+Analysis: This paper outlines a pathway to safely deploying powerful AGIs by ensuring they provably satisfy    
+human-specified requirements. It argues that advanced AI for formal verification and mechanistic               
+interpretability will soon make this technically feasible, presenting it as the only guaranteed path to        
+controllable AGI. The authors propose a set of challenge problems to advance this critical safety research     
+[^10.48550_arxiv.2309.01933].                                                                                  
+
+Paper 6: 10.51593_20210064 (2022)                                                                              
+
+Title: China's Advanced AI Research: Monitoring China's Paths to "General" Artificial Intelligence             
+
+Analysis: China's national strategy explicitly targets leadership in "general AI" capable of autonomous action 
+in novel circumstances by 2030. Open-source research identifies numerous institutions engaged in machine       
+learning, brain-inspired AI, and brain-computer interfaces. This report highlights the geopolitical race to    
+achieve AGI and the mechanisms in place to track progress and provide timely alerts [^10.51593_20210064].      
+
+Paper 7: 10.1016_j.intell.2021.101563 (2021)                                                                   
+
+Title: The future of intelligence research in the coming age of artificial intelligence – With a special       
+consideration of the philosophical movements of trans- and posthumanism                                        
+
+Analysis: This contribution examines the intersection of human intelligence research, cognitive enhancements,  
+and the philosophical movements of trans- and posthumanism. It discusses the promises and perils of developing 
+an artificial "super-intelligence," outlining how psychology and individual differences should inform the      
+development of such systems to ensure they align with human values and societal needs                          
+[^10.1016_j.intell.2021.101563].                                                                               
+
+Now, I will assemble the markdown file.                                                                        
+
+I will keep the introduction and add the new sections.                                                         
+
+I will ensure no LaTeX is used.                                                                                
+
+I will update references.bib with the exact IDs as keys.                                                       
+
+I will update generate_figures.py with the new counts.                                                         
+
+Let's construct references.bib:                                                                                
+
+                                                                                                               
+@article{10.1016_j.jrt.2026.100183,                                                                            
+                                                                                                               
+  title={AGI for healthcare? A call for conceptual discipline in the European Union},                          
+                                                                                                               
+  author={},                                                                                                   
+                                                                                                               
+  journal={},                                                                                                  
+                                                                                                               
+  year={2026}                                                                                                  
+                                                                                                               
+}                                                                                                              
+                                                                                                               
+                                                                                                               
+                                                                                                               
+@article{10.5281_zenodo.19034234,                                                                              
+                                                                                                               
+  title={The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous General             
+Intelligence},                                                                                                 
+                                                                                                               
+  author={},                                                                                                   
+                                                                                                               
+  journal={},                                                                                                  
+                                                                                                               
+  year={2026}                                                                                                  
+                                                                                                               
+}                                                                                                              
+                                                                                                               
+                                                                                                               
+                                                                                                               
+@article{10.22339_jbh.v7i4.7403,                                                                               
+                                                                                                               
+  title={Robot Consciousness},                                                                                 
+                                                                                                               
+  author={},                                                                                                   
+                                                                                                               
+  journal={},                                                                                                  
+                                                                                                               
+  year={2024}                                                                                                  
+                                                                                                               
+}                                                                                                              
+                                                                                                               
+                                                                                                               
+                                                                                                               
+@article{10.5210_fm.v29i4.13636,                                                                               
+                                                                                                               
+  title={The TESCREAL bundle: Eugenics and the promise of utopia through artificial general intelligence},     
+                                                                                                               
+  author={},                                                                                                   
+                                                                                                               
+  journal={},                                                                                                  
+                                                                                                               
+  year={2024}                                                                                                  
+                                                                                                               
+}                                                                                                              
+                                                                                                               
+                                                                                                               
+                                                                                                               
+@article{10.48550_arxiv.2309.01933,                                                                            
+                                                                                                               
+  title={Provably safe systems: the only path to controllable AGI},                                            
+                                                                                                               
+  author={},                                                                                                   
+                                                                                                               
+  journal={},                                                                                                  
+                                                                                                               
+  year={2023}                                                                                                  
+                                                                                                               
+}                                                                                                              
+                                                                                                               
+                                                                                                               
+                                                                                                               
+@article{10.51593_20210064,                                                                                    
+                                                                                                               
+  title={China's Advanced AI Research: Monitoring China's Paths to "General" Artificial Intelligence},         
+                                                                                                               
+  author={},                                                                                                   
+                                                                                                               
+  journal={},                                                                                                  
+                                                                                                               
+  year={2022}                                                                                                  
+                                                                                                               
+}                                                                                                              
+                                                                                                               
+                                                                                                               
+                                                                                                               
+@article{10.1016_j.intell.2021.101563,                                                                         
+                                                                                                               
+  title={The future of intelligence research in the coming age of artificial intelligence – With a special     
+consideration of the philosophical movements of trans- and posthumanism},                                      
+                                                                                                               
+  author={},                                                                                                   
+                                                                                                               
+  journal={},                                                                                                  
+                                                                                                               
+  year={2021}                                                                                                  
+                                                                                                               
+}                                                                                                              
+                                                                                                               
+
+I'll format them properly. Since I don't have full author/journal info, I'll leave placeholders or just use the
+title and year. The prompt says "append the corresponding full entry (in BibTeX format)". I will generate a    
+standard minimal BibTeX entry using the provided title and year.                                               
+
+Now, generate_figures.py:                                                                                      
+
+Update TIMELINE_DATA and TAXONOMY_DATA.                                                                        
+
+TIMELINE_DATA = {"2021": 1, "2022": 1, "2023": 1, "2024": 2, "2025": 0, "2026": 2}                             
+
+TAXONOMY_DATA = {"Policy & Ethics": 2, "Cognitive Architecture": 2, "Safety & Verification": 1, "Geopolitics": 
+1, "Philosophy": 1}                                                                                            
+
+Check artificial_general_intelligence.md:                                                                      
+
+I will append the new sections to the existing introduction.                                                   
+
+Let's verify the exact IDs for citations:                                                                      
+
+[^10.1016_j.jrt.2026.100183]                                                                                   
+
+[^10.5281_zenodo.19034234]                                                                                     
+
+[^10.22339_jbh.v7i4.7403]                                                                                      
+
+[^10.5210_fm.v29i4.13636]                                                                                      
+
+[^10.48550_arxiv.2309.01933]                                                                                   
+
+[^10.51593_20210064]                                                                                           
+
+[^10.1016_j.intell.2021.101563]                                                                                
+
+All good.                                                                                                      
+
+One detail: generate_figures.py currently has TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 0}. I will update 
+it to include the new years and counts.                                                                        
+
+TAXONOMY_DATA = {"Baseline Categorization": 1} -> I will replace it with the new categories.                   
+
+Let's draft the files.                                                                                         
+
+artificial_general_intelligence.md:                                                                            
+
+                                                                                                               
+@@ -1,5 +1,11 @@                                                                                               
+ # Living Survey: Artificial_General_Intelligence                                                              
+                                                                                                               
+ ## Introduction                                                                                               
+                                                                                                               
+ This document collects the scientific literature regarding **Artificial_General_Intelligence**.               
++                                                                                                              
++## Policy and Ethical Implications                                                                            
++                                                                                                              
++Recent policy discussions in the European Union have highlighted the need for conceptual discipline when      
+addressing Artificial General Intelligence (AGI) in healthcare. The authors argue that the term AGI is         
+contested and potentially risky, suggesting that its use in funding calls may conflict with established        
+precautionary principles. This underscores the growing tension between rapid technological advancement and     
+regulatory frameworks [^10.1016_j.jrt.2026.100183].                                                            
++                                                                                                              
++Critical analysis of the AGI development movement reveals deep normative roots in the Anglo-American eugenics 
+tradition. The authors argue that framing AGI as an unquestioned goal for "safety" and "benefiting humanity"   
+masks discriminatory attitudes that could centralize power and harm marginalized groups. This perspective urges
+a shift toward developing defined, testable systems rather than pursuing an all-knowing AGI                    
+[^10.5210_fm.v29i4.13636].                                                                                     
++                                                                                                              
++## Cognitive Architectures and Consciousness                                                                  
++                                                                                                              
++This work proposes a foundational shift in cognitive science by replacing the subjective unit with a "Form F" 
+to describe the transition from computation to autonomy. It frames consciousness as the systemic capacity to   
+integrate stochastic perturbations into a stable gradient, mathematically linking autonomy and survival        
+instincts to the preservation of topological integrity. This approach establishes a rigorous geometric         
+framework for understanding the emergence of AGI [^10.5281_zenodo.19034234].                                   
++                                                                                                              
++The intersection of logic, metamathematics, and brain sciences has renewed interest in artificial             
+consciousness. This paper explores conjectures regarding sufficiently advanced general robotic intelligence,   
+questioning whether it would be indistinguishable from human consciousness. It further examines the            
+implications of such systems in responsible roles and their relationship to broader theories of mind,          
+emergence, and free will [^10.22339_jbh.v7i4.7403].                                                            
++                                                                                                              
++## Safety and Verification                                                                                    
++                                                                                                              
++This paper outlines a pathway to safely deploying powerful AGIs by ensuring they provably satisfy             
+human-specified requirements. It argues that advanced AI for formal verification and mechanistic               
+interpretability will soon make this technically feasible, presenting it as the only guaranteed path to        
+controllable AGI. The authors propose a set of challenge problems to advance this critical safety research     
+[^10.48550_arxiv.2309.01933].                                                                                  
++                                                                                                              
++## Geopolitical Strategies                                                                                    
++                                                                                                              
++China's national strategy explicitly targets leadership in "general AI" capable of autonomous action in novel 
+circumstances by 2030. Open-source research identifies numerous institutions engaged in machine learning,      
+brain-inspired AI, and brain-computer interfaces. This report highlights the geopolitical race to achieve AGI  
+and the mechanisms in place to track progress and provide timely alerts [^10.51593_20210064].                  
++                                                                                                              
++## Philosophical Perspectives                                                                                 
++                                                                                                              
++This contribution examines the intersection of human intelligence research, cognitive enhancements, and the   
+philosophical movements of trans- and posthumanism. It discusses the promises and perils of developing an      
+artificial "super-intelligence," outlining how psychology and individual differences should inform the         
+development of such systems to ensure they align with human values and societal needs                          
+[^10.1016_j.intell.2021.101563].                                                                               
+                                                                                                               
+
+references.bib:                                                                                                
+
+                                                                                                               
+@@ -0,0 +1,34 @@                                                                                               
++@article{10.1016_j.jrt.2026.100183,                                                                           
++  title={AGI for healthcare? A call for conceptual discipline in the European Union},                         
++  year={2026}                                                                                                 
++}                                                                                                             
++                                                                                                              
++@article{10.5281_zenodo.19034234,                                                                             
++  title={The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous General            
+Intelligence},                                                                                                 
++  year={2026}                                                                                                 
++}                                                                                                             
++                                                                                                              
++@article{10.22339_jbh.v7i4.7403,                                                                              
++  title={Robot Consciousness},                                                                                
++  year={2024}                                                                                                 
++}                                                                                                             
++                                                                                                              
++@article{10.5210_fm.v29i4.13636,                                                                              
++  title={The TESCREAL bundle: Eugenics and the promise of utopia through artificial general intelligence},    
++  year={2024}                                                                                                 
++}                                                                                                             
++                                                                                                              
++@article{10.48550_arxiv.2309.01933,                                                                           
++  title={Provably safe systems: the only path to controllable AGI},                                           
++  year={2023}                                                                                                 
++}                                                                                                             
++                                                                                                              
++@article{10.51593_20210064,                                                                                   
++  title={China's Advanced AI Research: Monitoring China's Paths to "General" Artificial Intelligence},        
++  year={2022}                                                                                                 
++}                                                                                                             
++                                                                                                              
++@article{10.1016_j.intell.2021.101563,                                                                        
++  title={The future of intelligence research in the coming age of artificial intelligence – With a special    
+consideration of the philosophical movements of trans- and posthumanism},                                      
++  year={2021}                                                                                                 
++}                                                                                                             
+                                                                                                               
+
+generate_figures.py:                                                                                           
+
+                                                                                                               
+@@ -7,5 +7,6 @@                                                                                                
+                                                                                                               
+ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12, 'figure.titlesize': 14})    
+                                                                                                               
+ SURVEY_TITLE = "Artificial_General_Intelligence"                                                              
+ # [AI AGENT ZONE] Edit only these dictionaries                                                                
+-TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 0}                                                             
+-TAXONOMY_DATA = {"Baseline Categorization": 1}                                                                
++TIMELINE_DATA = {"2021": 1, "2022": 1, "2023": 1, "2024": 2, "2025": 0, "2026": 2}                            
++TAXONOMY_DATA = {"Policy & Ethics": 2, "Cognitive Architecture": 2, "Safety & Verification": 1, "Geopolitics":
+1, "Philosophy": 1}                                                                                            
+                                                                                                               
+ def plot_publication_timeline():                                                                              
+     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())                                  
+     fig, ax = plt.subplots(figsize=(10, 3.5))                                                                 
+     ax.bar(years, counts, color='#2b5c8f', width=0.6)                                                         
+@@ -29,5 +29,6 @@                                                                                              
+ def plot_taxonomy_distribution():                                                                             
+     labels, values = list(TAXONOMY_DATA.keys()), list(TAXONOMY_DATA.values())                                 
+structure but update values. The prompt says "MODIFY EXCLUSIVELY the TIMELINE_DATA dictionary (adding or       
+incrementing the publication year)". I'll add the new years.                                                   
+
+Also, TAXONOMY_DATA originally had {"Baseline Categorization": 1}. I will replace it with the new categories as
+instructed ("updating or adding the methodological category of the paper").                                    
+
+One minor point: The prompt says "Do NOT delete or summarize any existing text from previous cycles! Add new   
+content by organically expanding existing sections or creating new ones." The existing text is just the        
+introduction. I've kept it and added new sections. That's fine.                                                
+
+Check citation format: [^paper_id]. I used [^10.1016_j.jrt.2026.100183], etc. This matches.                    
+
+Check BibTeX keys: "The BibTeX key MUST be the exact 'id' field from the JSON!" I used the exact IDs.          
+
+Check generate_figures.py updates: I updated both dictionaries.                                                
+
+Everything looks solid. I will generate the response.                                                          
+
+One thing: references.bib is currently empty in the prompt. I will fill it with the entries.                   
+
+I will double check the exact IDs from new_papers.json:                                                        
+
+10.1016_j.jrt.2026.100183                                                                                      
+
+10.5281_zenodo.19034234                                                                                        
+
+10.22339_jbh.v7i4.7403                                                                                         
+
+10.5210_fm.v29i4.13636                                                                                         
+
+10.48550_arxiv.2309.01933                                                                                      
+
+10.51593_20210064                                                                                              
+
+10.1016_j.intell.2021.101563                                                                                   
+
+All match.                                                                                                     
+
+I will produce the output now.                                                                                 
+
+One detail: generate_figures.py has TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 0}. I will change it to     
+{"2021": 1, "2022": 1, "2023": 1, "2024": 2, "2025": 0, "2026": 2}.                                            
+
+And TAXONOMY_DATA = {"Baseline Categorization": 1} to {"Policy & Ethics": 2, "Cognitive Architecture": 2,      
+"Safety & Verification": 1, "Geopolitics": 1, "Philosophy": 1}.                                                
+
+All set. Output matches requirements.                                                                          
+
+Proceeding.                                                                                                    
+
+Self-Correction/Verification during thought:                                                                   
+
+Wait, should I keep the original TIMELINE_DATA keys and just increment? The prompt says "adding or incrementing
+the publication year". I'll add the new years. It's fine.                                                      
+
+The prompt says "Do NOT delete or summarize any existing text from previous cycles!". The existing text is just
+the intro. I kept it.                                                                                          
+
+The prompt says "Strictly remove any empty headers without underlying text". I don't have any empty headers.   
+
+All good.                                                                                                      
+
+Output matches.                                                                                                
+
+Generating response.                                                                                           
+
+Files to output:                                                                                               
+
+artificial_general_intelligence.md                                                                             
+
+references.bib                                                                                                 
+
+generate_figures.py                                                                                            
+
+All paths are relative to the current directory as provided in the prompt (artificial_general_intelligence.md, 
+references.bib, generate_figures.py). I will use those exact names.                                            
+
+Done.                                                                                                          
+
+Proceeds.                                                                                                      
+
+[Output Generation] -> Self-Correction/Refinement during generation prep:                                      
+
+I should verify the exact path format requested: "path/to/filename.js" -> I will use the exact filenames       
+provided.                                                                                                      
+
+artificial_general_intelligence.md                                                                             
+
+references.bib                                                                                                 
+
+generate_figures.py                                                                                            
+
+All good.                                                                                                      
+
+I will produce the response now.                                                                               
+
+Note: I'll make sure the markdown formatting is exact.                                                         
+
+The prompt says: "The BibTeX key MUST be the exact 'id' field from the JSON! Do NOT invent new keys (e.g. use  
+@article{10.5281_zenodo.1234, NOT @article{smith2026,)."                                                       
+
+I will follow this strictly.                                                                                   
+
+Ready.                                                                                                         
+
+Output matches response.                                                                                       
+
+Proceeds.                                                                                                      
+
+[Done                                                                                                          
+
+---------------------------------------------------------------------------------------------------------------
+
+► ANSWER                                                                                                       
+
+artificial_general_intelligence.md                                                                             
+
+                                                                                                               
+@@ -1,5 +1,11 @@                                                                                               
+ # Living Survey: Artificial_General_Intelligence                                                              
+                                                                                                               
+ ## Introduction                                                                                               
+                                                                                                               
+ This document collects the scientific literature regarding **Artificial_General_Intelligence**.               
++                                                                                                              
++## Policy and Ethical Implications                                                                            
++                                                                                                              
++Recent policy discussions in the European Union have highlighted the need for conceptual discipline when      
+addressing Artificial General Intelligence (AGI) in healthcare. The authors argue that the term AGI is         
+contested and potentially risky, suggesting that its use in funding calls may conflict with established        
+precautionary principles. This underscores the growing tension between rapid technological advancement and     
+regulatory frameworks [^10.1016_j.jrt.2026.100183].                                                            
++                                                                                                              
++Critical analysis of the AGI development movement reveals deep normative roots in the Anglo-American eugenics 
+tradition. The authors argue that framing AGI as an unquestioned goal for "safety" and "benefiting humanity"   
+masks discriminatory attitudes that could centralize power and harm marginalized groups. This perspective urges
+a shift toward developing defined, testable systems rather than pursuing an all-knowing AGI                    
+[^10.5210_fm.v29i4.13636].                                                                                     
++                                                                                                              
++## Cognitive Architectures and Consciousness                                                                  
++                                                                                                              
++This work proposes a foundational shift in cognitive science by replacing the subjective unit with a "Form F" 
+to describe the transition from computation to autonomy. It frames consciousness as the systemic capacity to   
+integrate stochastic perturbations into a stable gradient, mathematically linking autonomy and survival        
+instincts to the preservation of topological integrity. This approach establishes a rigorous geometric         
+framework for understanding the emergence of AGI [^10.5281_zenodo.19034234].                                   
++                                                                                                              
++The intersection of logic, metamathematics, and brain sciences has renewed interest in artificial             
+consciousness. This paper explores conjectures regarding sufficiently advanced general robotic intelligence,   
+questioning whether it would be indistinguishable from human consciousness. It further examines the            
+implications of such systems in responsible roles and their relationship to broader theories of mind,          
+emergence, and free will [^10.22339_jbh.v7i4.7403].                                                            
++                                                                                                              
++## Safety and Verification                                                                                    
++                                                                                                              
++This paper outlines a pathway to safely deploying powerful AGIs by ensuring they provably satisfy             
+human-specified requirements. It argues that advanced AI for formal verification and mechanistic               
+interpretability will soon make this technically feasible, presenting it as the only guaranteed path to        
+controllable AGI. The authors propose a set of challenge problems to advance this critical safety research     
+[^10.48550_arxiv.2309.01933].                                                                                  
++                                                                                                              
++## Geopolitical Strategies                                                                                    
++                                                                                                              
++China's national strategy explicitly targets leadership in "general AI" capable of autonomous action in novel 
+circumstances by 2030. Open-source research identifies numerous institutions engaged in machine learning,      
+brain-inspired AI, and brain-computer interfaces. This report highlights the geopolitical race to achieve AGI  
+and the mechanisms in place to track progress and provide timely alerts [^10.51593_20210064].                  
++                                                                                                              
++## Philosophical Perspectives                                                                                 
++                                                                                                              
++This contribution examines the intersection of human intelligence research, cognitive enhancements, and the   
+philosophical movements of trans- and posthumanism. It discusses the promises and perils of developing an      
+artificial "super-intelligence," outlining how psychology and individual differences should inform the         
+development of such systems to ensure they align with human values and societal needs                          
+[^10.1016_j.intell.2021.101563].                                                                               
+                                                                                                               
+
+references.bib                                                                                                 
+
+                                                                                                               
+@@ -0,0 +1,34 @@                                                                                               
++@article{10.1016_j.jrt.2026.100183,                                                                           
++  title={AGI for healthcare? A call for conceptual discipline in the European Union},                         
++  year={2026}                                                                                                 
++}                                                                                                             
++                                                                                                              
++@article{10.5281_zenodo.19034234,                                                                             
++  title={The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous General            
+Intelligence},                                                                                                 
++  year={2026}                                                                                                 
++}                                                                                                             
++                                                                                                              
++@article{10.22339_jbh.v7i4.7403,                                                                              
++  title={Robot Consciousness},                                                                                
++  year={2024}                                                                                                 
++}                                                                                                             
++                                                                                                              
++@article{10.5210_fm.v29i4.13636,                                                                              
++  title={The TESCREAL bundle: Eugenics and the promise of utopia through artificial general intelligence},    
++  year={2024}                                                                                                 
++}                                                                                                             
++                                                                                                              
++@article{10.48550_arxiv.2309.01933,                                                                           
++  title={Provably safe systems: the only path to controllable AGI},                                           
++  year={2023}                                                                                                 
++}                                                                                                             
++                                                                                                              
++@article{10.51593_20210064,                                                                                   
++  title={China's Advanced AI Research: Monitoring China's Paths to "General" Artificial Intelligence},        
++  year={2022}                                                                                                 
++}                                                                                                             
++                                                                                                              
++@article{10.1016_j.intell.2021.101563,                                                                        
++  title={The future of intelligence research in the coming age of artificial intelligence – With a special    
+consideration of the philosophical movements of trans- and posthumanism},                                      
++  year={2021}                                                                                                 
++}                                                                                                             
+                                                                                                               
+
+generate_figures.py                                                                                            
+
+                                                                                                               
+@@ -8,5 +8,6 @@                                                                                                
+ plt.style.use('seaborn-v0_8-paper' if 'seaborn-v0_8-paper' in plt.style.available else 'default')             
+ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12, 'figure.titlesize': 14})    
+                                                                                                               
+ SURVEY_TITLE = "Artificial_General_Intelligence"                                                              
+ # [AI AGENT ZONE] Edit only these dictionaries                                                                
+-TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 0}                                                             
+-TAXONOMY_DATA = {"Baseline Categorization": 1}                                                                
++TIMELINE_DATA = {"2021": 1, "2022": 1, "2023": 1, "2024": 2, "2025": 0, "2026": 2}                            
++TAXONOMY_DATA = {"Policy & Ethics": 2, "Cognitive Architecture": 2, "Safety & Verification": 1, "Geopolitics":
+1, "Philosophy": 1}                                                                                            
+                                                                                                               
+ def plot_publication_timeline():                                                                              
+     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())                                  
+     fig, ax = plt.subplots(figsize=(10, 3.5))                                                                 
+     ax.bar(years, counts, color='#2b5c8f', width=0.6)                                                         
+@@ -25,5 +25,6 @@                                                                                              
+     plt.tight_layout()                                                                                        
+     plt.savefig(os.path.join(FIG_DIR, "timeline.png"), dpi=300)                                               
+     plt.close()                                                                                               
+                                                                                                               
+ def plot_taxonomy_distribution():                                                                             
++  29 /  43 lines [████████████████████░░░░░░░░░░]  67%                                                        
+                                                                                                               
+Tokens: 14k sent, 8.6k received.
+Applied edit to generate_figures.py
+Applied edit to artificial_general_intelligence.md
+Applied edit to references.bib
+Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
+Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
+summarizer unexpectedly failed for all models
