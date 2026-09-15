@@ -100,6 +100,11 @@ def get_existing_ids(topic_dir):
     """
     ids = set()
     
+    # Helper function to safely remove version numbers (e.g., '1234.5678v1' -> '1234.5678')
+    # It only matches a 'v' followed by digits strictly at the end of the string.
+    def clean_id(raw_id):
+        return re.sub(r'v\d+$', '', raw_id)
+
     # 1. Accepted Memory: Read papers successfully integrated into the survey
     bib_file = os.path.join(topic_dir, "references.bib")
     if os.path.exists(bib_file):
@@ -107,8 +112,7 @@ def get_existing_ids(topic_dir):
             content = f.read()
         # Extract BibTeX keys using Regex
         bib_ids = set(re.findall(r'@\w+\{([^,]+),', content))
-        # Strip ArXiv versioning (e.g., 'v1', 'v2') for safe comparison
-        ids.update({i.split('v')[0] for i in bib_ids})
+        ids.update({clean_id(i) for i in bib_ids})
 
     # 2. Encountered Memory: Read papers already processed in previous (or failed) cycles
     logs_dir = os.path.join(topic_dir, "eval_logs")
@@ -120,10 +124,9 @@ def get_existing_ids(topic_dir):
                     with open(filepath, "r", encoding="utf-8") as f:
                         old_papers = json.load(f)
                         for p in old_papers:
-                            # Safely extract and clean the ID
-                            clean_id = p.get('id', '').split('v')[0]
-                            if clean_id:
-                                ids.add(clean_id)
+                            raw_id = p.get('id', '')
+                            if raw_id:
+                                ids.add(clean_id(raw_id))
                 except Exception as e:
                     print(f"[MEMORY WARNING] Could not read log file {filename}: {e}")
                     
