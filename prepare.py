@@ -45,6 +45,7 @@ def init_workspace(topic_name):
 
     if not os.path.exists(fig_script):
         baseline_code = '''import os
+import re
 import matplotlib.pyplot as plt
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -84,9 +85,27 @@ def plot_taxonomy_distribution():
     plt.close()
 
 if __name__ == "__main__":
+    # --- START OF RE-CHECK BLOCK (SANITIZER) ---
+    bib_path = os.path.join(BASE_DIR, "references.bib")
+    if os.path.exists(bib_path):
+        with open(bib_path, "r", encoding="utf-8") as f:
+            bib_content = f.read()
+        
+        # Extract all years from the actually surviving papers in the .bib file
+        actual_years = re.findall(r'year\s*=\s*[{"]?(\d{4})[}"]?', bib_content)
+        
+        if actual_years:
+            # Overwrite the Actor's estimates with the absolute truth from the .bib file
+            global TIMELINE_DATA
+            TIMELINE_DATA = {year: actual_years.count(year) for year in sorted(set(actual_years))}
+        else:
+            # Fallback if the .bib is empty
+            TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 0}
+    # --- END OF RE-CHECK BLOCK ---
+
     plot_publication_timeline()
     plot_taxonomy_distribution()
-    print(f"[GENERATE_FIGURES] Charts updated in {FIG_DIR}")
+    print(f"[GENERATE_FIGURES] Charts updated in {FIG_DIR} (Timeline reconciled with .bib)")
 '''
         with open(fig_script, "w", encoding="utf-8") as f:
             f.write(baseline_code)
