@@ -96,7 +96,6 @@ if __name__ == "__main__":
         
         if actual_years:
             # Overwrite the Actor's estimates with the absolute truth from the .bib file
-            global TIMELINE_DATA
             TIMELINE_DATA = {year: actual_years.count(year) for year in sorted(set(actual_years))}
         else:
             # Fallback if the .bib is empty
