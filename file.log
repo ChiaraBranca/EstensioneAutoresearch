@@ -943,3 +943,77 @@ Applied edit to generate_figures.py
 Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
 Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
 summarizer unexpectedly failed for all models
+==================================================
+ STARTING LIVING SURVEY: Project 'Quantum_Computing' | Query: 'Quantum_Computing'
+==================================================
+
+[SYSTEM] Executing: python prepare.py --init "Quantum_Computing"
+[INIT] Created new survey file in: surveys/quantum_computing/quantum_computing.md
+[INIT] Baseline figures generated in surveys/quantum_computing/figures
+WORKSPACE_READY:surveys/quantum_computing
+
+──────────────────────────────────────────────────
+ CYCLE 1/1 - LITERATURE RETRIEVAL
+──────────────────────────────────────────────────
+
+[SYSTEM] Executing: python prepare.py --fetch "Quantum_Computing" "Quantum_Computing"
+--- INITIATING FEDERATED MULTI-SERVER SEARCH ---
+[SERVER 1 - ARXIV] Searching for: 'Quantum_Computing' (Filter: Latest)...
+[SERVER 2 - OPENALEX] Searching for: 'Quantum_Computing'...
+[PREPARE] Fetched 25 completely NEW papers.
+          Details: 0 from ArXiv, 25 from OpenAlex.
+
+[SYSTEM] Executing: python prepare.py --eval "Quantum_Computing"
+INTEGRATED_COUNT:0
+LSS_SCORE:50.3
+[METRIC] Starting Baseline LSS Score: 50.3
+
+[ORACLE] Generating Ground Truth via Cosine Similarity (Vector IR)...
+
+[AI AGENT - ACTOR] Writing and integrating new literature...
+
+[SYSTEM] Executing: uvx --from aider-chat aider --model openai/lab-qwen36 --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "Carefully read the 'new_papers.json' file containing unreleased papers.
+1) STRICT TOPIC RELEVANCE: The main topic of this Living Survey is strictly 'Quantum_Computing'. The papers were retrieved using the search query 'Quantum_Computing'. CRITICAL: Evaluate if each paper is strictly relevant to the MAIN TOPIC 'Quantum_Computing'. If a paper matches the search query 'Quantum_Computing' but IS NOT specifically about 'Quantum_Computing', you MUST DISCARD AND IGNORE IT COMPLETELY. Do NOT attempt to force off-topic papers into 'surveys/quantum_computing/quantum_computing.md'!
+2) INTEGRATION: For relevant papers only, integrate a concise analysis into 'surveys/quantum_computing/quantum_computing.md' using Markdown citations like [^paper_id]. EXPANSION RULE: Do NOT delete or summarize any existing text from previous cycles! Add new content by organically expanding existing sections or creating new ones.
+3) BIBLIOGRAPHY: Add the new bibliographic entries for RELEVANT papers into 'surveys/quantum_computing/references.bib'. CRITICAL: The BibTeX key MUST be the exact 'id' field from the JSON! Do NOT invent new keys (e.g. use @article{10.5281_zenodo.1234, NOT @article{smith2026,).
+4) DATA UPDATE: Update TIMELINE_DATA and TAXONOMY_DATA at the beginning of 'surveys/quantum_computing/generate_figures.py' by ADDING the new counts of INTEGRATED papers to the existing values.
+5) CLEANUP: Strictly remove any empty headers without underlying text from 'surveys/quantum_computing/quantum_computing.md'. The document must only contain fully argued sections!
+Do NOT execute terminal commands, do NOT write LaTeX code, just edit the requested files." surveys/quantum_computing/quantum_computing.md surveys/quantum_computing/references.bib surveys/quantum_computing/generate_figures.py
+
+[AI AGENT - CRITIC] Peer-reviewing and verifying scientific accuracy...
+
+[SYSTEM] Running Garbage Collector for references.bib...
+[SYSTEM] Garbage Collector executed: bibliography successfully synchronized.
+
+[SYSTEM] Rendering actual charts to disk...
+
+[SYSTEM] Executing: python "surveys/quantum_computing/generate_figures.py"
+[GENERATE_FIGURES] Charts updated in /mnt/sdb1/workspace/chiarabrancaleoni/autoresearch/surveys/quantum_computing/figures (Timeline reconciled with .bib)
+
+[METRICS] Calculating Precision, Recall, and F1-Measure...
+
+[SYSTEM] Executing: python evaluate_metrics.py "quantum_computing"
+Error: File ground_truth.json not found.
+
+[SYSTEM] Executing: python prepare.py --eval "Quantum_Computing"
+INTEGRATED_COUNT:14
+LSS_SCORE:73.25
+
+[VERDICT] Baseline: 50.3 -> New Score: 73.25 (Δ +22.95)
+[SUCCESS] Improvement confirmed! Executing Git Commit.
+
+[SYSTEM] Executing: git add .
+
+[SYSTEM] Executing: git commit -m "feat(quantum_computing): integrated valid papers (LSS: 73.25)" 
+[main aa36c2a] feat(quantum_computing): integrated valid papers (LSS: 73.25)
+ 6 files changed, 838 insertions(+), 1720 deletions(-)
+ create mode 100644 surveys/quantum_computing/figures/taxonomy.png
+ create mode 100644 surveys/quantum_computing/figures/timeline.png
+ create mode 100644 surveys/quantum_computing/generate_figures.py
+ create mode 100644 surveys/quantum_computing/quantum_computing.md
+ create mode 100644 surveys/quantum_computing/references.bib
+[LOG] JSON files successfully archived in: surveys/quantum_computing/eval_logs (Timestamp: 20260916_150415)
+
+==================================================
+ LOOP SUCCESSFULLY COMPLETED!
+==================================================
