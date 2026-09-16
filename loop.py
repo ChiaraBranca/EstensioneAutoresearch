@@ -125,8 +125,8 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         # ORACLE: GROUND TRUTH GENERATION (Vector Embeddings IR)
         # =======================================================
         print("\n[ORACLE] Generating Ground Truth via Cosine Similarity (Vector IR)...")
-        run_command(f'python auto_evaluator.py "Main Topic: {topic}. Specific Query: {search_query}"')
-        time.sleep(15)
+        #run_command(f'python auto_evaluator.py "Main Topic: {topic}. Specific Query: {search_query}"')
+        #time.sleep(15)
 
         # =======================================================
         # ACTOR AGENT PROMPT
@@ -166,7 +166,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         )
 
         print("\n[AI AGENT - CRITIC] Peer-reviewing and verifying scientific accuracy...")
-        #run_command(f'uvx --from aider-chat aider --model openai/lab-qwen36 --read new_papers.json --read {bib_file} --yes-always --no-git --message "{prompt_critic}" {survey_file}', capture_output=False)
+        run_command(f'uvx --from aider-chat aider --model openai/lab-qwen36 --read new_papers.json --read {bib_file} --yes-always --no-git --message "{prompt_critic}" {survey_file}', capture_output=False)
 
         # =======================================================
         # GARBAGE COLLECTION (Synchronize .bib with surviving .md citations)

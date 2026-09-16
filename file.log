@@ -1100,3 +1100,125 @@ Applied edit to generate_figures.py
 Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
 Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
 summarizer unexpectedly failed for all models
+==================================================
+ STARTING LIVING SURVEY: Project 'Quantum_Computing' | Query: 'Quantum_Computing'
+==================================================
+
+[SYSTEM] Executing: python prepare.py --init "Quantum_Computing"
+[INIT] Created new survey file in: surveys/quantum_computing/quantum_computing.md
+[INIT] Baseline figures generated in surveys/quantum_computing/figures
+WORKSPACE_READY:surveys/quantum_computing
+
+──────────────────────────────────────────────────
+ CYCLE 1/1 - LITERATURE RETRIEVAL
+──────────────────────────────────────────────────
+
+[SYSTEM] Executing: python prepare.py --fetch "Quantum_Computing" "Quantum_Computing"
+--- INITIATING FEDERATED MULTI-SERVER SEARCH ---
+[SERVER 1 - ARXIV] Searching for: 'Quantum_Computing' (Filter: Latest)...
+[ARXIV ERROR] HTTP Error 429: Too Many Requests
+[SERVER 2 - OPENALEX] Searching for: 'Quantum_Computing'...
+[PREPARE] Fetched 25 completely NEW papers.
+          Details: 0 from ArXiv, 25 from OpenAlex.
+
+[SYSTEM] Executing: python prepare.py --eval "Quantum_Computing"
+INTEGRATED_COUNT:0
+LSS_SCORE:50.3
+[METRIC] Starting Baseline LSS Score: 50.3
+
+[ORACLE] Generating Ground Truth via Cosine Similarity (Vector IR)...
+
+[SYSTEM] Executing: python auto_evaluator.py "Main Topic: Quantum_Computing. Specific Query: Quantum_Computing"
+[ORACLE - INFORMATION RETRIEVAL MODE]
+Using 'lab-embed' to compute vector similarities (Threshold: 0.5)
+[ORACLE] Auto-generating Ground Truth for 25 papers using Cosine Similarity...
+ -> Processed 10.34257_gjsfra257362 | Cosine Sim: 0.710 | Relevant: 1
+ -> Processed 10.6084_m9.figshare.32051724 | Cosine Sim: 0.677 | Relevant: 1
+ -> Processed 10.6084_m9.figshare.32051724.v1 | Cosine Sim: 0.677 | Relevant: 1
+ -> Processed https:__openalex.org_W7155247427 | Cosine Sim: 0.778 | Relevant: 1
+ -> Processed 10.5281_zenodo.19081757 | Cosine Sim: 0.601 | Relevant: 1
+ -> Processed 10.5281_zenodo.19081756 | Cosine Sim: 0.601 | Relevant: 1
+ -> Processed 10.5281_zenodo.19175200 | Cosine Sim: 0.601 | Relevant: 1
+ -> Processed 10.56975_tijer.v13i3.161368 | Cosine Sim: 0.570 | Relevant: 1
+ -> Processed 10.1007_978-3-031-90727-2_20 | Cosine Sim: 0.637 | Relevant: 1
+ -> Processed 10.18880_0002001929 | Cosine Sim: 0.453 | Relevant: 0
+ -> Processed 10.18653_v1_2025.findings-acl.911 | Cosine Sim: 0.415 | Relevant: 0
+ -> Processed https:__openalex.org_W7112574406 | Cosine Sim: 0.389 | Relevant: 0
+ -> Processed 10.31695_ijerat.2025.9.1 | Cosine Sim: 0.730 | Relevant: 1
+ -> Processed 10.11159_icffts23.133 | Cosine Sim: 0.773 | Relevant: 1
+ -> Processed 10.21741_9781644902813-38 | Cosine Sim: 0.748 | Relevant: 1
+ -> Processed 10.1063_5.0151346 | Cosine Sim: 0.679 | Relevant: 1
+ -> Processed 10.1016_j.cpc.2022.108598 | Cosine Sim: 0.649 | Relevant: 1
+ -> Processed 10.1007_s41066-022-00348-9 | Cosine Sim: 0.720 | Relevant: 1
+ -> Processed 10.5281_zenodo.6493704 | Cosine Sim: 0.568 | Relevant: 1
+ -> Processed 10.5281_zenodo.6412487 | Cosine Sim: 0.568 | Relevant: 1
+ -> Processed 10.5120_ijca2021921834 | Cosine Sim: 0.761 | Relevant: 1
+ -> Processed 10.4018_ijcini.290308 | Cosine Sim: 0.511 | Relevant: 1
+ -> Processed 10.5281_zenodo.6554176 | Cosine Sim: 0.514 | Relevant: 1
+ -> Processed 10.1109_mc.2021.3083430 | Cosine Sim: 0.777 | Relevant: 1
+ -> Processed 10.21661_r-554129 | Cosine Sim: 0.395 | Relevant: 0
+[ORACLE] ground_truth.json generated successfully!
+
+[AI AGENT - ACTOR] Writing and integrating new literature...
+
+[SYSTEM] Executing: uvx --from aider-chat aider --model openai/lab-qwen36 --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "Carefully read the 'new_papers.json' file containing unreleased papers.
+1) STRICT TOPIC RELEVANCE: The main topic of this Living Survey is strictly 'Quantum_Computing'. The papers were retrieved using the search query 'Quantum_Computing'. CRITICAL: Evaluate if each paper is strictly relevant to the MAIN TOPIC 'Quantum_Computing'. If a paper matches the search query 'Quantum_Computing' but IS NOT specifically about 'Quantum_Computing', you MUST DISCARD AND IGNORE IT COMPLETELY. Do NOT attempt to force off-topic papers into 'surveys/quantum_computing/quantum_computing.md'!
+2) INTEGRATION: For relevant papers only, integrate a concise analysis into 'surveys/quantum_computing/quantum_computing.md' using Markdown citations like [^paper_id]. EXPANSION RULE: Do NOT delete or summarize any existing text from previous cycles! Add new content by organically expanding existing sections or creating new ones.
+3) BIBLIOGRAPHY: Add the new bibliographic entries for RELEVANT papers into 'surveys/quantum_computing/references.bib'. CRITICAL: The BibTeX key MUST be the exact 'id' field from the JSON! Do NOT invent new keys (e.g. use @article{10.5281_zenodo.1234, NOT @article{smith2026,).
+4) DATA UPDATE: Update TIMELINE_DATA and TAXONOMY_DATA at the beginning of 'surveys/quantum_computing/generate_figures.py' by ADDING the new counts of INTEGRATED papers to the existing values.
+5) CLEANUP: Strictly remove any empty headers without underlying text from 'surveys/quantum_computing/quantum_computing.md'. The document must only contain fully argued sections!
+Do NOT execute terminal commands, do NOT write LaTeX code, just edit the requested files." surveys/quantum_computing/quantum_computing.md surveys/quantum_computing/references.bib surveys/quantum_computing/generate_figures.py
+
+[AI AGENT - CRITIC] Peer-reviewing and verifying scientific accuracy...
+
+[SYSTEM] Running Garbage Collector for references.bib...
+[SYSTEM] Garbage Collector executed: bibliography successfully synchronized.
+
+[SYSTEM] Rendering actual charts to disk...
+
+[SYSTEM] Executing: python "surveys/quantum_computing/generate_figures.py"
+[GENERATE_FIGURES] Charts updated in /mnt/sdb1/workspace/chiarabrancaleoni/autoresearch/surveys/quantum_computing/figures
+
+[METRICS] Calculating Precision, Recall, and F1-Measure...
+
+[SYSTEM] Executing: python evaluate_metrics.py "quantum_computing"
+==================================================
+ 📊 EXTERNAL VALIDATION: INFORMATION RETRIEVAL METRICS
+==================================================
+Total papers evaluated in sample: 25
+
+Confusion Matrix:
+  - True Positives (TP):  14 (Correctly Included)
+  - False Positives (FP): 1 (Hallucinations/Off-topic Included)
+  - False Negatives (FN): 7 (Useful papers missed/discarded)
+  - True Negatives (TN):  3 (Correctly Discarded)
+
+Metrics:
+  🎯 Precision: 0.9333 (When AI includes a paper, 93.3% of the time it is correct)
+  🔍 Recall:    0.6667 (The AI successfully finds 66.7% of all useful literature)
+  ⚖️  F1-Score:  0.7778 (Harmonic mean of Precision and Recall)
+  ✅ Accuracy:  0.6800 (Total correct decisions)
+==================================================
+
+[SYSTEM] Executing: python prepare.py --eval "Quantum_Computing"
+INTEGRATED_COUNT:15
+LSS_SCORE:71.8
+
+[VERDICT] Baseline: 50.3 -> New Score: 71.8 (Δ +21.50)
+[SUCCESS] Improvement confirmed! Executing Git Commit.
+
+[SYSTEM] Executing: git add .
+
+[SYSTEM] Executing: git commit -m "feat(quantum_computing): integrated valid papers (LSS: 71.8)" 
+[main fce23da] feat(quantum_computing): integrated valid papers (LSS: 71.8)
+ 6 files changed, 1174 insertions(+), 1620 deletions(-)
+ create mode 100644 surveys/quantum_computing/figures/taxonomy.png
+ create mode 100644 surveys/quantum_computing/figures/timeline.png
+ create mode 100644 surveys/quantum_computing/generate_figures.py
+ create mode 100644 surveys/quantum_computing/quantum_computing.md
+ create mode 100644 surveys/quantum_computing/references.bib
+[LOG] JSON files successfully archived in: surveys/quantum_computing/eval_logs (Timestamp: 20260915_145808)
+
+==================================================
+ LOOP SUCCESSFULLY COMPLETED!
+==================================================
