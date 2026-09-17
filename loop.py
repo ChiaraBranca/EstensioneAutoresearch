@@ -147,8 +147,8 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         )
 
         print("\n[AI AGENT - ACTOR] Writing and integrating new literature...")
-        run_command(f'uvx --from aider-chat aider --model openai/lab-qwen36 --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "{prompt_actor}" {survey_file} {bib_file} {fig_script}', capture_output=False)
-        time.sleep(15)
+        #run_command(f'uvx --from aider-chat aider --model openai/lab-qwen36 --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "{prompt_actor}" {survey_file} {bib_file} {fig_script}', capture_output=False)
+        #time.sleep(15)
 
         # =======================================================
         # CRITIC AGENT PROMPT (Reviewer 2)
