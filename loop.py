@@ -166,7 +166,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         )
 
         print("\n[AI AGENT - CRITIC] Peer-reviewing and verifying scientific accuracy...")
-        run_command(f'uvx --from aider-chat aider --model openai/lab-qwen36 --read new_papers.json --read {bib_file} --yes-always --no-git --message "{prompt_critic}" {survey_file}', capture_output=False)
+        #run_command(f'uvx --from aider-chat aider --model openai/lab-qwen36 --read new_papers.json --read {bib_file} --yes-always --no-git --message "{prompt_critic}" {survey_file}', capture_output=False)
 
         # =======================================================
         # GARBAGE COLLECTION (Synchronize .bib with surviving .md citations)
