@@ -2279,3 +2279,43 @@ Do NOT invent code, limit yourself to the targeted revision of 'surveys/quantum_
 [METRICS] Calculating Precision, Recall, and F1-Measure...
 
 [SYSTEM] Executing: python evaluate_metrics.py "quantum_computing"
+==================================================
+ 📊 EXTERNAL VALIDATION: INFORMATION RETRIEVAL METRICS
+==================================================
+Total papers evaluated in sample: 25
+
+Confusion Matrix:
+  - True Positives (TP):  13 (Correctly Included)
+  - False Positives (FP): 1 (Hallucinations/Off-topic Included)
+  - False Negatives (FN): 8 (Useful papers missed/discarded)
+  - True Negatives (TN):  3 (Correctly Discarded)
+
+Metrics:
+  🎯 Precision: 0.9286 (When AI includes a paper, 92.9% of the time it is correct)
+  🔍 Recall:    0.6190 (The AI successfully finds 61.9% of all useful literature)
+  ⚖️  F1-Score:  0.7429 (Harmonic mean of Precision and Recall)
+  ✅ Accuracy:  0.6400 (Total correct decisions)
+==================================================
+
+[SYSTEM] Executing: python prepare.py --eval "Quantum_Computing"
+INTEGRATED_COUNT:14
+LSS_SCORE:73.79
+
+[VERDICT] Baseline: 50.3 -> New Score: 73.79 (Δ +23.49)
+[SUCCESS] Improvement confirmed! Executing Git Commit.
+
+[SYSTEM] Executing: git add .
+
+[SYSTEM] Executing: git commit -m "feat(quantum_computing): integrated valid papers (LSS: 73.79)" 
+[main d6ba4df] feat(quantum_computing): integrated valid papers (LSS: 73.79)
+ 6 files changed, 2066 insertions(+), 2116 deletions(-)
+ create mode 100644 surveys/quantum_computing/figures/taxonomy.png
+ create mode 100644 surveys/quantum_computing/figures/timeline.png
+ create mode 100644 surveys/quantum_computing/generate_figures.py
+ create mode 100644 surveys/quantum_computing/quantum_computing.md
+ create mode 100644 surveys/quantum_computing/references.bib
+[LOG] JSON files successfully archived in: surveys/quantum_computing/eval_logs (Timestamp: 20260917_163741)
+
+==================================================
+ LOOP SUCCESSFULLY COMPLETED!
+==================================================

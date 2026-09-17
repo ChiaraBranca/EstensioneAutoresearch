@@ -74,8 +74,7 @@ if __name__ == "__main__":
     
     # 1. Compute the embedding for the Topic (our reference Query)
     # VERSIONE UNIVERSALE (DOMINIO-AGNOSTICA)
-    #enriched_topic = f"Interdisciplinary scientific research, clinical studies, computational methods, and technological applications concerning {topic}."
-    enriched_topic = f"Scientific papers and research specifically focused on {topic}"
+    enriched_topic = f"Interdisciplinary scientific research, clinical studies, computational methods, and technological applications concerning {topic}."
     topic_embedding = get_embedding(enriched_topic, api_base, api_key)
     if not topic_embedding:
         print("[ORACLE FATAL] Could not compute embedding for the topic. Exiting.")
