@@ -1368,3 +1368,62 @@ algorithmic guarantees for simulating large-scale agent interactions in constrai
 
 Tokens: 20k sent, 5.5k received.
 Applied edit to multi_agent_social_simulations.md
+
+[SYSTEM] Executing: uvx --from aider-chat aider --model openai/lab-qwen36 --read new_papers.json --read surveys/multi_agent_social_simulations/references.bib --yes-always --no-git --message "Act as a ruthless scientific reviewer (Reviewer 2). Carefully compare the latest additions in 'surveys/multi_agent_social_simulations/multi_agent_social_simulations.md' with the actual abstracts in 'new_papers.json'.
+REVIEW RULES & HISTORICAL MEMORY:
+1) RESPECT THE PAST: 'surveys/multi_agent_social_simulations/multi_agent_social_simulations.md' contains citations from previous cycles (already in 'surveys/multi_agent_social_simulations/references.bib'). If a citation is NOT in 'new_papers.json' but exists in 'surveys/multi_agent_social_simulations/references.bib', DO NOT DELETE IT! It is historically verified literature.
+2) VERIFY NEW ADDITIONS: Examine ONLY claims related to papers from the current 'new_papers.json'. Check if the abstract TRULY supports the written text or if there are hallucinations/exaggerations.
+3) If you find a single exaggeration, falsehood, or ungrounded data among the NEW papers, delete ONLY that specific flawed sentence/paragraph without touching the rest of the document.
+Do NOT invent code, limit yourself to the targeted revision of 'surveys/multi_agent_social_simulations/multi_agent_social_simulations.md'." surveys/multi_agent_social_simulations/multi_agent_social_simulations.md
+
+[SYSTEM] Running Garbage Collector for references.bib...
+[SYSTEM] Garbage Collector executed: bibliography successfully synchronized.
+
+[SYSTEM] Rendering actual charts to disk...
+
+[SYSTEM] Executing: python "surveys/multi_agent_social_simulations/generate_figures.py"
+[GENERATE_FIGURES] Charts updated in /mnt/sdb1/workspace/chiarabrancaleoni/autoresearch/surveys/multi_agent_social_simulations/figures (Timeline reconciled with .bib)
+
+[METRICS] Calculating Precision, Recall, and F1-Measure...
+
+[SYSTEM] Executing: python evaluate_metrics.py "multi_agent_social_simulations"
+==================================================
+ 📊 EXTERNAL VALIDATION: INFORMATION RETRIEVAL METRICS
+==================================================
+Total papers evaluated in sample: 50
+
+Confusion Matrix:
+  - True Positives (TP):  4 (Correctly Included)
+  - False Positives (FP): 1 (Hallucinations/Off-topic Included)
+  - False Negatives (FN): 29 (Useful papers missed/discarded)
+  - True Negatives (TN):  16 (Correctly Discarded)
+
+Metrics:
+  🎯 Precision: 0.8000 (When AI includes a paper, 80.0% of the time it is correct)
+  🔍 Recall:    0.1212 (The AI successfully finds 12.1% of all useful literature)
+  ⚖️  F1-Score:  0.2105 (Harmonic mean of Precision and Recall)
+  ✅ Accuracy:  0.4000 (Total correct decisions)
+==================================================
+
+[SYSTEM] Executing: python prepare.py --eval "Multi_Agent_Social_Simulations"
+INTEGRATED_COUNT:5
+LSS_SCORE:58.89
+
+[VERDICT] Baseline: 50.3 -> New Score: 58.89 (Δ +8.59)
+[SUCCESS] Improvement confirmed! Executing Git Commit.
+
+[SYSTEM] Executing: git add .
+
+[SYSTEM] Executing: git commit -m "feat(multi_agent_social_simulations): integrated valid papers (LSS: 58.89)" 
+[main 7d5d96d] feat(multi_agent_social_simulations): integrated valid papers (LSS: 58.89)
+ 6 files changed, 1128 insertions(+), 2119 deletions(-)
+ create mode 100644 surveys/multi_agent_social_simulations/figures/taxonomy.png
+ create mode 100644 surveys/multi_agent_social_simulations/figures/timeline.png
+ create mode 100644 surveys/multi_agent_social_simulations/generate_figures.py
+ create mode 100644 surveys/multi_agent_social_simulations/multi_agent_social_simulations.md
+ create mode 100644 surveys/multi_agent_social_simulations/references.bib
+[LOG] JSON files successfully archived in: surveys/multi_agent_social_simulations/eval_logs (Timestamp: 20260917_124229)
+
+==================================================
+ LOOP SUCCESSFULLY COMPLETED!
+==================================================
