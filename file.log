@@ -1613,3 +1613,43 @@ Do NOT invent code, limit yourself to the targeted revision of 'surveys/rag_arch
 [METRICS] Calculating Precision, Recall, and F1-Measure...
 
 [SYSTEM] Executing: python evaluate_metrics.py "rag_architecture"
+==================================================
+ 📊 EXTERNAL VALIDATION: INFORMATION RETRIEVAL METRICS
+==================================================
+Total papers evaluated in sample: 25
+
+Confusion Matrix:
+  - True Positives (TP):  15 (Correctly Included)
+  - False Positives (FP): 1 (Hallucinations/Off-topic Included)
+  - False Negatives (FN): 6 (Useful papers missed/discarded)
+  - True Negatives (TN):  3 (Correctly Discarded)
+
+Metrics:
+  🎯 Precision: 0.9375 (When AI includes a paper, 93.8% of the time it is correct)
+  🔍 Recall:    0.7143 (The AI successfully finds 71.4% of all useful literature)
+  ⚖️  F1-Score:  0.8108 (Harmonic mean of Precision and Recall)
+  ✅ Accuracy:  0.7200 (Total correct decisions)
+==================================================
+
+[SYSTEM] Executing: python prepare.py --eval "rag_architecture"
+INTEGRATED_COUNT:9
+LSS_SCORE:65.61
+
+[VERDICT] Baseline: 50.3 -> New Score: 65.61 (Δ +15.31)
+[SUCCESS] Improvement confirmed! Executing Git Commit.
+
+[SYSTEM] Executing: git add .
+
+[SYSTEM] Executing: git commit -m "feat(rag_architecture): integrated valid papers (LSS: 65.61)" 
+[main b856651] feat(rag_architecture): integrated valid papers (LSS: 65.61)
+ 6 files changed, 1412 insertions(+), 1079 deletions(-)
+ create mode 100644 surveys/rag_architecture/figures/taxonomy.png
+ create mode 100644 surveys/rag_architecture/figures/timeline.png
+ create mode 100644 surveys/rag_architecture/generate_figures.py
+ create mode 100644 surveys/rag_architecture/rag_architecture.md
+ create mode 100644 surveys/rag_architecture/references.bib
+[LOG] JSON files successfully archived in: surveys/rag_architecture/eval_logs (Timestamp: 20260917_144942)
+
+==================================================
+ LOOP SUCCESSFULLY COMPLETED!
+==================================================

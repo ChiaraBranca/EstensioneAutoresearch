@@ -17,6 +17,17 @@ import re
 import os
 import sys
 
+
+def clean_id(raw_id):
+    """
+    Normalizes a paper ID for safe comparison.
+    Removes ONLY a trailing version suffix such as 'v2', 'v10', etc.
+    Does NOT touch IDs that merely contain the letter 'v' in the middle
+    of the string (e.g. '10.48550_arxiv.2501.00332').
+    """
+    return re.sub(r'v\d+$', '', str(raw_id).strip())
+
+
 def load_ground_truth(filepath):
     """Loads the binary evaluations (1=Relevant, 0=Not Relevant) from the Oracle."""
     if not os.path.exists(filepath):
@@ -25,16 +36,18 @@ def load_ground_truth(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         return json.load(f)
 
+
 def get_integrated_papers(bib_file):
     """Extracts the IDs of the papers that the AI Actor actively chose to integrate."""
     if not os.path.exists(bib_file):
         return set()
     with open(bib_file, "r", encoding="utf-8") as f:
         content = f.read()
-    
+
     # Find BibTeX keys using Regex
     ids = set(re.findall(r'@\w+\{([^,]+),', content))
-    return {i.split('v')[0] for i in ids}
+    return {clean_id(i) for i in ids}
+
 
 def evaluate_performance(ground_truth_file, bib_file):
     ground_truth = load_ground_truth(ground_truth_file)
@@ -43,53 +56,64 @@ def evaluate_performance(ground_truth_file, bib_file):
     TP, FP, FN, TN = 0, 0, 0, 0
 
     for paper_id, is_relevant_gt in ground_truth.items():
-        # Clean ID to ensure safe comparison (e.g., stripping version 'v2')
-        base_id = str(paper_id).split('v')[0]
-        
+        # Clean ID to ensure safe comparison (strip only a trailing version suffix)
+        base_id = clean_id(paper_id)
+
         # Check if the AI Actor included this specific ID
         is_relevant_ai = 1 if base_id in integrated_ai else 0
 
         # Confusion Matrix Logic
         if is_relevant_ai == 1 and is_relevant_gt == 1:
-            TP += 1 # True Positive: AI correctly included a relevant paper
+            TP += 1  # True Positive: AI correctly included a relevant paper
         elif is_relevant_ai == 1 and is_relevant_gt == 0:
-            FP += 1 # False Positive: AI hallucinated/included an off-topic paper
+            FP += 1  # False Positive: AI hallucinated/included an off-topic paper
         elif is_relevant_ai == 0 and is_relevant_gt == 1:
-            FN += 1 # False Negative: AI missed/discarded a useful paper
+            FN += 1  # False Negative: AI missed/discarded a useful paper
         elif is_relevant_ai == 0 and is_relevant_gt == 0:
-            TN += 1 # True Negative: AI correctly ignored an off-topic paper
-            
+            TN += 1  # True Negative: AI correctly ignored an off-topic paper
+
     # Prevent division by zero
     precision = TP / (TP + FP) if (TP + FP) > 0 else 0.0
     recall = TP / (TP + FN) if (TP + FN) > 0 else 0.0
     f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
     accuracy = (TP + TN) / len(ground_truth) if len(ground_truth) > 0 else 0.0
 
-    print("\n" + "="*50)
+    print("\n" + "=" * 50)
     print(" 📊 EXTERNAL VALIDATION: INFORMATION RETRIEVAL METRICS")
-    print("="*50)
+    print("=" * 50)
     print(f"Total papers evaluated in sample: {len(ground_truth)}\n")
-    
+
     print("Confusion Matrix:")
     print(f"  - True Positives (TP):  {TP} (Correctly Included)")
     print(f"  - False Positives (FP): {FP} (Hallucinations/Off-topic Included)")
     print(f"  - False Negatives (FN): {FN} (Useful papers missed/discarded)")
     print(f"  - True Negatives (TN):  {TN} (Correctly Discarded)\n")
-    
+
     print("Metrics:")
     print(f"  🎯 Precision: {precision:.4f} (When AI includes a paper, {precision*100:.1f}% of the time it is correct)")
     print(f"  🔍 Recall:    {recall:.4f} (The AI successfully finds {recall*100:.1f}% of all useful literature)")
     print(f"  ⚖️  F1-Score:  {f1:.4f} (Harmonic mean of Precision and Recall)")
     print(f"  ✅ Accuracy:  {accuracy:.4f} (Total correct decisions)")
-    print("="*50 + "\n")
+    print("=" * 50 + "\n")
+
+    # Sanity check: TP + FP can never exceed the number of papers actually
+    # present in the bibliography. If it does, something upstream is still broken.
+    n_integrated = len(integrated_ai)
+    if (TP + FP) > n_integrated:
+        print(
+            f"[WARNING] TP+FP ({TP + FP}) exceeds the number of distinct IDs "
+            f"found in the .bib file ({n_integrated}). This should be mathematically "
+            f"impossible and indicates an ID-matching bug upstream.\n"
+        )
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python evaluate_metrics.py <topic_folder_name>")
         sys.exit(1)
-        
+
     topic_dir = sys.argv[1]
     gt_file = "ground_truth.json"
     bib_path = os.path.join("surveys", topic_dir, "references.bib")
-    
+
     evaluate_performance(gt_file, bib_path)
