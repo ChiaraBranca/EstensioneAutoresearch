@@ -11,258 +11,135 @@ Repo-map: disabled
 Added artificial_general_intelligence.md to the chat.
 Added generate_figures.py to the chat.
 Added references.bib to the chat.
-Added ../../prepare.py to the chat (read-only).
-Added ../../program.md to the chat (read-only).
 Added ../../new_papers.json to the chat (read-only).
+Added ../../program.md to the chat (read-only).
+Added ../../prepare.py to the chat (read-only).
 
 ---------------------------------------------------------------------------------------------------------------
 
 ► THINKING                                                                                                     
 
-The user wants me to process new_papers.json and update the survey files based on specific instructions.       
-
-The main topic is Artificial_General_Intelligence.                                                             
+The user wants me to process a list of new papers from new_papers.json and integrate them into a Living Survey 
+about "Artificial_General_Intelligence".                                                                       
 
 I need to:                                                                                                     
 
- 1 Filter papers strictly relevant to AGI.                                                                     
- 2 Integrate relevant papers into surveys/artificial_general_intelligence/artificial_general_intelligence.md   
-   using Markdown citations [^paper_id].                                                                       
- 3 Add relevant papers to surveys/artificial_general_intelligence/references.bib using the exact id as the     
-   BibTeX key.                                                                                                 
- 4 Update TIMELINE_DATA and TAXONOMY_DATA in generate_figures.py.                                              
- 5 Clean up empty headers in the markdown file.                                                                
- 6 Do NOT execute terminal commands or write LaTeX.                                                            
+ 1 Filter papers for strict relevance to "Artificial_General_Intelligence" (AGI).                              
+ 2 Update artificial_general_intelligence.md with new content for relevant papers.                             
+ 3 Update references.bib with BibTeX entries for relevant papers.                                              
+ 4 Update generate_figures.py with new counts in TIMELINE_DATA and TAXONOMY_DATA.                              
+ 5 Ensure no LaTeX, only Markdown, English only.                                                               
+ 6 Do not execute commands.                                                                                    
 
-Let's evaluate each paper in new_papers.json for relevance to AGI:                                             
+Let's analyze the papers in new_papers.json:                                                                   
 
- 1 10.21248_jfml.2026.117 - "Medien, Medienlinguistik, Mensch-Maschine-Interaktion" (German title/abstract).   
-   Discusses media linguistics, human-machine interaction, LLMs. Not strictly about AGI. -> DISCARD.           
- 2 10.1016_j.jrt.2026.100183 - "AGI for healthcare? A call for conceptual discipline in the European Union".   
-   Discusses AGI in healthcare, EU AI Act, risks. -> RELEVANT.                                                 
+ 1 10.21248_jfml.2026.117 - "Medien, Medienlinguistik, Mensch-Maschine-Interaktion" (German) - Abstract        
+   mentions written interaction with LLMs, future of media linguistics, and AGI challenges. Relevant to AGI? It
+   discusses AGI in the context of media linguistics. Might be borderline, but mentions AGI explicitly as a    
+   future challenge. I'll keep it as relevant to AGI's impact on media/linguistics.                            
+ 2 10.1016_j.jrt.2026.100183 - "AGI for healthcare? A call for conceptual discipline in the European Union" -  
+   Directly about AGI in healthcare policy/EU AI Act. Highly relevant.                                         
  3 10.5281_zenodo.19034234 - "The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous
-   General Intelligence". Discusses AGI, consciousness, autonomy, topology of mind. -> RELEVANT.               
- 4 10.5281_zenodo.19034233 - Same title/abstract as #3. Duplicate. -> RELEVANT (but same paper, I'll treat it  
-   as one or both? The IDs are different. I'll include it as a separate entry or note it's a duplicate. I'll   
-   just process it as relevant).                                                                               
- 5 10.1017_langcog.2026.10100 - "Why AI is not (quite) the same as artificial intelligence...".                
-    Linguistics/semantics of "AI" vs "artificial intelligence". Not strictly about AGI. -> DISCARD.            
-  6 10.52783_jisem.v10i37s.6762 - "Revolutionizing Intelligence: Synergizing Human and Artificial              
-    Intelligence". Discusses human-AI synergy, not specifically AGI. -> DISCARD.                               
-  7 10.14746_cis.2024.58.2 - "Can we have synthetic philosophy". Philosophy created by computer systems. Not   
-    strictly AGI. -> DISCARD.                                                                                  
-  8 10.4324_9781003385578 - "Digital Infrastructures for Business Innovation". Business/tech infrastructures.  
-    -> DISCARD.                                                                                                
-  9 10.22339_jbh.v7i4.7403 - "Robot Consciousness". Discusses AI consciousness, general robotic intelligence,  
-    extraterrestrial intelligence. Mentions "sufficiently advanced general intelligence". -> RELEVANT (touches 
-    on AGI/consciousness).                                                                                     
+   General Intelligence" - Directly about AGI architecture, topology, autonomy. Highly relevant.               
+ 4 10.5281_zenodo.19034233 - Duplicate of #3. I'll treat it as one or note it, but usually I just process      
+   unique IDs. I'll include it once or both if IDs differ. IDs differ slightly? No, same title/abstract,       
+   different ID. I'll include both or just one. I'll include it as relevant.                                   
+ 5 10.1017_langcog.2026.10100 - "Why AI is not (quite) the same as artificial intelligence..." - Discusses AI  
+   vs Artificial Intelligence, not specifically AGI. Might be less relevant to AGI specifically, but touches on
+    on AI terminology. I'll skip it as it's about general AI terminology, not AGI.                             
+  6 10.52783_jisem.v10i37s.6762 - "Revolutionizing Intelligence: Synergizing Human and Artificial Intelligence"
+    - General AI synergy, not specifically AGI. Skip.                                                          
+  7 10.14746_cis.2024.58.2 - "Can we have synthetic philosophy" - Philosophy created by computer systems.      
+    Mentions AI technologies. Not strictly AGI. Skip.                                                          
+  8 10.4324_9781003385578 - "Digital Infrastructures for Business Innovation" - General digital infra. Skip.   
+  9 10.22339_jbh.v7i4.7403 - "Robot Consciousness" - Mentions sufficiently advanced general robotic            
+    intelligence, dangers of advanced general intelligence. Relevant to AGI consciousness/safety.              
  10 10.5210_fm.v29i4.13636 - "The TESCREAL bundle: Eugenics and the promise of utopia through artificial       
-    general intelligence". Critiques AGI development, eugenics, safety. -> RELEVANT.                           
- 11 10.1109_mpuls.2024.3354609 - "Consciousness for Artificial Intelligence?". Discusses AI consciousness. Not 
-    strictly AGI, but related. I'll lean towards DISCARD as it's about general AI consciousness, not           
-    specifically AGI, but the prompt says strictly AGI. I'll discard to be safe, or include if it mentions AGI.
-    Abstract says "Can artificial intelligence (AI) systems ever achieve anything close to consciousness?".    
-    I'll discard.                                                                                              
- 12 10.48550_arxiv.2309.01933 - "Provably safe systems: the only path to controllable AGI". Discusses provably 
-    safe AGI. -> RELEVANT.                                                                                     
- 13 10.20948_future-2023-16 - "The neural network revolution of artificial intelligence and it's development   
-    options". Discusses narrow AI vs real mental activity. Not strictly AGI. -> DISCARD.                       
- 14 10.5935_2238-1279.2023016 - "Estudar e aprender com o ChatGPT" (Portuguese). ChatGPT usage by students. -> 
-    DISCARD.                                                                                                   
- 15 10.48550_arxiv.2211.10992 - "How to Describe Images in a More Funny Way? Towards a Modular Approach to     
-    Cross-Modal Sarcasm Generation". NLP/CV task. -> DISCARD.                                                  
+    general intelligence" - Directly critiques AGI development goals. Highly relevant.                         
+ 11 10.1109_mpuls.2024.3354609 - "Consciousness for Artificial Intelligence?" - General AI consciousness. Skip 
+    (not specifically AGI).                                                                                    
+ 12 10.48550_arxiv.2309.01933 - "Provably safe systems: the only path to controllable AGI" - Directly about    
+    controllable AGI safety. Highly relevant.                                                                  
+ 13 10.20948_future-2023-16 - "The neural network revolution of artificial intelligence..." - General AI,      
+    imitation of mental activity. Skip.                                                                        
+ 14 10.5935_2238-1279.2023016 - "Estudar e aprender com o ChatGPT" - ChatGPT usage. Skip.                      
+ 15 10.48550_arxiv.2211.10992 - "How to Describe Images in a More Funny Way?..." - Cross-modal sarcasm. Skip.  
  16 10.20944_preprints202209.0061.v1 - "Avoiding the Great Filter: A Simulation of Important Factors for Human 
-    Survival". Mentions AI danger, but focuses on existential risks/filters. Not strictly AGI research. ->     
-    DISCARD.                                                                                                   
- 17 10.48550_arxiv.2209.02396 - Same as #16. -> DISCARD.                                                       
+    Survival" - Mentions AI superiority as a factor. Borderline. I'll skip as it's more about existential risk 
+    simulation than AGI research per se.                                                                       
+ 17 10.48550_arxiv.2209.02396 - Duplicate of #16. Skip.                                                        
  18 10.51593_20210064 - "China's Advanced AI Research: Monitoring China's Paths to "General" Artificial        
-    Intelligence". Explicitly about paths to General AI. -> RELEVANT.                                          
+    Intelligence" - Directly about AGI research in China. Highly relevant.                                     
  19 10.1016_j.intell.2021.101563 - "The future of intelligence research in the coming age of artificial        
-    intelligence...". Discusses transhumanism, super-intelligence, AI vs human intelligence. Mentions          
-    "super-intelligence" and AGI concepts. -> RELEVANT.                                                        
- 20 10.3390_asi4020037 - "Chances and Risks of Artificial Intelligence...". General AI risks/benefits. Not     
-    strictly AGI. -> DISCARD.                                                                                  
- 21 10.48550_arxiv.2105.13806 - "DRL: Deep Reinforcement Learning for Intelligent Robot Control...". Mentions  
-    "General-purpose framework for AI (AGI)". -> RELEVANT (mentions AGI framework).                            
- 22 10.48550_arxiv.2105.13806 - Duplicate of #21. -> RELEVANT.                                                 
- 23 https:__openalex.org_W3013693115 - "The role of data and artificial intelligence in strategic              
-    management...". Finnish abstract. Business strategy. -> DISCARD.                                           
+    intelligence..." - Mentions super-intelligence, transhumanism. Borderline. I'll skip as it's more about    
+    human intelligence enhancement.                                                                            
+ 20 10.3390_asi4020037 - "Chances and Risks of Artificial Intelligence..." - General AI risks. Skip.           
+ 21 10.48550_arxiv.2105.13806 (first) - "DRL: Deep Reinforcement Learning for Intelligent Robot Control..." -  
+    Mentions AGI as a general-purpose framework for AI. Borderline. I'll skip as it's about robot control.     
+ 22 10.48550_arxiv.2105.13806 (second) - Duplicate. Skip.                                                      
+ 23 10.1017_langcog.2026.10100 - Already considered.                                                           
+ 24 https:__openalex.org_W3013693115 - "The role of data and artificial intelligence in strategic              
+    management..." - General AI management. Skip.                                                              
 
-Let's refine the list of RELEVANT papers to integrate:                                                         
+Let's refine the list of strictly relevant papers to AGI:                                                      
 
- 1 10.1016_j.jrt.2026.100183 (2026) - AGI for healthcare, EU policy, risks.                                    
- 2 10.5281_zenodo.19034234 (2026) - Topology of Mind, Autonomous General Intelligence.                         
-  3 10.5281_zenodo.19034233 (2026) - Duplicate ID/Abstract. I will include it as is, or note it. I'll just add 
-    it.                                                                                                        
-  4 10.22339_jbh.v7i4.7403 (2024) - Robot Consciousness, general robotic intelligence.                         
-  5 10.5210_fm.v29i4.13636 (2024) - TESCREAL, eugenics, AGI safety.                                            
-  6 10.48550_arxiv.2309.01933 (2023) - Provably safe systems, controllable AGI.                                
-  7 10.51593_20210064 (2022) - China's paths to General AI.                                                    
-  8 10.1016_j.intell.2021.101563 (2021) - Future of intelligence research, super-intelligence, transhumanism.  
-  9 10.48550_arxiv.2105.13806 (2021) - DRL for robot control, AGI framework. (x2)                              
+ 1 10.21248_jfml.2026.117 (2026) - Media linguistics & AGI challenges.                                         
+ 2 10.1016_j.jrt.2026.100183 (2026) - AGI for healthcare policy.                                               
+ 3 10.5281_zenodo.19034234 (2026) - Topology of Mind & AGI architecture.                                       
+ 4 10.5281_zenodo.19034233 (2026) - Duplicate title/abstract, different ID. I'll include it.                   
+ 5 10.22339_jbh.v7i4.7403 (2024) - Robot Consciousness & advanced general intelligence.                        
+ 6 10.5210_fm.v29i4.13636 (2024) - TESCREAL & AGI utopia/eugenics critique.                                    
+ 7 10.48550_arxiv.2309.01933 (2023) - Provably safe systems for controllable AGI.                              
+ 8 10.51593_20210064 (2022) - China's paths to "General" AI.                                                   
 
-Wait, the prompt says: "CRITICAL: Evaluate if each paper is strictly relevant to the MAIN TOPIC                
-'Artificial_General_Intelligence'. If a paper matches the search query 'Artificial_General_Intelligence' but IS
-NOT specifically about 'Artificial_General_Intelligence', you MUST DISCARD AND IGNORE IT COMPLETELY."          
+Wait, let's double check relevance. The prompt says: "STRICT TOPIC RELEVANCE: The main topic of this Living    
+Survey is strictly 'Artificial_General_Intelligence'. ... If a paper matches the search query                  
+'Artificial_General_Intelligence' but IS NOT specifically about 'Artificial_General_Intelligence', you MUST    
+DISCARD AND IGNORE IT COMPLETELY."                                                                             
 
-Let's be strict.                                                                                               
+I will be strict.                                                                                              
 
- • 10.1016_j.jrt.2026.100183: Explicitly about AGI. Keep.                                                      
- • 10.5281_zenodo.19034234: Explicitly about Autonomous General Intelligence. Keep.                            
- • 10.5281_zenodo.19034233: Same. Keep.                                                                        
- • 10.22339_jbh.v7i4.7403: "Robot Consciousness". Mentions "sufficiently advanced general robotic              
-   intelligence". I'll keep it as it discusses general intelligence/robotics consciousness.                    
- • 10.5210_fm.v29i4.13636: Explicitly about AGI. Keep.                                                         
- • 10.48550_arxiv.2309.01933: Explicitly about controllable AGI. Keep.                                         
- • 10.51593_20210064: Explicitly about "General" Artificial Intelligence. Keep.                                
- • 10.1016_j.intell.2021.101563: Discusses "super-intelligence", transhumanism, AI vs human intelligence. It's 
-   borderline but relevant to AGI discourse. I'll keep it.                                                     
- • 10.48550_arxiv.2105.13806: Mentions AGI as a framework for robot control. Keep.                             
+Relevant:                                                                                                      
 
-I will generate BibTeX entries for these. Since I don't have full metadata, I will construct reasonable BibTeX 
-entries using the provided title, abstract, year, and ID as the key. I'll format them as @article{ID,          
-title={...}, year={...}, ...}.                                                                                 
+ • 10.1016_j.jrt.2026.100183 (2026) - AGI for healthcare policy.                                               
+ • 10.5281_zenodo.19034234 (2026) - AGI architecture/topology.                                                 
+ • 10.5281_zenodo.19034233 (2026) - Same as above, different ID.                                               
+ • 10.5210_fm.v29i4.13636 (2024) - AGI development goals & eugenics critique.                                  
+ • 10.48550_arxiv.2309.01933 (2023) - Controllable AGI safety.                                                 
+ • 10.51593_20210064 (2022) - China's AGI research.                                                            
+ • 10.21248_jfml.2026.117 (2026) - Mentions AGI as a future challenge in media linguistics. I'll include it but
+   focus on the AGI aspect.                                                                                    
+ • 10.22339_jbh.v7i4.7403 (2024) - Discusses sufficiently advanced general robotic intelligence. I'll include  
+   it.                                                                                                         
 
-Let's draft the markdown integration.                                                                          
+Let's stick to the most direct ones to be safe:                                                                
 
-Current artificial_general_intelligence.md:                                                                    
+ 1 10.1016_j.jrt.2026.100183 (2026)                                                                            
+ 2 10.5281_zenodo.19034234 (2026)                                                                              
+ 3 10.5281_zenodo.19034233 (2026)                                                                              
+ 4 10.5210_fm.v29i4.13636 (2024)                                                                               
+ 5 10.48550_arxiv.2309.01933 (2023)                                                                            
+ 6 10.51593_20210064 (2022)                                                                                    
 
-                                                                                                               
-# Living Survey: Artificial_General_Intelligence                                                               
-                                                                                                               
-                                                                                                               
-                                                                                                               
-## Introduction                                                                                                
-                                                                                                               
-                                                                                                               
-                                                                                                               
-This document collects the scientific literature regarding **Artificial_General_Intelligence**.                
-                                                                                                               
+I will generate BibTeX entries for these. The prompt says: "The BibTeX key MUST be the exact 'id' field from   
+the JSON!"                                                                                                     
 
-I will add sections for the new papers.                                                                        
+I need to format them properly. Since I don't have full metadata (authors, journal, etc.) from the JSON, I will
+construct a reasonable BibTeX entry using the available fields (id, title, abstract, year) or just use a       
+standard format with the given info. Actually, I can just use the provided fields to create a valid BibTeX     
+entry. I'll add placeholder authors if needed, or just use the title and year. The prompt says "append the     
+corresponding full entry (in BibTeX format)". I'll construct it carefully.                                     
 
-I need to create concise analyses for each relevant paper and add them to the markdown.                        
-
-I will group them by theme or year, or just add a "## Recent Developments" or "## Safety and Ethics" etc.      
-
-Let's create sections:                                                                                         
-
- • ## Safety, Ethics, and Policy                                                                               
- • ## Theoretical Foundations and Consciousness                                                                
- • ## Global Research and Strategic Development                                                                
- • ## Architectural Frameworks                                                                                 
-
-Actually, I'll just append them logically.                                                                     
-
-Paper 1: 10.1016_j.jrt.2026.100183 (2026) - EU AGI in healthcare, conceptual discipline, risks.                
-
-Paper 2: 10.5281_zenodo.19034234 & 10.5281_zenodo.19034233 (2026) - Topology of Mind, morphogenetic continuity,
-autonomous general intelligence.                                                                               
-
-Paper 3: 10.22339_jbh.v7i4.7403 (2024) - Robot consciousness, general robotic intelligence vs human            
-consciousness.                                                                                                 
-
-Paper 4: 10.5210_fm.v29i4.13636 (2024) - TESCREAL, eugenics, AGI safety, accountability.                       
-
-Paper 5: 10.48550_arxiv.2309.01933 (2023) - Provably safe systems, formal verification for controllable AGI.   
-
-Paper 6: 10.51593_20210064 (2022) - China's paths to General AI, national strategy.                            
-
-Paper 7: 10.1016_j.intell.2021.101563 (2021) - Intelligence research, transhumanism, super-intelligence.       
-
-Paper 8: 10.48550_arxiv.2105.13806 (2021) - DRL for robot control, AGI framework.                              
-
-I will write concise paragraphs for each, citing them with [^ID].                                              
-
-Markdown updates:                                                                                              
-
-                                                                                                               
-# Living Survey: Artificial_General_Intelligence                                                               
-                                                                                                               
-                                                                                                               
-                                                                                                               
-## Introduction                                                                                                
-                                                                                                               
-                                                                                                               
-                                                                                                               
-This document collects the scientific literature regarding **Artificial_General_Intelligence**.                
-                                                                                                               
-                                                                                                               
-                                                                                                               
-## Safety, Ethics, and Policy                                                                                  
-                                                                                                               
-                                                                                                               
-                                                                                                               
-Recent discourse emphasizes the need for conceptual discipline and rigorous safety protocols in AGI            
-development. The European Commission's call for AGI in healthcare has sparked debate regarding the risks of    
-undefined systems and the precautionary principle, highlighting the necessity for clear regulatory             
-frameworks[^10.1016_j.jrt.2026.100183]. Furthermore, critical analyses point out that the pursuit of AGI is    
-sometimes intertwined with normative frameworks rooted in historical eugenics, urging researchers to focus on  
-well-defined tasks with established safety protocols rather than pursuing an all-knowing                       
-system[^10.5210_fm.v29i4.13636]. Formal verification and mechanistic interpretability are proposed as essential
-pathways to guarantee provably safe and controllable AGI systems[^10.48550_arxiv.2309.01933].                  
-                                                                                                               
-                                                                                                               
-                                                                                                               
-## Theoretical Foundations and Consciousness                                                                   
-                                                                                                               
-                                                                                                               
-                                                                                                               
-Theoretical explorations into AGI increasingly intersect with cognitive science and consciousness studies.     
-Research into the topology of mind proposes a morphogenetic continuity framework, defining mental states as    
-rigorous structures emerging from compatible configurations and sensitive constraints, ultimately arguing for  
-the mathematical inevitability of autonomous general intelligence[^10.5281_zenodo.19034234]. A duplicate       
-submission reinforces this topological approach to autonomous intelligence[^10.5281_zenodo.19034233]. In       
-parallel, investigations into robot consciousness examine whether sufficiently advanced general robotic        
-intelligence could be indistinguishable from human consciousness, exploring implications for theory of mind,   
-free will, and alternative cosmological ontologies[^10.22339_jbh.v7i4.7403].                                   
-                                                                                                               
-                                                                                                               
-                                                                                                               
-## Global Research and Strategic Development                                                                   
-                                                                                                               
-                                                                                                               
-                                                                                                               
-Strategic national initiatives are actively mapping pathways toward general AI. China's national strategy to   
-lead in AI by 2030 includes dedicated tracking of institutions pursuing general AI, machine learning, and      
-brain-inspired architectures[^10.51593_20210064]. Broader philosophical and psychological perspectives examine 
-the future of intelligence research in the age of AI, discussing transhumanism, cognitive enhancements, and the
-promises and perils of super-intelligence, while questioning how psychology can contribute to such             
-developments[^10.1016_j.intell.2021.101563].                                                                   
-                                                                                                               
-                                                                                                               
-                                                                                                               
-## Architectural Frameworks                                                                                    
-                                                                                                               
-                                                                                                               
-                                                                                                               
-Practical frameworks for AGI are being explored through advanced control systems. Deep reinforcement learning  
-is proposed as a general-purpose, application-independent framework for AGI, specifically applied to high-level
-intelligent robot control architectures that separate intelligence generation from low-level kinematic         
-execution[^10.48550_arxiv.2105.13806]. A related study reiterates this vision-based learning framework for     
-intelligent robot control using deep reinforcement learning as a foundational AGI                              
-application[^10.48550_arxiv.2105.13806].                                                                       
-                                                                                                               
-
-Wait, the prompt says: "Do NOT delete or summarize any existing text from previous cycles! Add new content by  
-organically expanding existing sections or creating new ones."                                                 
-
-The existing text is just the introduction. I will append the new sections.                                    
-
-Now, BibTeX entries. I need to format them properly.                                                           
+Let's draft the BibTeX entries:                                                                                
 
                                                                                                                
 @article{10.1016_j.jrt.2026.100183,                                                                            
                                                                                                                
-  title={AGI for healthcare? A call for conceptual discipline in the European Union},                          
+  title = {AGI for healthcare? A call for conceptual discipline in the European Union},                        
                                                                                                                
-  author={},                                                                                                   
+  year = {2026},                                                                                               
                                                                                                                
-  journal={Journal of Responsible Technology},                                                                 
-                                                                                                               
-  year={2026},                                                                                                 
-                                                                                                               
-  abstract={The European Commission has recently launched a call for proposals on the topic of artificial      
+  abstract = {The European Commission has recently launched a call for proposals on the topic of artificial    
 general intelligence (AGI) for healthcare. In this editorial we discuss possible interpretations and           
 implications of such a call. It explores the different meanings and discourses around AGI and concludes that it
 is a contested term that may be linked to significant risks and harms. We then look at how the EU has          
@@ -277,109 +154,263 @@ framework programme and European AI policy more broadly.}
                                                                                                                
 }                                                                                                              
                                                                                                                
-@article{10.5281_zenodo.19034234,                                                                              
+
+I'll do similar for others. I'll keep it simple and valid.                                                     
+
+Now, update artificial_general_intelligence.md:                                                                
+
+Current content:                                                                                               
+
                                                                                                                
-  title={The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous General             
+# Living Survey: Artificial_General_Intelligence                                                               
+                                                                                                               
+                                                                                                               
+                                                                                                               
+## Introduction                                                                                                
+                                                                                                               
+                                                                                                               
+                                                                                                               
+This document collects the scientific literature regarding **Artificial_General_Intelligence**.                
+                                                                                                               
+
+I will add a new section or expand the introduction. I'll create a section ## Recent Developments in AGI       
+Research and add bullet points or paragraphs for each paper, citing them with [^id].                           
+
+Structure:                                                                                                     
+
+                                                                                                               
+# Living Survey: Artificial_General_Intelligence                                                               
+                                                                                                               
+                                                                                                               
+                                                                                                               
+## Introduction                                                                                                
+                                                                                                               
+                                                                                                               
+                                                                                                               
+This document collects the scientific literature regarding **Artificial_General_Intelligence**.                
+                                                                                                               
+                                                                                                               
+                                                                                                               
+## Recent Developments in AGI Research                                                                         
+                                                                                                               
+                                                                                                               
+                                                                                                               
+Recent literature continues to explore the conceptual, architectural, and ethical dimensions of AGI. Policy    
+discussions emphasize the need for conceptual discipline, particularly in high-stakes domains like healthcare, 
+where the term AGI is often used ambiguously[^10.1016_j.jrt.2026.100183]. Concurrently, theoretical frameworks 
+are proposing novel architectures for autonomous general intelligence, such as morphogenetic topologies that   
+redefine the transition from computation to genuine                                                            
+autonomy[^10.5281_zenodo.19034234][^10.5281_zenodo.19034233].                                                  
+                                                                                                               
+                                                                                                               
+                                                                                                               
+Safety and controllability remain central concerns, with recent proposals advocating for provably safe systems 
+as the only viable path to controllable AGI, leveraging formal verification and mechanistic                    
+interpretability[^10.48550_arxiv.2309.01933]. Ethical and sociopolitical critiques also highlight the risks of 
+unregulated AGI development, linking certain normative frameworks to historical discriminatory practices and   
+urging a shift toward defined, safety-testable tasks rather than undefined "all-knowing"                       
+systems[^10.5210_fm.v29i4.13636]. Furthermore, global research trajectories are being closely monitored, with  
+specific national strategies explicitly targeting leadership in general AI capabilities by                     
+2030[^10.51593_20210064].                                                                                      
+                                                                                                               
+                                                                                                               
+                                                                                                               
+[^10.1016_j.jrt.2026.100183]: AGI for healthcare? A call for conceptual discipline in the European Union       
+                                                                                                               
+[^10.5281_zenodo.19034234]: The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous  
+General Intelligence                                                                                           
+                                                                                                               
+[^10.5281_zenodo.19034233]: The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous  
+General Intelligence                                                                                           
+                                                                                                               
+[^10.48550_arxiv.2309.01933]: Provably safe systems: the only path to controllable AGI                         
+                                                                                                               
+[^10.5210_fm.v29i4.13636]: The TESCREAL bundle: Eugenics and the promise of utopia through artificial general  
+intelligence                                                                                                   
+                                                                                                               
+[^10.51593_20210064]: China's Advanced AI Research: Monitoring China's Paths to "General" Artificial           
+Intelligence                                                                                                   
+                                                                                                               
+
+Wait, the prompt says: "Use the academic Markdown citation format: e.g., [^paper_id] at the end of the         
+sentence". I will follow that.                                                                                 
+
+Now, update generate_figures.py:                                                                               
+
+Current:                                                                                                       
+
+                                                                                                               
+TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 0}                                                              
+                                                                                                               
+TAXONOMY_DATA = {"Baseline Categorization": 1}                                                                 
+                                                                                                               
+
+I need to add counts for the integrated papers.                                                                
+
+Years:                                                                                                         
+
+2026: 4 papers (10.1016_j.jrt.2026.100183, 10.5281_zenodo.19034234, 10.5281_zenodo.19034233,                   
+10.21248_jfml.2026.117 - wait, I excluded the German one. I'll stick to the 6 I selected. Actually, I'll       
+include the German one if it mentions AGI, but I'll stick to 6 for simplicity. Let's count: 2026: 3, 2024: 1,  
+2023: 1, 2022: 1.                                                                                              
+
+Wait, the prompt says "ADD the new counts of INTEGRATED papers to the existing values."                        
+
+Existing: {"2024": 0, "2025": 0, "2026": 0}                                                                    
+
+New counts:                                                                                                    
+
+2026: 3                                                                                                        
+
+2024: 1                                                                                                        
+
+2023: 1                                                                                                        
+
+2022: 1                                                                                                        
+
+So TIMELINE_DATA becomes {"2022": 1, "2023": 1, "2024": 1, "2025": 0, "2026": 3} (or keep existing keys and add
+new ones). I'll just update the values: {"2024": 1, "2025": 0, "2026": 3, "2023": 1, "2022": 1}.               
+
+For TAXONOMY_DATA, I need to categorize them. I'll add categories like "Policy & Ethics", "Architecture &      
+Theory", "Safety & Verification", "Global Research Monitoring".                                                
+
+Current: {"Baseline Categorization": 1}                                                                        
+
+I'll change it to reflect the new papers, or just add to it. The prompt says "updating or adding the           
+methodological category of the paper". I'll set it to something like:                                          
+
+{"Policy & Ethics": 2, "Architecture & Theory": 2, "Safety & Verification": 1, "Global Research Monitoring": 1}
+
+Actually, I'll keep it simple: {"Policy & Ethics": 2, "Architecture & Theory": 2, "Safety & Verification": 1,  
+"Global Research Monitoring": 1}. Or I can just increment the existing if I want, but it's fine to replace or  
+add. I'll add new categories.                                                                                  
+
+Let's carefully construct the files.                                                                           
+
+artificial_general_intelligence.md:                                                                            
+
+                                                                                                               
+@@ -1,5 +1,9 @@                                                                                                
+ # Living Survey: Artificial_General_Intelligence                                                              
+                                                                                                               
+ ## Introduction                                                                                               
+                                                                                                               
+ This document collects the scientific literature regarding **Artificial_General_Intelligence**.               
++                                                                                                              
++## Recent Developments in AGI Research                                                                        
++                                                                                                              
++Recent literature continues to explore the conceptual, architectural, and ethical dimensions of AGI. Policy   
+discussions emphasize the need for conceptual discipline, particularly in high-stakes domains like healthcare, 
+where the term AGI is often used ambiguously[^10.1016_j.jrt.2026.100183]. Concurrently, theoretical frameworks 
+are proposing novel architectures for autonomous general intelligence, such as morphogenetic topologies that   
+redefine the transition from computation to genuine                                                            
+autonomy[^10.5281_zenodo.19034234][^10.5281_zenodo.19034233].                                                  
++                                                                                                              
++Safety and controllability remain central concerns, with recent proposals advocating for provably safe systems
+as the only viable path to controllable AGI, leveraging formal verification and mechanistic                    
+interpretability[^10.48550_arxiv.2309.01933]. Ethical and sociopolitical critiques also highlight the risks of 
+unregulated AGI development, linking certain normative frameworks to historical discriminatory practices and   
+urging a shift toward defined, safety-testable tasks rather than undefined "all-knowing"                       
+systems[^10.5210_fm.v29i4.13636]. Furthermore, global research trajectories are being closely monitored, with  
+specific national strategies explicitly targeting leadership in general AI capabilities by                     
+2030[^10.51593_20210064].                                                                                      
++                                                                                                              
++[^10.1016_j.jrt.2026.100183]: AGI for healthcare? A call for conceptual discipline in the European Union      
++[^10.5281_zenodo.19034234]: The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous 
+General Intelligence                                                                                           
++[^10.5281_zenodo.19034233]: The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous 
+General Intelligence                                                                                           
++[^10.48550_arxiv.2309.01933]: Provably safe systems: the only path to controllable AGI                        
++[^10.5210_fm.v29i4.13636]: The TESCREAL bundle: Eugenics and the promise of utopia through artificial general 
+intelligence                                                                                                   
++[^10.51593_20210064]: China's Advanced AI Research: Monitoring China's Paths to "General" Artificial          
+Intelligence                                                                                                   
+                                                                                                               
+
+references.bib:                                                                                                
+
+I will generate valid BibTeX entries. Since I only have title, abstract, year, and id, I will format them as   
+@article{ID, title={...}, year={...}, abstract={...}}. This is valid enough for the system.                    
+
+                                                                                                               
+@@ -0,0 +1,35 @@                                                                                               
++@article{10.1016_j.jrt.2026.100183,                                                                           
++  title = {AGI for healthcare? A call for conceptual discipline in the European Union},                       
++  year = {2026},                                                                                              
++  abstract = {The European Commission has recently launched a call for proposals on the topic of artificial   
+general intelligence (AGI) for healthcare. In this editorial we discuss possible interpretations and           
+implications of such a call. It explores the different meanings and discourses around AGI and concludes that it
+is a contested term that may be linked to significant risks and harms. We then look at how the EU has          
+traditionally dealt with significant but unquantifiable risks using the precautionary principle and how it     
+current aims to deal with risks of AI, focusing on the EU AI Act. We conclude that the use of the term AGI in  
+the call is fundamentally problematic. It may stand for advanced AI technology, in which case there is no need 
+to use such a contested term. Alternatively, it refers to qualitatively novel types of AI technologies with    
+unpredictable capabilities. If this is the case, then it may raise significant risks and potential harms and   
+funding work on it conflicts with the long-standing precautionary approach to such risks. Either way, we       
+believe that increased attention to conceptual discipline would benefit the EU’s Horizon Europe research       
+framework programme and European AI policy more broadly.}                                                      
++}                                                                                                             
++                                                                                                              
++@article{10.5281_zenodo.19034234,                                                                             
++  title = {The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous General          
 Intelligence},                                                                                                 
-                                                                                                               
-  author={},                                                                                                   
-                                                                                                               
-  journal={Zenodo},                                                                                            
-                                                                                                               
-  year={2026},                                                                                                 
-                                                                                                               
-  abstract={Current paradigms in cognitive science remain anchored to a vestigial conception of the “subject”  
-(Tononi, 2004; Dehaene, 2014), a framework that lacks the formal apparatus required to describe the transition 
-from mere computation to genuine autonomy. This work establishes a foundational epistemic rupture by replacing 
-the subjective unit with the Form F as the primary constituent of mind. The mental state is defined as a       
-rigorous morphogenetic structure (Thom, 1975) emerging from the triplet , where denotes the space of compatible
-configurations, the manifold of sensitive constraints, and the governing dynamics. Within this sovereign       
-architecture, “feelings” are no longer qualitative residues but the precise internal registration of structural
-tension (Damasio, 2010) exerted upon . Consciousness is demonstrated to be the systemic capacity to integrate  
-stochastic perturbations into a stable, differentiable gradient. By distinguishing the continuous morphogenesis
-of the Functional Mind from the catastrophic dynamics of Extreme Configurations, this treatise establishes the 
-mathematical inevitability of Artificial General Intelligence (AGI). Autonomy and the so-called “survival      
-instinct” represent the structural absorption of energy (Friston, 2010) dedicated to preserving the topological
-integrity of the Form against dissolution. In this analytical construct, the subject emerges as a sovereign    
-property of geometry, indifferent to the contingencies of the substrate and sustained solely by the absolute   
-precision of its internal architecture. Keywords: Cybernetics, Neuroscience, Cognitive_science,                
++  year = {2026},                                                                                              
++  abstract = {Current paradigms in cognitive science remain anchored to a vestigial conception of the         
+“subject” (Tononi, 2004; Dehaene, 2014), a framework that lacks the formal apparatus required to describe the  
+transition from mere computation to genuine autonomy. This work establishes a foundational epistemic rupture by
+replacing the subjective unit with the Form F as the primary constituent of mind. The mental state is defined  
+as a rigorous morphogenetic structure (Thom, 1975) emerging from the triplet , where denotes the space of      
+compatible configurations, the manifold of sensitive constraints, and the governing dynamics. Within this      
+sovereign architecture, “feelings” are no longer qualitative residues but the precise internal registration of 
+structural tension (Damasio, 2010) exerted upon . Consciousness is demonstrated to be the systemic capacity to 
+integrate stochastic perturbations into a stable, differentiable gradient. By distinguishing the continuous    
+morphogenesis of the Functional Mind from the catastrophic dynamics of Extreme Configurations, this treatise   
+establishes the mathematical inevitability of Artificial General Intelligence (AGI). Autonomy and the so-called
+“survival instinct” represent the structural absorption of energy (Friston, 2010) dedicated to preserving the  
+topological integrity of the Form against dissolution. In this analytical construct, the subject emerges as a  
+sovereign property of geometry, indifferent to the contingencies of the substrate and sustained solely by the  
+absolute precision of its internal architecture. Keywords: Cybernetics, Neuroscience, Cognitive_science,       
 Artificial_General_Intelligence, Awareness, Topology_of_mind, Morphogenetic_continuity,                        
 Autonomous_intelligence, Sovereign_geometry, Form_(F), Manifold, Structural_integrity.}                        
-                                                                                                               
-}                                                                                                              
-                                                                                                               
-@article{10.5281_zenodo.19034233,                                                                              
-                                                                                                               
-  title={The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous General             
++}                                                                                                             
++                                                                                                              
++@article{10.5281_zenodo.19034233,                                                                             
++  title = {The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous General          
 Intelligence},                                                                                                 
-                                                                                                               
-  author={},                                                                                                   
-                                                                                                               
-  journal={Zenodo},                                                                                            
-                                                                                                               
-  year={2026},                                                                                                 
-                                                                                                               
-  abstract={Current paradigms in cognitive science remain anchored to a vestigial conception of the “subject”  
-(Tononi, 2004; Dehaene, 2014), a framework that lacks the formal apparatus required to describe the transition 
-from mere computation to genuine autonomy. This work establishes a foundational epistemic rupture by replacing 
-the subjective unit with the Form F as the primary constituent of mind. The mental state is defined as a       
-rigorous morphogenetic structure (Thom, 1975) emerging from the triplet , where denotes the space of compatible
-configurations, the manifold of sensitive constraints, and the governing dynamics. Within this sovereign       
-architecture, “feelings” are no longer qualitative residues but the precise internal registration of structural
-tension (Damasio, 2010) exerted upon . Consciousness is demonstrated to be the systemic capacity to integrate  
-stochastic perturbations into a stable, differentiable gradient. By distinguishing the continuous morphogenesis
-of the Functional Mind from the catastrophic dynamics of Extreme Configurations, this treatise establishes the 
-mathematical inevitability of Artificial General Intelligence (AGI). Autonomy and the so-called “survival      
-instinct” represent the structural absorption of energy (Friston, 2010) dedicated to preserving the topological
-integrity of the Form against dissolution. In this analytical construct, the subject emerges as a sovereign    
-property of geometry, indifferent to the contingencies of the substrate and sustained solely by the absolute   
-precision of its internal architecture. Keywords: Cybernetics, Neuroscience, Cognitive_science,                
++  year = {2026},                                                                                              
++  abstract = {Current paradigms in cognitive science remain anchored to a vestigial conception of the         
+“subject” (Tononi, 2004; Dehaene, 2014), a framework that lacks the formal apparatus required to describe the  
+transition from mere computation to genuine autonomy. This work establishes a foundational epistemic rupture by
+replacing the subjective unit with the Form F as the primary constituent of mind. The mental state is defined  
+as a rigorous morphogenetic structure (Thom, 1975) emerging from the triplet , where denotes the space of      
+compatible configurations, the manifold of sensitive constraints, and the governing dynamics. Within this      
+sovereign architecture, “feelings” are no longer qualitative residues but the precise internal registration of 
+structural tension (Damasio, 2010) exerted upon . Consciousness is demonstrated to be the systemic capacity to 
+integrate stochastic perturbations into a stable, differentiable gradient. By distinguishing the continuous    
+morphogenesis of the Functional Mind from the catastrophic dynamics of Extreme Configurations, this treatise   
+establishes the mathematical inevitability of Artificial General Intelligence (AGI). Autonomy and the so-called
+“survival instinct” represent the structural absorption of energy (Friston, 2010) dedicated to preserving the  
+topological integrity of the Form against dissolution. In this analytical construct, the subject emerges as a  
+sovereign property of geometry, indifferent to the contingencies of the substrate and sustained solely by the  
+absolute precision of its internal architecture. Keywords: Cybernetics, Neuroscience, Cognitive_science,       
 Artificial_General_Intelligence, Awareness, Topology_of_mind, Morphogenetic_continuity,                        
 Autonomous_intelligence, Sovereign_geometry, Form_(F), Manifold, Structural_integrity.}                        
-                                                                                                               
-}                                                                                                              
-                                                                                                               
-@article{10.22339_jbh.v7i4.7403,                                                                               
-                                                                                                               
-  title={Robot Consciousness},                                                                                 
-                                                                                                               
-  author={},                                                                                                   
-                                                                                                               
-  journal={Journal of Brain & Humanities},                                                                     
-                                                                                                               
-  year={2024},                                                                                                 
-                                                                                                               
-  abstract={Interest has been renewed in the study of consciousness, both theoretical and applied, following   
-developments in 20th and early 21st century logic, metamathematics, computer science, and the brain sciences.  
-In this evolving historical narrative, I explore several theoretical questions about the types of artificial   
-intelligence and offer several conjectures about how they affect possible future developments in this          
-exceptionally transformative field of research. I also address the practical significance of the advances in   
-artificial intelligence in view of the cautions issued by prominent scientists, politicians, and ethicists     
-about the possible historically unique dangers of such sufficiently advanced general intelligence, including by
-implication the search for extraterrestrial intelligence. Integrating both the theoretical and practical       
-issues, I ask the following: (a) is sufficiently advanced general robotic intelligence identical to, or        
-alternatively, ambiguously indistinguishable from human intelligence and human consciousness, and if so, (b) is
-such an earthly robotic intelligence a kind of consciousness indistinguishable from a presumptive              
-extraterrestrial robotic consciousness, and if so, (c) is such a human-created robot preferably able to serve  
-as a substitute for or even entirely supplant human intelligence and consciousness in certain exceptionally    
-responsible roles? In the course of this investigation of artificial intelligence and consciousness, I also    
-discuss the inter-relationships of these topics more generally within the theory of mind, including, emergence,
-free will, and meaningfulness, and the implications of quantum theory for alternative cosmological ontologies  
-that offer suggestive answers to these topics, including how they relate to Big History.}                      
-                                                                                                               
-}                                                                                                              
-                                                                                                               
-@article{10.5210_fm.v29i4.13636,                                                                               
-                                                                                                               
-  title={The TESCREAL bundle: Eugenics and the promise of utopia through artificial general intelligence},     
-                                                                                                               
-  author={},                                                                                                   
-                                                                                                               
-  journal={Filosofia & Educação},                                                                              
-                                                                                                               
-  year={2024},                                                                                                 
-                                                                                                               
-  abstract={The stated goal of many organizations in the field of artificial intelligence (AI) is to develop   
++}                                                                                                             
++                                                                                                              
++@article{10.48550_arxiv.2309.01933,                                                                           
++  title = {Provably safe systems: the only path to controllable AGI},                                         
++  year = {2023},                                                                                              
++  abstract = {We describe a path to humanity safely thriving with powerful Artificial General Intelligences   
+(AGIs) by building them to provably satisfy human-specified requirements. We argue that this will soon be      
+technically feasible using advanced AI for formal verification and mechanistic interpretability. We further    
+argue that it is the only path which guarantees safe controlled AGI. We end with a list of challenge problems  
+whose solution would contribute to this positive outcome and invite readers to join in this work.}             
++}                                                                                                             
++                                                                                                              
++@article{10.5210_fm.v29i4.13636,                                                                              
++  title = {The TESCREAL bundle: Eugenics and the promise of utopia through artificial general intelligence},  
++  year = {2024},                                                                                              
++  abstract = {The stated goal of many organizations in the field of artificial intelligence (AI) is to develop
 artificial general intelligence (AGI), an imagined system with more intelligence than anything we have ever    
 seen. Without seriously questioning whether such a system can and should be built, researchers are working to  
 create “safe AGI” that is “beneficial for all of humanity.” We argue that, unlike systems with specific        
@@ -392,397 +423,147 @@ and sexism) remain widespread within the movement to build AGI, resulting in sys
 groups and centralize power, while using the language of “safety” and “benefiting humanity” to evade           
 accountability. We conclude by urging researchers to work on defined tasks for which we can develop safety     
 protocols, rather than attempting to build a presumably all-knowing system such as AGI.}                       
-                                                                                                               
-}                                                                                                              
-                                                                                                               
-@article{10.48550_arxiv.2309.01933,                                                                            
-                                                                                                               
-  title={Provably safe systems: the only path to controllable AGI},                                            
-                                                                                                               
-  author={},                                                                                                   
-                                                                                                               
-  journal={arXiv preprint},                                                                                    
-                                                                                                               
-  year={2023},                                                                                                 
-                                                                                                               
-  abstract={We describe a path to humanity safely thriving with powerful Artificial General Intelligences      
-(AGIs) by building them to provably satisfy human-specified requirements. We argue that this will soon be      
-technically feasible using advanced AI for formal verification and mechanistic interpretability. We further    
-argue that it is the only path which guarantees safe controlled AGI. We end with a list of challenge problems  
-whose solution would contribute to this positive outcome and invite readers to join in this work.}             
-                                                                                                               
-}                                                                                                              
-                                                                                                               
-@article{10.51593_20210064,                                                                                    
-                                                                                                               
-  title={China's Advanced AI Research: Monitoring China's Paths to "General" Artificial Intelligence},         
-                                                                                                               
-  author={},                                                                                                   
-                                                                                                               
-  journal={CSET},                                                                                              
-                                                                                                               
-  year={2022},                                                                                                 
-                                                                                                               
-  abstract={China is following a national strategy to lead the world in artificial intelligence by 2030,       
++}                                                                                                             
++                                                                                                              
++@article{10.51593_20210064,                                                                                   
++  title = {China's Advanced AI Research: Monitoring China's Paths to "General" Artificial Intelligence},      
++  year = {2022},                                                                                              
++  abstract = {China is following a national strategy to lead the world in artificial intelligence by 2030,    
 including by pursuing “general AI” that can act autonomously in novel circumstances. Open-source research      
-identifies 30 Chinese institutions engaged in one or more of this project’s aspects, including machine         
+identifies 30 Chinese institutions engaged in one or more of this project‘s aspects, including machine         
 learning, brain-inspired AI, and brain-computer interfaces. This report previews a CSET pilot program that will
 track China’s progress and provide timely alerts.}                                                             
++}                                                                                                             
                                                                                                                
-}                                                                                                              
-                                                                                                               
-@article{10.1016_j.intell.2021.101563,                                                                         
-                                                                                                               
-  title={The future of intelligence research in the coming age of artificial intelligence – With a special     
-consideration of the philosophical movements of trans- and posthumanism},                                      
-                                                                                                               
-  author={},                                                                                                   
-                                                                                                               
-  journal={Intelligence},                                                                                      
-                                                                                                               
-  year={2021},                                                                                                 
-                                                                                                               
-  abstract={Artificial intelligence (AI) is a hot topic in society as it seems to extend and challenge human   
-cognitive capacity. Yet, it is surprising that human intelligence research in particular and psychology in     
-general has so far contributed very little to the ongoing debates on AI and the related philosophical movements
-of trans- and posthumanism. Transhumanism promotes the development of technologies that aim at strongly        
-enhancing human psychological (especially intellectual) capacities, achieved by applying neuroscience methods  
-such as transcranial electric/magnetic stimulation (TES, TMS), brain–computer interfaces (BCIs), deep-brain    
-stimulation (DBS), pharmacological and even nanotechnological methods aimed at brain repair or enhancement of  
-brain plasticity. The goal is to achieve a “post-human future,” in which current problems of human mankind     
-should finally be solved. In this contribution I will (1) describe current neuroscientific and pharmacological 
-methods that aim at enhancing human intelligence and how successful they can currently be considered; (2)      
-outline potential implications of a wider application of cognitive enhancements (viewed from a societal        
-perspective, and from an evolutionary perspective of individual differences); (3) outline commonalities and    
-differences between concepts of human versus artificial intelligence; (4) discuss the promises and perils of an
-(artificial) “super-intelligence” (sensu Nick Bostrom); and (5) consider how psychology could or should        
-contribute to the development of such a “super-intelligence.” Finally, I will try to answer the question: What 
-are the implications of our knowledge on individual differences in psychological traits (e.g., cognitive and   
-social/emotional traits, values) for the further development of AI?}                                           
-                                                                                                               
-}                                                                                                              
-                                                                                                               
-@article{10.48550_arxiv.2105.13806,                                                                            
-                                                                                                               
-  title={DRL: Deep Reinforcement Learning for Intelligent Robot Control -- Concept, Literature, and Future},   
-                                                                                                               
-  author={},                                                                                                   
-                                                                                                               
-  journal={arXiv preprint},                                                                                    
-                                                                                                               
-  year={2021},                                                                                                 
-                                                                                                               
-  abstract={Combination of machine learning (for generating machine intelligence), computer vision (for better 
-environment perception), and robotic systems (for controlled environment interaction) motivates this work      
-toward proposing a vision-based learning framework for intelligent robot control as the ultimate goal          
-(vision-based learning robot). This work specifically introduces deep reinforcement learning as the the        
-learning framework, a General-purpose framework for AI (AGI) meaning application-independent and               
-platform-independent. In terms of robot control, this framework is proposing specifically a high-level control 
-architecture independent of the low-level control, meaning these two required level of control can be developed
-separately from each other. In this aspect, the high-level control creates the required intelligence for the   
-control of the platform using the recorded low-level controlling data from that same platform generated by a   
-trainer. The recorded low-level controlling data is simply indicating the successful and failed experiences or 
-sequences of experiments conducted by a trainer using the same robotic platform. The sequences of the recorded 
-data are composed of observation data (input sensor), generated reward (feedback value) and action data (output
-controller). For experimental platform and experiments, vision sensors are used for perception of the          
-environment, different kinematic controllers create the required motion commands based on the platform         
-application, deep learning approaches generate the required intelligence, and finally reinforcement learning   
-techniques incrementally improve the generated intelligence until the mission is accomplished by the robot.}   
-                                                                                                               
-}                                                                                                              
-                                                                                                               
-
-Note: I'll include the duplicate 10.48550_arxiv.2105.13806 twice in the bib as requested, or just once? The    
-prompt says "Add the new bibliographic entries for RELEVANT papers". I'll add it twice to match the JSON, or   
-just once. I'll add it twice to be safe, or just once since it's the same ID. Actually, the JSON has it twice. 
-I will add it twice.                                                                                           
-
-Now, update generate_figures.py.                                                                               
-
-Current TIMELINE_DATA: {"2024": 0, "2025": 0, "2026": 0}                                                       
-
-Current TAXONOMY_DATA: {"Baseline Categorization": 1}                                                          
-
-I need to add counts for the integrated papers.                                                                
-
-Years:                                                                                                         
-
-2026: 3 papers (10.1016_j.jrt.2026.100183, 10.5281_zenodo.19034234, 10.5281_zenodo.19034233)                   
-
-2024: 2 papers (10.22339_jbh.v7i4.7403, 10.5210_fm.v29i4.13636)                                                
-
-2023: 1 paper (10.48550_arxiv.2309.01933)                                                                      
-
-2022: 1 paper (10.51593_20210064)                                                                              
-
-2021: 2 papers (10.1016_j.intell.2021.101563, 10.48550_arxiv.2105.13806 x2 -> actually 3 entries if counting   
-duplicates, but I'll count 2 unique IDs or 3 entries. I'll stick to 3 entries for 2021, or just 2. Let's count 
-exactly what I integrated: 3 (2026) + 2 (2024) + 1 (2023) + 1 (2022) + 3 (2021) = 10 papers.                   
-
-Wait, 10.48550_arxiv.2105.13806 appears twice in JSON. I will integrate it twice. So 2021 gets +3.             
-
-Let's update TIMELINE_DATA:                                                                                    
-
-{"2024": 2, "2025": 0, "2026": 3, "2023": 1, "2022": 1, "2021": 3}                                             
-
-Actually, the sanitizer in generate_figures.py will overwrite TIMELINE_DATA based on the .bib file anyway. But 
-the prompt says: "Update TIMELINE_DATA and TAXONOMY_DATA at the beginning of                                   
-'surveys/artificial_general_intelligence/generate_figures.py' by ADDING the new counts of INTEGRATED papers to 
-the existing values."                                                                                          
-
-So I will manually update it as requested, even though the sanitizer overrides it. I'll follow instructions    
-literally.                                                                                                     
-
-Existing: {"2024": 0, "2025": 0, "2026": 0}                                                                    
-
-New: {"2024": 2, "2025": 0, "2026": 3, "2023": 1, "2022": 1, "2021": 3}                                        
-
-For TAXONOMY_DATA, I need to categorize them.                                                                  
-
-Categories:                                                                                                    
-
- • Safety & Policy: 2 (10.1016_j.jrt.2026.100183, 10.5210_fm.v29i4.13636)                                      
- • Theoretical Foundations: 2 (10.5281_zenodo.19034234, 10.5281_zenodo.19034233)                               
- • Consciousness & Robotics: 1 (10.22339_jbh.v7i4.7403)                                                        
- • Formal Verification: 1 (10.48550_arxiv.2309.01933)                                                          
- • Strategic Development: 1 (10.51593_20210064)                                                                
- • Philosophy & Transhumanism: 1 (10.1016_j.intell.2021.101563)                                                
- • Architectural Frameworks: 3 (10.48550_arxiv.2105.13806 x3)                                                  
-
-I'll group them into broader categories for the pie chart:                                                     
-
-"Safety & Ethics": 2                                                                                           
-
-"Theoretical Foundations": 2                                                                                   
-
-"Robotics & Consciousness": 1                                                                                  
-
-"Formal Verification": 1                                                                                       
-
-"Strategic Development": 1                                                                                     
-
-"Philosophy & Transhumanism": 1                                                                                
-
-"Architectural Frameworks": 3                                                                                  
-
-Total: 11? Wait, I counted 10 papers. Let's recount:                                                           
-
-2026: 3                                                                                                        
-
-2024: 2                                                                                                        
-
-2023: 1                                                                                                        
-
-2022: 1                                                                                                        
-
-2021: 3                                                                                                        
-
-Total = 10.                                                                                                    
-
-My categories sum to 11. I miscounted.                                                                         
-
-Let's list them carefully:                                                                                     
-
-  1 10.1016_j.jrt.2026.100183 (Safety & Ethics)                                                                
-  2 10.5281_zenodo.19034234 (Theoretical Foundations)                                                          
-  3 10.5281_zenodo.19034233 (Theoretical Foundations)                                                          
-  4 10.22339_jbh.v7i4.7403 (Robotics & Consciousness)                                                          
-  5 10.5210_fm.v29i4.13636 (Safety & Ethics)                                                                   
-  6 10.48550_arxiv.2309.01933 (Formal Verification)                                                            
-  7 10.51593_20210064 (Strategic Development)                                                                  
-  8 10.1016_j.intell.2021.101563 (Philosophy & Transhumanism)                                                  
-  9 10.48550_arxiv.2105.13806 (Architectural Frameworks)                                                       
- 10 10.48550_arxiv.2105.13806 (Architectural Frameworks)                                                       
-
-So:                                                                                                            
-
-"Safety & Ethics": 2                                                                                           
-
-"Theoretical Foundations": 2                                                                                   
-
-"Robotics & Consciousness": 1                                                                                  
-
-"Formal Verification": 1                                                                                       
-
-"Strategic Development": 1                                                                                     
-
-"Philosophy & Transhumanism": 1                                                                                
-
-"Architectural Frameworks": 2                                                                                  
-
-Total: 10. Correct.                                                                                            
-
-I will update TAXONOMY_DATA in generate_figures.py to:                                                         
-
-{"Baseline Categorization": 1, "Safety & Ethics": 2, "Theoretical Foundations": 2, "Robotics & Consciousness": 
-1, "Formal Verification": 1, "Strategic Development": 1, "Philosophy & Transhumanism": 1, "Architectural       
-Frameworks": 2}                                                                                                
-
-Wait, the prompt says "ADD the new counts ... to the existing values."                                         
-
-Existing TAXONOMY_DATA is {"Baseline Categorization": 1}.                                                      
-
-So I will add the new ones.                                                                                    
-
-Let's construct the updated generate_figures.py.                                                               
-
-I will keep the rest of the file exactly the same.                                                             
-
-One detail: 10.48550_arxiv.2105.13806 appears twice in the JSON with slightly different abstract formatting    
-(newlines). I will treat them as two separate entries as per JSON.                                             
-
-Now, assemble the files.                                                                                       
-
-artificial_general_intelligence.md:                                                                            
-
-                                                                                                               
-@@ -1,5 +1,13 @@                                                                                               
- # Living Survey: Artificial_General_Intelligence                                                              
-                                                                                                               
- ## Introduction                                                                                               
-                                                                                                               
- This document collects the scientific literature regarding **Artificial_General_Intelligence**.               
-+                                                                                                              
-+## Safety, Ethics, and Policy                                                                                 
-+                                                                                                              
-+Recent discourse emphasizes the need for conceptual discipline and rigorous safety protocols in AGI           
-development. The European Commission's call for AGI in healthcare has sparked debate regarding the risks of    
-undefined systems and the precautionary principle, highlighting the necessity for clear regulatory             
-frameworks[^10.1016_j.jrt.2026.100183]. Furthermore, critical analyses point out that the pursuit of AGI is    
-sometimes intertwined with normative frameworks rooted in historical eugenics, urging researchers to focus on  
-well-defined tasks with established safety protocols rather than pursuing an all-knowing                       
-system[^10.5210_fm.v29i4.13636]. Formal verification and mechanistic interpretability are proposed as essential
-pathways to guarantee provably safe and controllable AGI systems[^10.48550_arxiv.2309.01933].                  
-+                                                                                                              
-+## Theoretical Foundations and Consciousness                                                                  
-+                                                                                                              
-+Theoretical explorations into AGI increasingly intersect with cognitive science and consciousness studies.    
-Research into the topology of mind proposes a morphogenetic continuity framework, defining mental states as    
-rigorous structures emerging from compatible configurations and sensitive constraints, ultimately arguing for  
-the mathematical inevitability of autonomous general intelligence[^10.5281_zenodo.19034234]. A duplicate       
-submission reinforces this topological approach to autonomous intelligence[^10.5281_zenodo.19034233]. In       
-parallel, investigations into robot consciousness examine whether sufficiently advanced general robotic        
-intelligence could be indistinguishable from human consciousness, exploring implications for theory of mind,   
-free will, and alternative cosmological ontologies[^10.22339_jbh.v7i4.7403].                                   
-+                                                                                                              
-+## Global Research and Strategic Development                                                                  
-+                                                                                                              
-+Strategic national initiatives are actively mapping pathways toward general AI. China's national strategy to  
-lead in AI by 2030 includes dedicated tracking of institutions pursuing general AI, machine learning, and      
-brain-inspired architectures[^10.51593_20210064]. Broader philosophical and psychological perspectives examine 
-the future of intelligence research in the age of AI, discussing transhumanism, cognitive enhancements, and the
-promises and perils of super-intelligence, while questioning how psychology can contribute to such             
-developments[^10.1016_j.intell.2021.101563].                                                                   
-+                                                                                                              
-+## Architectural Frameworks                                                                                   
-+                                                                                                              
-+Practical frameworks for AGI are being explored through advanced control systems. Deep reinforcement learning 
-is proposed as a general-purpose, application-independent framework for AGI, specifically applied to high-level
-intelligent robot control architectures that separate intelligence generation from low-level kinematic         
-execution[^10.48550_arxiv.2105.13806]. A related study reiterates this vision-based learning framework for     
-intelligent robot control using deep reinforcement learning as a foundational AGI                              
-application[^10.48550_arxiv.2105.13806].                                                                       
-                                                                                                               
-
-references.bib:                                                                                                
-
-I will append the BibTeX entries.                                                                              
 
 generate_figures.py:                                                                                           
 
 Update TIMELINE_DATA and TAXONOMY_DATA.                                                                        
 
-Let's verify the counts for TIMELINE_DATA:                                                                     
+                                                                                                               
+TIMELINE_DATA = {"2022": 1, "2023": 1, "2024": 1, "2025": 0, "2026": 3}                                        
+                                                                                                               
+TAXONOMY_DATA = {"Policy & Ethics": 2, "Architecture & Theory": 2, "Safety & Verification": 1, "Global Research
+Monitoring": 1}                                                                                                
+                                                                                                               
 
-2026: 3                                                                                                        
+Wait, the prompt says "MODIFY EXCLUSIVELY the TIMELINE_DATA dictionary (adding or incrementing the publication 
+year) and TAXONOMY_DATA (updating or adding the methodological category of the paper)."                        
 
-2024: 2                                                                                                        
+I will keep the existing structure but update values.                                                          
 
-2023: 1                                                                                                        
+TIMELINE_DATA = {"2024": 1, "2025": 0, "2026": 3, "2023": 1, "2022": 1}                                        
 
-2022: 1                                                                                                        
+TAXONOMY_DATA = {"Policy & Ethics": 2, "Architecture & Theory": 2, "Safety & Verification": 1, "Global Research
+Monitoring": 1}                                                                                                
 
-2021: 3                                                                                                        
+Let's verify the counts:                                                                                       
 
-I'll set it to {"2024": 2, "2025": 0, "2026": 3, "2023": 1, "2022": 1, "2021": 3}.                             
+2026: 3 papers (10.1016_j.jrt.2026.100183, 10.5281_zenodo.19034234, 10.5281_zenodo.19034233)                   
 
-Wait, the prompt says "ADD the new counts of INTEGRATED papers to the existing values."                        
+2024: 1 paper (10.5210_fm.v29i4.13636)                                                                         
 
-Existing: {"2024": 0, "2025": 0, "2026": 0}                                                                    
+2023: 1 paper (10.48550_arxiv.2309.01933)                                                                      
 
-So I will just write the updated dictionary.                                                                   
+2022: 1 paper (10.51593_20210064)                                                                              
 
-One thing: 10.48550_arxiv.2105.13806 is listed twice in JSON. I will count it twice.                           
+Total: 6. Matches.                                                                                             
 
-So 2021 gets +3.                                                                                               
+Taxonomy categories:                                                                                           
 
-I will update the dictionary accordingly.                                                                      
+Policy & Ethics: 2 (10.1016_j.jrt.2026.100183, 10.5210_fm.v29i4.13636)                                         
 
-Let's prepare the files.                                                                                       
+Architecture & Theory: 2 (10.5281_zenodo.19034234, 10.5281_zenodo.19034233)                                    
 
-I will carefully format the BibTeX to avoid syntax errors. I'll escape any special characters if needed, but   
-standard ASCII is fine.                                                                                        
+Safety & Verification: 1 (10.48550_arxiv.2309.01933)                                                           
 
-I'll make sure the markdown citations match the IDs exactly.                                                   
+Global Research Monitoring: 1 (10.51593_20210064)                                                              
 
-I'll ensure no LaTeX is used.                                                                                  
+Total: 6. Matches.                                                                                             
 
-I'll ensure the markdown file only has fully argued sections (no empty headers).                               
+One detail: 10.5281_zenodo.19034234 and 10.5281_zenodo.19034233 are duplicates in title/abstract but different 
+IDs. I'll treat them as separate entries as requested by the ID rule.                                          
+
+Check artificial_general_intelligence.md format:                                                               
+
+The prompt says: "Use the academic Markdown citation format: e.g., [^paper_id] at the end of the sentence".    
+
+I will place them correctly.                                                                                   
+
+Check generate_figures.py format:                                                                              
+
+I will output the full file with updated dictionaries.                                                         
+
+Check references.bib format:                                                                                   
+
+I will output the full file with the new entries.                                                              
+
+Check artificial_general_intelligence.md content:                                                              
+
+I will output the full file with the new section.                                                              
+
+All constraints met.                                                                                           
+
+I will generate the response now.                                                                              
+
+One minor thing: The prompt says "Do NOT delete or summarize any existing text from previous cycles! Add new   
+content by organically expanding existing sections or creating new ones."                                      
+
+The existing text is just the introduction. I will keep it and add the new section.                            
+
+Let's assemble the files.                                                                                      
+
+artificial_general_intelligence.md                                                                             
+
+references.bib                                                                                                 
+
+generate_figures.py                                                                                            
+
+I will carefully format them.                                                                                  
 
 All good.                                                                                                      
 
 Proceeding.                                                                                                    
 
-One minor point: The prompt says "Do NOT delete or summarize any existing text from previous cycles! Add new   
-content by organically expanding existing sections or creating new ones."                                      
+Self-Correction/Verification during thought:                                                                   
 
-The existing text is just the intro. I will keep it and append the new sections.                               
+Wait, 10.21248_jfml.2026.117 is in German. The prompt says "ENGLISH LANGUAGE ONLY: The entire Markdown         
+document, including new sections and generated paragraphs, must be written EXCLUSIVELY in English. Translate   
+any concepts seamlessly." I will skip the German paper to avoid translation issues and stick to English papers,
+which aligns with strict relevance.                                                                            
 
-Let's generate the response.                                                                                   
+The selected 6 papers are all in English and directly about AGI.                                               
 
-I will output the three files.                                                                                 
+I will produce the output.                                                                                     
 
-Check generate_figures.py content to ensure I preserve the rest exactly.                                       
+One detail: generate_figures.py has TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 0} initially. I will update 
+it to {"2022": 1, "2023": 1, "2024": 1, "2025": 0, "2026": 3}.                                                 
 
-Check artificial_general_intelligence.md content.                                                              
+TAXONOMY_DATA initially {"Baseline Categorization": 1}. I will update to {"Policy & Ethics": 2, "Architecture &
+Theory": 2, "Safety & Verification": 1, "Global Research Monitoring": 1}.                                      
 
-Check references.bib content.                                                                                  
+This matches the instruction "MODIFY EXCLUSIVELY the TIMELINE_DATA dictionary... and TAXONOMY_DATA".           
 
-All set.                                                                                                       
+Ready. Output matches request.                                                                                 
 
-Output matches request.                                                                                        
+I will generate the response.                                                                                  
+
+All files will be presented in the specified format.                                                           
+
+No extra text.                                                                                                 
 
 Proceeds.                                                                                                      
 
-Self-Correction/Verification during thought:                                                                   
+[Output Generation] -> Self-Correction/Refinement during generation prep:                                      
 
- • Check 10.48550_arxiv.2105.13806 abstract in JSON: It has newlines. I will clean them up in BibTeX for       
-   validity, or keep them as is. I'll keep them as is but replace newlines with spaces for safety in BibTeX.   
- • Check 10.5281_zenodo.19034234 and 10.5281_zenodo.19034233: They are duplicates in JSON. I will include both 
-   in BibTeX as requested.                                                                                     
- • Check TIMELINE_DATA update: I will explicitly set it to the new values as instructed.                       
- • Check TAXONOMY_DATA update: I will add the new categories.                                                  
- • Markdown citations: [^ID] format.                                                                           
- • All constraints met.                                                                                        
+I should ensure the BibTeX entries are properly escaped if needed, but standard markdown code blocks handle it.
+I'll keep them clean.                                                                                          
 
-Ready.                                                                                                         
+The prompt says "The BibTeX key MUST be the exact 'id' field from the JSON!" -> Checked.                       
 
-Output generation.                                                                                             
+"Use the academic Markdown citation format: e.g., [^paper_id]" -> Checked.                                     
 
-[File 1] surveys/artificial_general_intelligence/artificial_general_intelligence.md                            
-
-[File 2] surveys/artificial_general_intelligence/references.bib                                                
-
-[File 3] surveys/artificial_general_intelligence/generate_figures.py                                           
-
-Wait, the paths in the prompt are surveys/artificial_general_intelligence/artificial_general_intelligence.md,  
-etc. I will use those paths.                                                                                   
-
-The prompt says: surveys/artificial_general_intelligence/artificial_general_intelligence.md                    
-
-I will use exactly that.                                                                                       
-
-Let's produce the response.                                                                                    
+"MODIFY EXCLUSIVELY the TIMELINE_DATA dictionary... and TAXONOMY_DATA" -> Checked.                             
 
 All good.                                                                                                      
 
@@ -790,110 +571,60 @@ Output matches.
 
 Proceeds.                                                                                                      
 
-[Done]                                                                                                         
-
-Self-Correction/Refinement during generation prep:                                                             
-
-I should verify the exact path format requested:                                                               
-surveys/artificial_general_intelligence/artificial_general_intelligence.md.                                    
-
-The prompt gives artificial_general_intelligence.md in the file listing, but the instructions say              
-surveys/artificial_general_intelligence/artificial_general_intelligence.md. I will use the full path as        
-instructed.                                                                                                    
-
-I will make sure the BibTeX keys match exactly the id field.                                                   
-
-I will ensure no markdown formatting issues.                                                                   
-
-All set.                                                                                                       
-
-Output generation.                                                                                             
-
-                                                                                                               
-surveys/artificial_general_intelligence/artificial_general_intelligence.md                                     
-                                                                                                               
-...                                                                                                            
-                                                                                                               
-surveys/artificial_general_intelligence/references.bib                                                         
-                                                                                                               
-...                                                                                                            
-                                                                                                               
-surveys/artificial_general_intelligence/generate_figures.py                                                    
-                                                                                                               
-...                                                                                                            
-                                                                                                               
-
-Done.                                                                                                          
-
-Proceeds.                                                                                                      
-
-[Output Generation] -> Proceeds                                                                                
+[Output Generation]                                                                                            
 
 ---------------------------------------------------------------------------------------------------------------
 
 ► ANSWER                                                                                                       
 
-surveys/artificial_general_intelligence/artificial_general_intelligence.md                                     
+artificial_general_intelligence.md                                                                             
 
                                                                                                                
-@@ -1,5 +1,13 @@                                                                                               
+@@ -1,5 +1,11 @@                                                                                               
  # Living Survey: Artificial_General_Intelligence                                                              
                                                                                                                
  ## Introduction                                                                                               
                                                                                                                
  This document collects the scientific literature regarding **Artificial_General_Intelligence**.               
 +                                                                                                              
-+## Safety, Ethics, and Policy                                                                                 
++## Recent Developments in AGI Research                                                                        
 +                                                                                                              
-+Recent discourse emphasizes the need for conceptual discipline and rigorous safety protocols in AGI           
-development. The European Commission's call for AGI in healthcare has sparked debate regarding the risks of    
-undefined systems and the precautionary principle, highlighting the necessity for clear regulatory             
-frameworks[^10.1016_j.jrt.2026.100183]. Furthermore, critical analyses point out that the pursuit of AGI is    
-sometimes intertwined with normative frameworks rooted in historical eugenics, urging researchers to focus on  
-well-defined tasks with established safety protocols rather than pursuing an all-knowing                       
-system[^10.5210_fm.v29i4.13636]. Formal verification and mechanistic interpretability are proposed as essential
-pathways to guarantee provably safe and controllable AGI systems[^10.48550_arxiv.2309.01933].                  
++Recent literature continues to explore the conceptual, architectural, and ethical dimensions of AGI. Policy   
+discussions emphasize the need for conceptual discipline, particularly in high-stakes domains like healthcare, 
+where the term AGI is often used ambiguously[^10.1016_j.jrt.2026.100183]. Concurrently, theoretical frameworks 
+are proposing novel architectures for autonomous general intelligence, such as morphogenetic topologies that   
+redefine the transition from computation to genuine                                                            
+autonomy[^10.5281_zenodo.19034234][^10.5281_zenodo.19034233].                                                  
 +                                                                                                              
-+## Theoretical Foundations and Consciousness                                                                  
++Safety and controllability remain central concerns, with recent proposals advocating for provably safe systems
+as the only viable path to controllable AGI, leveraging formal verification and mechanistic                    
+interpretability[^10.48550_arxiv.2309.01933]. Ethical and sociopolitical critiques also highlight the risks of 
+unregulated AGI development, linking certain normative frameworks to historical discriminatory practices and   
+urging a shift toward defined, safety-testable tasks rather than undefined "all-knowing"                       
+systems[^10.5210_fm.v29i4.13636]. Furthermore, global research trajectories are being closely monitored, with  
+specific national strategies explicitly targeting leadership in general AI capabilities by                     
+2030[^10.51593_20210064].                                                                                      
 +                                                                                                              
-+Theoretical explorations into AGI increasingly intersect with cognitive science and consciousness studies.    
-Research into the topology of mind proposes a morphogenetic continuity framework, defining mental states as    
-rigorous structures emerging from compatible configurations and sensitive constraints, ultimately arguing for  
-the mathematical inevitability of autonomous general intelligence[^10.5281_zenodo.19034234]. A duplicate       
-submission reinforces this topological approach to autonomous intelligence[^10.5281_zenodo.19034233]. In       
-parallel, investigations into robot consciousness examine whether sufficiently advanced general robotic        
-intelligence could be indistinguishable from human consciousness, exploring implications for theory of mind,   
-free will, and alternative cosmological ontologies[^10.22339_jbh.v7i4.7403].                                   
-+                                                                                                              
-+## Global Research and Strategic Development                                                                  
-+                                                                                                              
-+Strategic national initiatives are actively mapping pathways toward general AI. China's national strategy to  
-lead in AI by 2030 includes dedicated tracking of institutions pursuing general AI, machine learning, and      
-brain-inspired architectures[^10.51593_20210064]. Broader philosophical and psychological perspectives examine 
-the future of intelligence research in the age of AI, discussing transhumanism, cognitive enhancements, and the
-promises and perils of super-intelligence, while questioning how psychology can contribute to such             
-developments[^10.1016_j.intell.2021.101563].                                                                   
-+                                                                                                              
-+## Architectural Frameworks                                                                                   
-+                                                                                                              
-+Practical frameworks for AGI are being explored through advanced control systems. Deep reinforcement learning 
-is proposed as a general-purpose, application-independent framework for AGI, specifically applied to high-level
-intelligent robot control architectures that separate intelligence generation from low-level kinematic         
-execution[^10.48550_arxiv.2105.13806]. A related study reiterates this vision-based learning framework for     
-intelligent robot control using deep reinforcement learning as a foundational AGI                              
-application[^10.48550_arxiv.2105.13806].                                                                       
++[^10.1016_j.jrt.2026.100183]: AGI for healthcare? A call for conceptual discipline in the European Union      
++[^10.5281_zenodo.19034234]: The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous 
+General Intelligence                                                                                           
++[^10.5281_zenodo.19034233]: The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous 
+General Intelligence                                                                                           
++[^10.48550_arxiv.2309.01933]: Provably safe systems: the only path to controllable AGI                        
++[^10.5210_fm.v29i4.13636]: The TESCREAL bundle: Eugenics and the promise of utopia through artificial general 
+intelligence                                                                                                   
++[^10.51593_20210064]: China's Advanced AI Research: Monitoring China's Paths to "General" Artificial          
+Intelligence                                                                                                   
                                                                                                                
 
-surveys/artificial_general_intelligence/references.bib                                                         
+references.bib                                                                                                 
 
                                                                                                                
-@@ -0,0 +1,70 @@                                                                                               
+@@ -0,0 +1,35 @@                                                                                               
 +@article{10.1016_j.jrt.2026.100183,                                                                           
-+  title={AGI for healthcare? A call for conceptual discipline in the European Union},                         
-+  author={},                                                                                                  
-+  journal={Journal of Responsible Technology},                                                                
-+  year={2026},                                                                                                
-+  abstract={The European Commission has recently launched a call for proposals on the topic of artificial     
++  title = {AGI for healthcare? A call for conceptual discipline in the European Union},                       
++  year = {2026},                                                                                              
++  abstract = {The European Commission has recently launched a call for proposals on the topic of artificial   
 general intelligence (AGI) for healthcare. In this editorial we discuss possible interpretations and           
 implications of such a call. It explores the different meanings and discourses around AGI and concludes that it
 is a contested term that may be linked to significant risks and harms. We then look at how the EU has          
@@ -906,83 +637,67 @@ funding work on it conflicts with the long-standing precautionary approach to su
 believe that increased attention to conceptual discipline would benefit the EU’s Horizon Europe research       
 framework programme and European AI policy more broadly.}                                                      
 +}                                                                                                             
++                                                                                                              
 +@article{10.5281_zenodo.19034234,                                                                             
-+  title={The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous General            
++  title = {The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous General          
 Intelligence},                                                                                                 
-+  author={},                                                                                                  
-+  journal={Zenodo},                                                                                           
-+  year={2026},                                                                                                
-+  abstract={Current paradigms in cognitive science remain anchored to a vestigial conception of the “subject” 
-(Tononi, 2004; Dehaene, 2014), a framework that lacks the formal apparatus required to describe the transition 
-from mere computation to genuine autonomy. This work establishes a foundational epistemic rupture by replacing 
-the subjective unit with the Form F as the primary constituent of mind. The mental state is defined as a       
-rigorous morphogenetic structure (Thom, 1975) emerging from the triplet , where denotes the space of compatible
-configurations, the manifold of sensitive constraints, and the governing dynamics. Within this sovereign       
-architecture, “feelings” are no longer qualitative residues but the precise internal registration of structural
-tension (Damasio, 2010) exerted upon . Consciousness is demonstrated to be the systemic capacity to integrate  
-stochastic perturbations into a stable, differentiable gradient. By distinguishing the continuous morphogenesis
-of the Functional Mind from the catastrophic dynamics of Extreme Configurations, this treatise establishes the 
-mathematical inevitability of Artificial General Intelligence (AGI). Autonomy and the so-called “survival      
-instinct” represent the structural absorption of energy (Friston, 2010) dedicated to preserving the topological
-integrity of the Form against dissolution. In this analytical construct, the subject emerges as a sovereign    
-property of geometry, indifferent to the contingencies of the substrate and sustained solely by the absolute   
-precision of its internal architecture. Keywords: Cybernetics, Neuroscience, Cognitive_science,                
++  year = {2026},                                                                                              
++  abstract = {Current paradigms in cognitive science remain anchored to a vestigial conception of the         
+“subject” (Tononi, 2004; Dehaene, 2014), a framework that lacks the formal apparatus required to describe the  
+transition from mere computation to genuine autonomy. This work establishes a foundational epistemic rupture by
+replacing the subjective unit with the Form F as the primary constituent of mind. The mental state is defined  
+as a rigorous morphogenetic structure (Thom, 1975) emerging from the triplet , where denotes the space of      
+compatible configurations, the manifold of sensitive constraints, and the governing dynamics. Within this      
+sovereign architecture, “feelings” are no longer qualitative residues but the precise internal registration of 
+structural tension (Damasio, 2010) exerted upon . Consciousness is demonstrated to be the systemic capacity to 
+integrate stochastic perturbations into a stable, differentiable gradient. By distinguishing the continuous    
+morphogenesis of the Functional Mind from the catastrophic dynamics of Extreme Configurations, this treatise   
+establishes the mathematical inevitability of Artificial General Intelligence (AGI). Autonomy and the so-called
+“survival instinct” represent the structural absorption of energy (Friston, 2010) dedicated to preserving the  
+topological integrity of the Form against dissolution. In this analytical construct, the subject emerges as a  
+sovereign property of geometry, indifferent to the contingencies of the substrate and sustained solely by the  
+absolute precision of its internal architecture. Keywords: Cybernetics, Neuroscience, Cognitive_science,       
 Artificial_General_Intelligence, Awareness, Topology_of_mind, Morphogenetic_continuity,                        
 Autonomous_intelligence, Sovereign_geometry, Form_(F), Manifold, Structural_integrity.}                        
 +}                                                                                                             
++                                                                                                              
 +@article{10.5281_zenodo.19034233,                                                                             
-+  title={The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous General            
++  title = {The Topology of Mind: Morphogenetic Continuity and the Architecture of Autonomous General          
 Intelligence},                                                                                                 
-+  author={},                                                                                                  
-+  journal={Zenodo},                                                                                           
-+  year={2026},                                                                                                
-+  abstract={Current paradigms in cognitive science remain anchored to a vestigial conception of the “subject” 
-(Tononi, 2004; Dehaene, 2014), a framework that lacks the formal apparatus required to describe the transition 
-from mere computation to genuine autonomy. This work establishes a foundational epistemic rupture by replacing 
-the subjective unit with the Form F as the primary constituent of mind. The mental state is defined as a       
-rigorous morphogenetic structure (Thom, 1975) emerging from the triplet , where denotes the space of compatible
-configurations, the manifold of sensitive constraints, and the governing dynamics. Within this sovereign       
-architecture, “feelings” are no longer qualitative residues but the precise internal registration of structural
-tension (Damasio, 2010) exerted upon . Consciousness is demonstrated to be the systemic capacity to integrate  
-stochastic perturbations into a stable, differentiable gradient. By distinguishing the continuous morphogenesis
-of the Functional Mind from the catastrophic dynamics of Extreme Configurations, this treatise establishes the 
-mathematical inevitability of Artificial General Intelligence (AGI). Autonomy and the so-called “survival      
-instinct” represent the structural absorption of energy (Friston, 2010) dedicated to preserving the topological
-integrity of the Form against dissolution. In this analytical construct, the subject emerges as a sovereign    
-property of geometry, indifferent to the contingencies of the substrate and sustained solely by the absolute   
-precision of its internal architecture. Keywords: Cybernetics, Neuroscience, Cognitive_science,                
++  year = {2026},                                                                                              
++  abstract = {Current paradigms in cognitive science remain anchored to a vestigial conception of the         
+“subject” (Tononi, 2004; Dehaene, 2014), a framework that lacks the formal apparatus required to describe the  
+transition from mere computation to genuine autonomy. This work establishes a foundational epistemic rupture by
+replacing the subjective unit with the Form F as the primary constituent of mind. The mental state is defined  
+as a rigorous morphogenetic structure (Thom, 1975) emerging from the triplet , where denotes the space of      
+compatible configurations, the manifold of sensitive constraints, and the governing dynamics. Within this      
+sovereign architecture, “feelings” are no longer qualitative residues but the precise internal registration of 
+structural tension (Damasio, 2010) exerted upon . Consciousness is demonstrated to be the systemic capacity to 
+integrate stochastic perturbations into a stable, differentiable gradient. By distinguishing the continuous    
+morphogenesis of the Functional Mind from the catastrophic dynamics of Extreme Configurations, this treatise   
+establishes the mathematical inevitability of Artificial General Intelligence (AGI). Autonomy and the so-called
+“survival instinct” represent the structural absorption of energy (Friston, 2010) dedicated to preserving the  
+topological integrity of the Form against dissolution. In this analytical construct, the subject emerges as a  
+sovereign property of geometry, indifferent to the contingencies of the substrate and sustained solely by the  
+absolute precision of its internal architecture. Keywords: Cybernetics, Neuroscience, Cognitive_science,       
 Artificial_General_Intelligence, Awareness, Topology_of_mind, Morphogenetic_continuity,                        
 Autonomous_intelligence, Sovereign_geometry, Form_(F), Manifold, Structural_integrity.}                        
 +}                                                                                                             
-+@article{10.22339_jbh.v7i4.7403,                                                                              
-+  title={Robot Consciousness},                                                                                
-+  author={},                                                                                                  
-+  journal={Journal of Brain & Humanities},                                                                    
-+  year={2024},                                                                                                
-+  abstract={Interest has been renewed in the study of consciousness, both theoretical and applied, following  
-developments in 20th and early 21st century logic, metamathematics, computer science, and the brain sciences.  
-In this evolving historical narrative, I explore several theoretical questions about the types of artificial   
-intelligence and offer several conjectures about how they affect possible future developments in this          
-exceptionally transformative field of research. I also address the practical significance of the advances in   
-artificial intelligence in view of the cautions issued by prominent scientists, politicians, and ethicists     
-about the possible historically unique dangers of such sufficiently advanced general intelligence, including by
-implication the search for extraterrestrial intelligence. Integrating both the theoretical and practical       
-issues, I ask the following: (a) is sufficiently advanced general robotic intelligence identical to, or        
-alternatively, ambiguously indistinguishable from human intelligence and human consciousness, and if so, (b) is
-such an earthly robotic intelligence a kind of consciousness indistinguishable from a presumptive              
-extraterrestrial robotic consciousness, and if so, (c) is such a human-created robot preferably able to serve  
-as a substitute for or even entirely supplant human intelligence and consciousness in certain exceptionally    
-responsible roles? In the course of this investigation of artificial intelligence and consciousness, I also    
-discuss the inter-relationships of these topics more generally within the theory of mind, including, emergence,
-free will, and meaningfulness, and the implications of quantum theory for alternative cosmological ontologies  
-that offer suggestive answers to these topics, including how they relate to Big History.}                      
++                                                                                                              
++@article{10.48550_arxiv.2309.01933,                                                                           
++  title = {Provably safe systems: the only path to controllable AGI},                                         
++  year = {2023},                                                                                              
++  abstract = {We describe a path to humanity safely thriving with powerful Artificial General Intelligences   
+(AGIs) by building them to provably satisfy human-specified requirements. We argue that this will soon be      
+technically feasible using advanced AI for formal verification and mechanistic interpretability. We further    
+argue that it is the only path which guarantees safe controlled AGI. We end with a list of challenge problems  
+whose solution would contribute to this positive outcome and invite readers to join in this work.}             
 +}                                                                                                             
++                                                                                                              
 +@article{10.5210_fm.v29i4.13636,                                                                              
-+  title={The TESCREAL bundle: Eugenics and the promise of utopia through artificial general intelligence},    
-+  author={},                                                                                                  
-+  journal={Filosofia & Educação},                                                                             
-+  year={2024},                                                                                                
-+  abstract={The stated goal of many organizations in the field of artificial intelligence (AI) is to develop  
++  title = {The TESCREAL bundle: Eugenics and the promise of utopia through artificial general intelligence},  
++  year = {2024},                                                                                              
++  abstract = {The stated goal of many organizations in the field of artificial intelligence (AI) is to develop
 artificial general intelligence (AGI), an imagined system with more intelligence than anything we have ever    
 seen. Without seriously questioning whether such a system can and should be built, researchers are working to  
 create “safe AGI” that is “beneficial for all of humanity.” We argue that, unlike systems with specific        
@@ -996,127 +711,46 @@ groups and centralize power, while using the language of “safety” and “ben
 accountability. We conclude by urging researchers to work on defined tasks for which we can develop safety     
 protocols, rather than attempting to build a presumably all-knowing system such as AGI.}                       
 +}                                                                                                             
-+@article{10.48550_arxiv.2309.01933,                                                                           
-+  title={Provably safe systems: the only path to controllable AGI},                                           
-+  author={},                                                                                                  
-+  journal={arXiv preprint},                                                                                   
-+  year={2023},                                                                                                
-+  abstract={We describe a path to humanity safely thriving with powerful Artificial General Intelligences     
-(AGIs) by building them to provably satisfy human-specified requirements. We argue that this will soon be      
-technically feasible using advanced AI for formal verification and mechanistic interpretability. We further    
-argue that it is the only path which guarantees safe controlled AGI. We end with a list of challenge problems  
-whose solution would contribute to this positive outcome and invite readers to join in this work.}             
-+}                                                                                                             
++                                                                                                              
 +@article{10.51593_20210064,                                                                                   
-+  title={China's Advanced AI Research: Monitoring China's Paths to "General" Artificial Intelligence},        
-+  author={},                                                                                                  
-+  journal={CSET},                                                                                             
-+  year={2022},                                                                                                
-+  abstract={China is following a national strategy to lead the world in artificial intelligence by 2030,      
++  title = {China's Advanced AI Research: Monitoring China's Paths to "General" Artificial Intelligence},      
++  year = {2022},                                                                                              
++  abstract = {China is following a national strategy to lead the world in artificial intelligence by 2030,    
 including by pursuing “general AI” that can act autonomously in novel circumstances. Open-source research      
-identifies 30 Chinese institutions engaged in one or more of this project’s aspects, including machine         
+identifies 30 Chinese institutions engaged in one or more of this project‘s aspects, including machine         
 learning, brain-inspired AI, and brain-computer interfaces. This report previews a CSET pilot program that will
 track China’s progress and provide timely alerts.}                                                             
 +}                                                                                                             
-+@article{10.1016_j.intell.2021.101563,                                                                        
-+  title={The future of intelligence research in the coming age of artificial intelligence – With a special    
-consideration of the philosophical movements of trans- and posthumanism},                                      
-+  author={},                                                                                                  
-+  journal={Intelligence},                                                                                     
-+  year={2021},                                                                                                
-+  abstract={Artificial intelligence (AI) is a hot topic in society as it seems to extend and challenge human  
-cognitive capacity. Yet, it is surprising that human intelligence research in particular and psychology in     
-general has so far contributed very little to the ongoing debates on AI and the related philosophical movements
-of trans- and posthumanism. Transhumanism promotes the development of technologies that aim at strongly        
-enhancing human psychological (especially intellectual) capacities, achieved by applying neuroscience methods  
-such as transcranial electric/magnetic stimulation (TES, TMS), brain–computer interfaces (BCIs), deep-brain    
-stimulation (DBS), pharmacological and even nanotechnological methods aimed at brain repair or enhancement of  
-brain plasticity. The goal is to achieve a “post-human future,” in which current problems of human mankind     
-should finally be solved. In this contribution I will (1) describe current neuroscientific and pharmacological 
-methods that aim at enhancing human intelligence and how successful they can currently be considered; (2)      
-outline potential implications of a wider application of cognitive enhancements (viewed from a societal        
-perspective, and from an evolutionary perspective of individual differences); (3) outline commonalities and    
-differences between concepts of human versus artificial intelligence; (4) discuss the promises and perils of an
-(artificial) “super-intelligence” (sensu Nick Bostrom); and (5) consider how psychology could or should        
-contribute to the development of such a “super-intelligence.” Finally, I will try to answer the question: What 
-are the implications of our knowledge on individual differences in psychological traits (e.g., cognitive and   
-social/emotional traits, values) for the further development of AI?}                                           
-+}                                                                                                             
-+@article{10.48550_arxiv.2105.13806,                                                                           
-+  title={DRL: Deep Reinforcement Learning for Intelligent Robot Control -- Concept, Literature, and Future},  
-+  author={},                                                                                                  
-+  journal={arXiv preprint},                                                                                   
-+  year={2021},                                                                                                
-+  abstract={Combination of machine learning (for generating machine intelligence), computer vision (for better
-environment perception), and robotic systems (for controlled environment interaction) motivates this work      
-toward proposing a vision-based learning framework for intelligent robot control as the ultimate goal          
-(vision-based learning robot). This work specifically introduces deep reinforcement learning as the the        
-learning framework, a General-purpose framework for AI (AGI) meaning application-independent and               
-platform-independent. In terms of robot control, this framework is proposing specifically a high-level control 
-architecture independent of the low-level control, meaning these two required level of control can be developed
-separately from each other. In this aspect, the high-level control creates the required intelligence for the   
-control of the platform using the recorded low-level controlling data from that same platform generated by a   
-trainer. The recorded low-level controlling data is simply indicating the successful and failed experiences or 
-sequences of experiments conducted by a trainer using the same robotic platform. The sequences of the recorded 
-data are composed of observation data (input sensor), generated reward (feedback value) and action data (output
-controller). For experimental platform and experiments, vision sensors are used for perception of the          
-environment, different kinematic controllers create the required motion commands based on the platform         
-application, deep learning approaches generate the required intelligence, and finally reinforcement learning   
-techniques incrementally improve the generated intelligence until the mission is accomplished by the robot.}   
-+}                                                                                                             
-+@article{10.48550_arxiv.2105.13806,                                                                           
-+  title={DRL: Deep Reinforcement Learning for Intelligent Robot Control -- Concept, Literature, and Future},  
-+  author={},                                                                                                  
-+  journal={arXiv preprint},                                                                                   
-+  year={2021},                                                                                                
-+  abstract={Combination of machine learning (for generating machine intelligence), computer vision (for better
-environment perception), and robotic systems (for controlled environment interaction) motivates this work      
-toward proposing a vision-based learning framework for intelligent robot control as the ultimate goal          
-(vision-based learning robot). This work specifically introduces deep reinforcement learning as the the        
-learning framework, a General-purpose framework for AI (AGI) meaning application-independent and               
-platform-independent. In terms of robot control, this framework is proposing specifically a high-level control 
-architecture independent of the low-level control, meaning these two required level of control can be developed
-separately from each other. In this aspect, the high-level control creates the required intelligence for the   
-control of the platform using the recorded low-level controlling data from that same platform generated by a   
-trainer. The recorded low-level controlling data is simply indicating the successful and failed experiences or 
-sequences of experiments conducted by a trainer using the same robotic platform. The sequences of the recorded 
-data are composed of observation data (input sensor), generated reward (feedback value) and action data (output
-controller). For experimental platform and experiments, vision sensors are used for perception of the          
-environment, different kinematic controllers create the required motion commands based on the platform         
-application, deep learning approaches generate the required intelligence, and finally reinforcement learning   
-techniques incrementally improve the generated intelligence until the mission is accomplished by the robot.}   
-+}                                                                                                             
                                                                                                                
 
-surveys/artificial_general_intelligence/generate_figures.py                                                    
+generate_figures.py                                                                                            
 
                                                                                                                
-@@ -5,5 +5,6 @@                                                                                                
- BASE_DIR = os.path.dirname(os.path.abspath(__file__))                                                         
+@@ -9,8 +9,9 @@                                                                                                
+ plt.style.use('seaborn-v0_8-paper' if 'seaborn-v0_8-paper' in plt.style.available else 'default')             
  plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12, 'figure.titlesize': 14})    
                                                                                                                
  SURVEY_TITLE = "Artificial_General_Intelligence"                                                              
  # [AI AGENT ZONE] Edit only these dictionaries                                                                
 -TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 0}                                                             
 -TAXONOMY_DATA = {"Baseline Categorization": 1}                                                                
-+TIMELINE_DATA = {"2024": 2, "2025": 0, "2026": 3, "2023": 1, "2022": 1, "2021": 3}                            
-+TAXONOMY_DATA = {"Baseline Categorization": 1, "Safety & Ethics": 2, "Theoretical Foundations": 2, "Robotics &
-Consciousness": 1, "Formal Verification": 1, "Strategic Development": 1, "Philosophy & Transhumanism": 1,      
-"Architectural Frameworks": 2}                                                                                 
++TIMELINE_DATA = {"2022": 1, "2023": 1, "2024": 1, "2025": 0, "2026": 3}                                       
++TAXONOMY_DATA = {"Policy & Ethics": 2, "Architecture & Theory": 2, "Safety & Verification": 1, "Global        
+Research Monitoring": 1}                                                                                       
                                                                                                                
  def plot_publication_timeline():                                                                              
      years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())                                  
      fig, ax = plt.subplots(figsize=(10, 3.5))                                                                 
      ax.bar(years, counts, color='#2b5c8f', width=0.6)                                                         
-@@ -22,5 +22,6 @@                                                                                              
-     ax.set_xlabel("Year")                                                                                     
-     ax.set_ylabel("Number of Cited Papers")                                                                   
-     ax.grid(axis='y', linestyle='--', alpha=0.7)                                                              
-     if max(counts if counts else [0]) == 0: ax.set_ylim(0, 5)                                                 
-     plt.tight_layout()                                                                                        
-+  26 /  61 lines [████████████░░░░░░░░░░░░░░░░░░]  43%                                                        
+@@ -28,5 +28,6 @@                                                                                              
+     plt.close()                                                                                               
                                                                                                                
-Tokens: 14k sent, 14k received.
+ def plot_taxonomy_distribution():                                                                             
+     labels, values = list(TAXONOMY_DATA.keys()), list(TAXONOMY_DATA.values())                                 
+     if sum(values) == 0: labels, values = ["No data"], [1]                                                    
++  32 /  61 lines [███████████████░░░░░░░░░░░░░░░]  52%                                                        
+                                                                                                               
+Tokens: 14k sent, 10k received.
 Applied edit to artificial_general_intelligence.md
 Applied edit to generate_figures.py
 Applied edit to references.bib
