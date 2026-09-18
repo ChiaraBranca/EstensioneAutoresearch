@@ -58,7 +58,13 @@ def sync_bibliography(survey_file, bib_file):
     # 1. Extract IDs actually cited in the Markdown (e.g., [^10.5281_zenodo.123])
     with open(survey_file, "r", encoding="utf-8") as f:
         md_content = f.read()
-    cited_ids = set(re.findall(r'\[\^([^\]]+)\]', md_content))
+        
+    raw_citations = re.findall(r'\[\^([^\]]+)\]', md_content)
+    cited_ids = set()
+    for match in raw_citations:
+        for raw_id in match.split(','):
+            # Pulisce spazi e simboli ^ residui
+            cited_ids.add(raw_id.strip(" ^"))
 
     # 2. Read the current bibliography
     with open(bib_file, "r", encoding="utf-8") as f:
@@ -143,6 +149,8 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
             f"3) BIBLIOGRAPHY: Add the new bibliographic entries for RELEVANT papers into '{bib_file}'. CRITICAL: The BibTeX key MUST be the exact 'id' field from the JSON! Do NOT invent new keys (e.g. use @article{{10.5281_zenodo.1234, NOT @article{{smith2026,).\n"
             f"4) DATA UPDATE: Update TIMELINE_DATA and TAXONOMY_DATA at the beginning of '{fig_script}' by ADDING the new counts of INTEGRATED papers to the existing values.\n"
             f"5) CLEANUP: Strictly remove any empty headers without underlying text from '{survey_file}'. The document must only contain fully argued sections!\n"
+            f"6) FORMATTING & INTEGRITY CHECK: Do NOT group citations in a single bracket (use [^id1][^id2], NEVER [^id1, ^id2]). "
+            f"Before finishing, you MUST independently verify that EVERY single paper ID you added to '{bib_file}' has an explicit citation inside '{survey_file}'. Discrepancies are strictly forbidden!\n"
             f"Do NOT execute terminal commands, do NOT write LaTeX code, just edit the requested files."
         )
 

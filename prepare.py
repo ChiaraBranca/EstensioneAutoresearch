@@ -301,7 +301,13 @@ def count_actual_citations(survey_path):
     if not os.path.exists(survey_path): return 0
     with open(survey_path, 'r', encoding='utf-8') as f:
         content = f.read()
-    citations = set(re.findall(r'\[\^([^\]]+)\]', content))
+        
+    raw_citations = re.findall(r'\[\^([^\]]+)\]', content)
+    citations = set()
+    for match in raw_citations:
+        for raw_id in match.split(','):
+            citations.add(raw_id.strip(" ^"))
+            
     return len(citations)
 
 def compute_living_survey_score(topic_name):
