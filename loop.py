@@ -125,8 +125,8 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         # ORACLE: GROUND TRUTH GENERATION (Vector Embeddings IR)
         # =======================================================
         print("\n[ORACLE] Generating Ground Truth via Cosine Similarity (Vector IR)...")
-        #run_command(f'python auto_evaluator.py "Main Topic: {topic}. Specific Query: {search_query}"')
-        #time.sleep(15)
+        run_command(f'python auto_evaluator.py "Main Topic: {topic}. Specific Query: {search_query}"')
+        time.sleep(15)
 
         # =======================================================
         # ACTOR AGENT PROMPT
