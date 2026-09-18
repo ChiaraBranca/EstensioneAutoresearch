@@ -1,0 +1,21 @@
+# Living Survey: multi_agent
+
+## Introduction
+
+This document collects the scientific literature regarding **multi_agent**.
+
+## Multi-Agent Architectures & Frameworks
+
+Recent research continues to expand the architectural paradigms available for multi-agent systems (MAS). The MOSAIC platform introduces a universal agent-level interface that enables heterogeneous agents—including RL policies, LLMs, VLMs, and human operators—to act within shared reinforcement learning environments using an IPC-based worker protocol[^https:__openalex.org_W7133365089]. Similarly, Project Synapse proposes a hierarchical multi-agent architecture orchestrated via LangGraph, where a central Resolution Supervisor delegates tactical subtasks to specialized worker agents for autonomous disruption resolution[^https:__openalex.org_W7124227974]. In software engineering, multi-agent LLM architectures have been successfully applied to automated front-end generation, coordinating generation, validation, and repair through Supervisor, Hierarchical, and Custom workflow strategies to synthesize complete React applications from design artifacts[^https:__openalex.org_W7166959618]. For educational assessment, distributed multi-agent systems leveraging NLP and clustering algorithms have been deployed to automate assignment grading, significantly reducing manual workload while maintaining human-in-the-loop oversight[^10.54254_2755-2721_2025.30694].
+
+## Safety, Trust & Governance
+
+As MAS scale in complexity, ensuring safety, trust, and robust governance has become a primary research focus. The "Internet of Agents" (IoA) vision necessitates co-designing safety with capability, addressing vulnerabilities across single agents, MAS communication, and interoperable ecosystems through standardized protocols and resource vetting[^10.48550_arxiv.2512.00520]. To quantify trust in these environments, information-theoretic approaches have been applied to multi-agent cooperative navigation and federated learning, providing mathematical frameworks for measuring trust under deception and Byzantine attacks[^10.6084_m9.figshare.32101069]. On the regulatory front, the Agent Trust Fabric (ATF) introduces a Cognitive Governance Layer that computes counterfactual governance paths, establishes universal governance invariants across multiple regulatory frameworks, and bridges nanosecond-precision runtime governance with multi-year regulatory review cycles[^10.5281_zenodo.20391722].
+
+## Domain-Specific Multi-Agent Applications
+
+Multi-agent systems are increasingly deployed to solve complex, domain-specific challenges. In healthcare, state-machine-based multi-agent architectures enable collaborative diagnostic reasoning, where specialized agents analyze medical questions from different professional perspectives, vote on answers, and revise unresolved queries to improve transparency and accuracy[^10.3390_math14142562]. In bio-robotics, evidence-grounded multi-agent systems assist in high-level bio-robot design by translating requirements into sensing, logic, and actuation modules while grounding choices in traceable biological parts[^10.48550_arxiv.2608.19699]. For autonomous robotics, combining Quantum Computing and Neuromorphic Computing with Multi-Agent Reinforcement Learning (MARL) offers new pathways for safe, reliable, and explainable optimal control in large solution spaces[^2408.03884].
+
+## Evaluation & Debugging
+
+Debugging and evaluating collaborative AI systems remain critical hurdles. The ECHO algorithm addresses multi-agent error attribution by combining hierarchical context representation, objective analysis, and consensus voting to pinpoint agent and step-level failures more accurately than binary search or all-at-once evaluation methods[^10.48550_arxiv.2510.04886]. In systems engineering, multi-agent frameworks have been adapted for root-cause diagnosis of kernel crashes, utilizing evidence graphs and automated pipelines to analyze complex system logs and identify failure origins[^10.5281_zenodo.19247220]. Furthermore, conversational multi-agent frameworks are being utilized to evaluate and refine prompts across different LLM families, demonstrating that multi-LLM collaboration surfaces prompt strengths and weaknesses more effectively than single-model testing[^10.5120_ijca2025925510].
