@@ -140,12 +140,12 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         # =======================================================
         prompt_actor = (
             f"Carefully read the 'new_papers.json' file containing unreleased papers.\n"
-            f"1) TOPIC RELEVANCE & INTERDISCIPLINARITY: The main topic of this Living Survey is '{topic}'. "
+            f"1) STRICT TOPIC RELEVANCE: The main topic of this Living Survey is strictly '{topic}'. "
             f"The papers were retrieved using the search query '{search_query}'. "
-            f"You MUST INCLUDE papers directly focused on '{topic}', BUT ALSO explicitly include interdisciplinary papers "
-            f"that explore foundational methodologies (e.g., underlying algorithms or frameworks), transitions from related fields, "
-            f"or philosophical/societal implications deeply connected to '{topic}'. "
-            f"Discard ONLY papers that are completely off-topic or that only trivially mention the keyword without adding academic value.\n"
+            f"CRITICAL: Evaluate if each paper is specifically and primarily focused on '{topic}'. "
+            f"A paper is considered strictly relevant ONLY if it directly investigates the core mechanisms, foundational methodologies, direct empirical applications, or immediate theoretical/policy implications of '{topic}'. "
+            f"If a paper merely mentions '{topic}' as background context, a generic example, future speculation, or focuses primarily on a broader/tangential field without deep ties to '{topic}', "
+            f"you MUST DISCARD AND IGNORE IT COMPLETELY. Do NOT attempt to force off-topic or marginally related papers into '{survey_file}'! Ignore identical duplicate abstracts.\n"
             f"2) INTEGRATION: For relevant papers only, integrate a concise analysis into '{survey_file}' using Markdown citations like [^paper_id]. "
             f"EXPANSION RULE: Do NOT delete or summarize any existing text from previous cycles! Add new content by organically expanding existing sections or creating new ones.\n"
             f"3) BIBLIOGRAPHY: Add the new bibliographic entries for RELEVANT papers into '{bib_file}'. CRITICAL: The BibTeX key MUST be the exact 'id' field from the JSON! Do NOT invent new keys (e.g. use @article{{10.5281_zenodo.1234, NOT @article{{smith2026,).\n"
@@ -155,7 +155,7 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
             f"Before finishing, you MUST independently verify that EVERY single paper ID you added to '{bib_file}' has an explicit citation inside '{survey_file}'. Discrepancies are strictly forbidden!\n"
             f"Do NOT execute terminal commands, do NOT write LaTeX code, just edit the requested files."
         )
-        
+
         print("\n[AI AGENT - ACTOR] Writing and integrating new literature...")
         run_command(f'uvx --from aider-chat aider --model openai/lab-qwen36 --model-settings-file .aider.model.settings.yml --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "{prompt_actor}" {survey_file} {bib_file} {fig_script}', capture_output=False)
         time.sleep(15)

@@ -2205,3 +2205,48 @@ Do NOT invent code, limit yourself to the targeted revision of 'surveys/artifici
 [SYSTEM] Rendering actual charts to disk...
 
 [SYSTEM] Executing: python "surveys/artificial_general_intelligence/generate_figures.py"
+[GENERATE_FIGURES] Charts updated in /mnt/sdb1/workspace/chiarabrancaleoni/autoresearch/surveys/artificial_general_intelligence/figures (Timeline reconciled with .bib)
+
+[METRICS] Calculating Precision, Recall, and F1-Measure...
+
+[SYSTEM] Executing: python evaluate_metrics.py "artificial_general_intelligence"
+==================================================
+ 📊 EXTERNAL VALIDATION: INFORMATION RETRIEVAL METRICS
+==================================================
+Total papers evaluated in sample: 22
+
+Confusion Matrix:
+  - True Positives (TP):  17 (Correctly Included)
+  - False Positives (FP): 0 (Hallucinations/Off-topic Included)
+  - False Negatives (FN): 3 (Useful papers missed/discarded)
+  - True Negatives (TN):  2 (Correctly Discarded)
+
+Metrics:
+  🎯 Precision: 1.0000 (When AI includes a paper, 100.0% of the time it is correct)
+  🔍 Recall:    0.8500 (The AI successfully finds 85.0% of all useful literature)
+  ⚖️  F1-Score:  0.9189 (Harmonic mean of Precision and Recall)
+  ✅ Accuracy:  0.8636 (Total correct decisions)
+==================================================
+
+[SYSTEM] Executing: python prepare.py --eval "Artificial_General_Intelligence"
+INTEGRATED_COUNT:17
+LSS_SCORE:78.28
+
+[VERDICT] Baseline: 50.3 -> New Score: 78.28 (Δ +27.98)
+[SUCCESS] Improvement confirmed! Executing Git Commit.
+
+[SYSTEM] Executing: git add .
+
+[SYSTEM] Executing: git commit -m "feat(artificial_general_intelligence): integrated valid papers (LSS: 78.28)" 
+[main 7d698dc] feat(artificial_general_intelligence): integrated valid papers (LSS: 78.28)
+ 6 files changed, 2067 insertions(+), 1045 deletions(-)
+ create mode 100644 surveys/artificial_general_intelligence/artificial_general_intelligence.md
+ create mode 100644 surveys/artificial_general_intelligence/figures/taxonomy.png
+ create mode 100644 surveys/artificial_general_intelligence/figures/timeline.png
+ create mode 100644 surveys/artificial_general_intelligence/generate_figures.py
+ create mode 100644 surveys/artificial_general_intelligence/references.bib
+[LOG] JSON files successfully archived in: surveys/artificial_general_intelligence/eval_logs (Timestamp: 20260918_125930)
+
+==================================================
+ LOOP SUCCESSFULLY COMPLETED!
+==================================================
