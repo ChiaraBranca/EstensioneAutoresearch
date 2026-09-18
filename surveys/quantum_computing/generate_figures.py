@@ -12,7 +12,7 @@ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12
 SURVEY_TITLE = "Quantum_Computing"
 # [AI AGENT ZONE] Edit only these dictionaries
 TIMELINE_DATA = {"2021": 2, "2022": 3, "2023": 3, "2024": 0, "2025": 3, "2026": 4}
-TAXONOMY_DATA = {"Quantum Algorithms & Toolchains": 2, "Quantum Simulation & Optimization": 3, "Quantum Cryptography & Internet": 3, "Engineering & Materials Applications": 3, "Post-Quantum Cryptography & Security": 2, "General Reviews & Architecture": 2}
+TAXONOMY_DATA = {"Quantum Software & Algorithms": 4, "Quantum Cryptography & Security": 5, "Hardware & Applications": 6}
 
 def plot_publication_timeline():
     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())
