@@ -11,8 +11,8 @@ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12
 
 SURVEY_TITLE = "Quantum_Computing"
 # [AI AGENT ZONE] Edit only these dictionaries
-TIMELINE_DATA = {"2024": 0, "2025": 3, "2026": 4, "2023": 2, "2022": 4, "2021": 2}
-TAXONOMY_DATA = {"Quantum Algorithms & Simulation": 5, "Quantum Communication & Cryptography": 5, "Quantum Ecosystem & Toolchains": 2, "Quantum Foundations & Theory": 3}
+TIMELINE_DATA = {"2021": 2, "2022": 3, "2023": 3, "2024": 0, "2025": 2, "2026": 2}
+TAXONOMY_DATA = {"Algorithms & Optimization": 3, "Simulation & Software": 2, "Communication & Cryptography": 5, "Foundational & Architectures": 2}
 
 def plot_publication_timeline():
     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())
@@ -54,6 +54,24 @@ if __name__ == "__main__":
         else:
             # Fallback if the .bib is empty
             TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 0}
+
+        # --- TAXONOMY SANITY CHECK (not a fix, only a warning) ---
+        # Unlike TIMELINE_DATA, TAXONOMY_DATA is never reconstructed from the .bib file
+        # (there is no ground-truth "methodological category" field to recompute it from).
+        # This only performs a weak consistency check: the total number of papers the
+        # Actor claims to have categorized should match the number of entries actually
+        # present in the bibliography. A mismatch does not necessarily mean the taxonomy
+        # is wrong, but it is a signal worth investigating manually.
+        entry_count = len(re.findall(r'@\w+\{', bib_content))
+        taxonomy_total = sum(TAXONOMY_DATA.values()) if TAXONOMY_DATA else 0
+        if entry_count and taxonomy_total != entry_count:
+            print(
+                f"[TAXONOMY WARNING] TAXONOMY_DATA sums to {taxonomy_total}, but "
+                f"references.bib has {entry_count} entries. The taxonomy breakdown "
+                f"may be stale or miscounted (it is not cross-checked automatically "
+                f"like TIMELINE_DATA)."
+            )
+        # --- END OF TAXONOMY SANITY CHECK ---
     # --- END OF RE-CHECK BLOCK ---
 
     plot_publication_timeline()

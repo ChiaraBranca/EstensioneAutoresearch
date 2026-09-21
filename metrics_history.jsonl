@@ -1,0 +1,1 @@
+{"topic": "Quantum_Computing", "cycle": 1, "timestamp": "2026-09-21T20:52:16.565578", "C": 54.0, "N": 53.4, "V": 100.0, "I": 100.0, "precision": 0.75, "recall": 0.5625, "f1": 0.6428571428571429, "accuracy": 0.6, "baseline_score": 50.3, "new_score": 69.92, "committed": true}
