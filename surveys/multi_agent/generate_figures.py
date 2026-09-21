@@ -11,8 +11,8 @@ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12
 
 SURVEY_TITLE = "multi_agent"
 # [AI AGENT ZONE] Edit only these dictionaries
-TIMELINE_DATA = {"2024": 1, "2025": 5, "2026": 7}
-TAXONOMY_DATA = {"Multi-Agent Architectures": 7, "Safety & Governance": 3, "Debugging & Evaluation": 2, "Application Domains": 1}
+TIMELINE_DATA = {"2009": 1, "2014": 1, "2023": 1, "2024": 2, "2025": 8, "2026": 7}
+TAXONOMY_DATA = {"Multi-Agent Architectures": 11, "Safety & Governance": 4, "Debugging & Evaluation": 3, "Application Domains": 2}
 
 def plot_publication_timeline():
     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())
