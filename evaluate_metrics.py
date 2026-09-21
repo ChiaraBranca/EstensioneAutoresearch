@@ -78,6 +78,14 @@ def evaluate_performance(ground_truth_file, bib_file):
     f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
     accuracy = (TP + TN) / len(ground_truth) if len(ground_truth) > 0 else 0.0
 
+    # Persist the metrics so external tools (e.g. tune_lss.py / loop.py's
+    # history logger) can pick them up without re-parsing stdout.
+    with open("last_metrics.json", "w", encoding="utf-8") as f:
+        json.dump(
+            {"precision": precision, "recall": recall, "f1": f1, "accuracy": accuracy},
+            f,
+        )
+
     print("\n" + "=" * 50)
     print(" 📊 EXTERNAL VALIDATION: INFORMATION RETRIEVAL METRICS")
     print("=" * 50)

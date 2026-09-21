@@ -1,12 +1,82 @@
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Warning for openai/lab-qwen36: Unknown context window size and costs, using sane defaults.
+You can skip this check with --no-show-model-warnings
+
+https://aider.chat/docs/llms/warnings.html
 ==================================================
- STARTING LIVING SURVEY: Project 'transformers_attention_NLP' | Query: 'transformers attention NLP 2017-2019'
+ STARTING LIVING SURVEY: Project 'transformers_attention_NLP' | Query: 'transformers attention NLP 2018-2019'
 ==================================================
 
 [SYSTEM] Executing: python prepare.py --init "transformers_attention_NLP"
+[INIT] Created new survey file in: surveys/transformers_attention_nlp/transformers_attention_nlp.md
+[INIT] Baseline figures generated in surveys/transformers_attention_nlp/figures
 WORKSPACE_READY:surveys/transformers_attention_nlp
 
 ──────────────────────────────────────────────────
  CYCLE 1/1 - LITERATURE RETRIEVAL
 ──────────────────────────────────────────────────
 
-[SYSTEM] Executing: python prepare.py --fetch "transformers_attention_NLP" "transformers attention NLP 2017-2019"
+[SYSTEM] Executing: python prepare.py --fetch "transformers_attention_NLP" "transformers attention NLP 2018-2019"
+--- INITIATING FEDERATED MULTI-SERVER SEARCH ---
+[SERVER 1 - ARXIV] Searching for: 'transformers attention NLP -' (Filter: [2018, 2019])...
+[ARXIV ERROR] HTTP Error 429: Unknown Error
+[SERVER 2 - OPENALEX] Searching for: 'transformers attention NLP -'...
+[PREPARE] Fetched 25 completely NEW papers.
+          Details: 0 from ArXiv, 25 from OpenAlex.
+
+[SYSTEM] Executing: python prepare.py --eval "transformers_attention_NLP"
+INTEGRATED_COUNT:0
+LSS_SCORE:50.3
+[METRIC] Starting Baseline LSS Score: 50.3
+
+[ORACLE] Generating Ground Truth via Cosine Similarity (Vector IR)...
+
+[SYSTEM] Executing: python auto_evaluator.py "Main Topic: transformers_attention_NLP. Specific Query: transformers attention NLP 2018-2019"
+[ORACLE - INFORMATION RETRIEVAL MODE]
+Using 'lab-embed' to compute vector similarities (Threshold: 0.5)
+[ORACLE] Auto-generating Ground Truth for 25 papers using Cosine Similarity...
+ -> Processed 10.1109_access.2019.2962154 | Cosine Sim: 0.619 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.13503 | Cosine Sim: 0.485 | Relevant: 0
+ -> Processed 10.48550_arxiv.1912.13082 | Cosine Sim: 0.574 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.13072 | Cosine Sim: 0.630 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.13106 | Cosine Sim: 0.548 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.12598 | Cosine Sim: 0.558 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.12598 | Cosine Sim: 0.536 | Relevant: 1
+ -> Processed https:__openalex.org_W2997175890 | Cosine Sim: 0.538 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.11975 | Cosine Sim: 0.531 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.11602 | Cosine Sim: 0.519 | Relevant: 1
+ -> Processed 10.26434_chemrxiv.11448177.v1 | Cosine Sim: 0.555 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.11046 | Cosine Sim: 0.571 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.11258 | Cosine Sim: 0.495 | Relevant: 0
+ -> Processed 10.48550_arxiv.1912.10915 | Cosine Sim: 0.502 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.10729 | Cosine Sim: 0.564 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.10675 | Cosine Sim: 0.583 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.10375 | Cosine Sim: 0.541 | Relevant: 1
+ -> Processed 10.48550_arxiv.2001.00059 | Cosine Sim: 0.531 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.09637 | Cosine Sim: 0.561 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.10077 | Cosine Sim: 0.631 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.10130 | Cosine Sim: 0.511 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.10077 | Cosine Sim: 0.626 | Relevant: 1
+ -> Processed 10.48550_arxiv.1912.13415 | Cosine Sim: 0.560 | Relevant: 1
+ -> Processed https:__openalex.org_W2998302663 | Cosine Sim: 0.537 | Relevant: 1
+ -> Processed 10.48550_arxiv.2001.04345 | Cosine Sim: 0.620 | Relevant: 1
+[ORACLE] ground_truth.json generated successfully!
+
+[AI AGENT - ACTOR] Writing and integrating new literature...
+
+[SYSTEM] Executing: uvx --from aider-chat aider --model openai/lab-qwen36 --model-settings-file .aider.model.settings.yml --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "Carefully read the 'new_papers.json' file containing unreleased papers.
+1) COMPREHENSIVE LITERATURE MAPPING: The main topic is 'transformers_attention_NLP'. Your goal is to build a rich, interdisciplinary academic survey. You MUST INCLUDE papers that fall into these valid categories:
+  - Core Research: Papers directly addressing the mechanisms, theories, or primary focus of 'transformers_attention_NLP'.
+  - Foundational Methodologies: Papers exploring underlying algorithms, frameworks, or enabling technologies directly advancing 'transformers_attention_NLP'.
+  - Implications & Transitions: Papers analyzing the direct ethical, societal, or advanced theoretical implications arising specifically from 'transformers_attention_NLP'.
+You MUST REJECT ONLY papers that are purely off-topic or tangential:
+  - Mention-only: Papers where 'transformers_attention_NLP' is merely mentioned as a background example, buzzword, or tangential use-case without being the central study.
+  - Out of Scope: Broad macro-models or distant fields where 'transformers_attention_NLP' is just a minor variable.
+  - Trivial Applications: Basic educational, purely linguistic, or business-management papers that use 'transformers_attention_NLP' just as context without advancing its science.
+Ignore identical duplicate abstracts.
+2) INTEGRATION: For relevant papers only, integrate a concise analysis into 'surveys/transformers_attention_nlp/transformers_attention_nlp.md' using Markdown citations like [^paper_id]. EXPANSION RULE: Do NOT delete or summarize any existing text from previous cycles! Add new content by organically expanding existing sections or creating new ones.
+3) BIBLIOGRAPHY: Add the new bibliographic entries for RELEVANT papers into 'surveys/transformers_attention_nlp/references.bib'. CRITICAL: The BibTeX key MUST be the exact 'id' field from the JSON! Do NOT invent new keys (e.g. use @article{10.5281_zenodo.1234, NOT @article{smith2026,).
+4) DATA UPDATE: Update TIMELINE_DATA and TAXONOMY_DATA at the beginning of 'surveys/transformers_attention_nlp/generate_figures.py' by ADDING the new counts of INTEGRATED papers to the existing values.
+5) CLEANUP: Strictly remove any empty headers without underlying text from 'surveys/transformers_attention_nlp/transformers_attention_nlp.md'. The document must only contain fully argued sections!
+6) FORMATTING & INTEGRITY CHECK: Do NOT group citations in a single bracket (use [^id1][^id2], NEVER [^id1, ^id2]). Before finishing, you MUST independently verify that EVERY single paper ID you added to 'surveys/transformers_attention_nlp/references.bib' has an explicit citation inside 'surveys/transformers_attention_nlp/transformers_attention_nlp.md'. Discrepancies are strictly forbidden!
+Do NOT execute terminal commands, do NOT write LaTeX code, just edit the requested files." surveys/transformers_attention_nlp/transformers_attention_nlp.md surveys/transformers_attention_nlp/references.bib surveys/transformers_attention_nlp/generate_figures.py

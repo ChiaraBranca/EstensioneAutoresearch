@@ -100,6 +100,24 @@ if __name__ == "__main__":
         else:
             # Fallback if the .bib is empty
             TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 0}
+
+        # --- TAXONOMY SANITY CHECK (not a fix, only a warning) ---
+        # Unlike TIMELINE_DATA, TAXONOMY_DATA is never reconstructed from the .bib file
+        # (there is no ground-truth "methodological category" field to recompute it from).
+        # This only performs a weak consistency check: the total number of papers the
+        # Actor claims to have categorized should match the number of entries actually
+        # present in the bibliography. A mismatch does not necessarily mean the taxonomy
+        # is wrong, but it is a signal worth investigating manually.
+        entry_count = len(re.findall(r'@\w+\{', bib_content))
+        taxonomy_total = sum(TAXONOMY_DATA.values()) if TAXONOMY_DATA else 0
+        if entry_count and taxonomy_total != entry_count:
+            print(
+                f"[TAXONOMY WARNING] TAXONOMY_DATA sums to {taxonomy_total}, but "
+                f"references.bib has {entry_count} entries. The taxonomy breakdown "
+                f"may be stale or miscounted (it is not cross-checked automatically "
+                f"like TIMELINE_DATA)."
+            )
+        # --- END OF TAXONOMY SANITY CHECK ---
     # --- END OF RE-CHECK BLOCK ---
 
     plot_publication_timeline()
@@ -209,8 +227,20 @@ def fetch_arxiv_papers(query, existing_ids=None, target_count=25):
                 
                 title = entry.find('arxiv:title', ns).text.strip().replace('\n', ' ')
                 summary = entry.find('arxiv:summary', ns).text.strip().replace('\n', ' ')
-                
-                new_papers.append({'id': paper_id, 'title': title, 'abstract': summary, 'year': pub_year_str})
+
+                # Extract author names (arXiv <author><name>...</name></author>), so downstream
+                # BibTeX entries are not forced to use an empty author={} field.
+                author_names = []
+                for author_el in entry.findall('arxiv:author', ns):
+                    name_el = author_el.find('arxiv:name', ns)
+                    if name_el is not None and name_el.text:
+                        author_names.append(name_el.text.strip())
+                authors = " and ".join(author_names) if author_names else ""
+
+                new_papers.append({
+                    'id': paper_id, 'title': title, 'abstract': summary, 'year': pub_year_str,
+                    'authors': authors, 'venue': 'arXiv preprint',
+                })
                 
             start += limit
             time.sleep(5) 
@@ -284,11 +314,30 @@ def fetch_openalex_papers(query, existing_ids=None, target_count=25):
                 raw_title = paper.get('title')
                 safe_title = raw_title.strip().replace('\n', ' ') if raw_title else "Untitled Paper"
 
+                # Extract author names (OpenAlex 'authorships' -> 'author' -> 'display_name')
+                # and the venue/journal name, so downstream BibTeX entries are not forced
+                # to use an empty author={} / journal={} field.
+                author_names = []
+                for authorship in paper.get('authorships', []) or []:
+                    author_obj = authorship.get('author') or {}
+                    display_name = author_obj.get('display_name')
+                    if display_name:
+                        author_names.append(display_name)
+                authors = " and ".join(author_names) if author_names else ""
+
+                venue = ""
+                primary_location = paper.get('primary_location') or {}
+                source = primary_location.get('source') or {}
+                if source.get('display_name'):
+                    venue = source.get('display_name')
+
                 new_papers.append({
                     'id': paper_id,
                     'title': safe_title,
                     'abstract': abstract.replace('\n', ' '),
-                    'year': str(pub_year)
+                    'year': str(pub_year),
+                    'authors': authors,
+                    'venue': venue,
                 })
             page += 1
             time.sleep(0.5)

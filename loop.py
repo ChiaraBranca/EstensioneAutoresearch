@@ -11,6 +11,10 @@ It manages the lifecycle of the Living Survey through an iterative workflow:
 4. Garbage Collection: Synchronizes the .bib file to remove orphaned citations.
 5. Validation & Commit: Computes performance metrics. If the score improves, 
    it commits via Git; if it drops (due to errors/hallucinations), it rolls back.
+6. History Logging: Persists the raw LSS components (C, N, V, I) together with
+   the external Precision/Recall/F1 for this cycle into metrics_history.jsonl,
+   so tune_lss.py --tune can later grid-search the LSS weights against real
+   quality data instead of guessing them.
 =============================================================================
 """
 
@@ -20,8 +24,11 @@ import subprocess
 import re
 import shutil
 import time
+import json as _json
 from datetime import datetime
 from dotenv import load_dotenv
+
+import tune_lss  # reused to compute raw LSS components (C, N, V, I) for logging
 
 load_dotenv()
 
@@ -93,6 +100,57 @@ def sync_bibliography(survey_file, bib_file):
             
     print("[SYSTEM] Garbage Collector executed: bibliography successfully synchronized.")
 
+
+def log_cycle_metrics(topic, cycle_index, baseline_score, new_score, committed):
+    """
+    Appends one JSON line to metrics_history.jsonl with:
+      - the raw (unweighted) LSS components for the CURRENT on-disk state,
+        recomputed via tune_lss.raw_components() (single source of truth,
+        avoids re-deriving C/N/V/I a third time here);
+      - the external precision/recall/f1/accuracy just computed by
+        evaluate_metrics.py, read back from last_metrics.json;
+      - the LSS baseline/new score and whether this cycle was committed.
+    This file is what tune_lss.py --tune consumes to grid-search the LSS
+    weights against a real, independent quality signal (F1) instead of
+    the current hand-picked 0.35/0.30/0.20/0.15 split.
+    """
+    try:
+        components = tune_lss.raw_components(topic)
+    except FileNotFoundError as e:
+        print(f"[HISTORY WARNING] Could not recompute LSS components: {e}")
+        components = {}
+
+    metrics = {}
+    if os.path.exists("last_metrics.json"):
+        with open("last_metrics.json", "r", encoding="utf-8") as f:
+            metrics = _json.load(f)
+    else:
+        print("[HISTORY WARNING] last_metrics.json not found; f1/precision/recall will be missing for this cycle.")
+
+    record = {
+        "topic": topic,
+        "cycle": cycle_index,
+        "timestamp": datetime.now().isoformat(),
+        "C": components.get("C"),
+        "N": components.get("N"),
+        "V": components.get("V"),
+        "I": components.get("I"),
+        "precision": metrics.get("precision"),
+        "recall": metrics.get("recall"),
+        "f1": metrics.get("f1"),
+        "accuracy": metrics.get("accuracy"),
+        "baseline_score": baseline_score,
+        "new_score": new_score,
+        "committed": committed,
+    }
+
+    with open("metrics_history.jsonl", "a", encoding="utf-8") as f:
+        f.write(_json.dumps(record) + "\n")
+
+    print(f"[HISTORY] Cycle {cycle_index} logged to metrics_history.jsonl "
+          f"(C={record['C']}, N={record['N']}, V={record['V']}, f1={record['f1']}, committed={committed})")
+
+
 def run_autonomous_loop(topic, iterations=1, search_query=None):
     if not search_query:
         search_query = topic
@@ -153,7 +211,8 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
             f"Ignore identical duplicate abstracts.\n"
             f"2) INTEGRATION: For relevant papers only, integrate a concise analysis into '{survey_file}' using Markdown citations like [^paper_id]. "
             f"EXPANSION RULE: Do NOT delete or summarize any existing text from previous cycles! Add new content by organically expanding existing sections or creating new ones.\n"
-            f"3) BIBLIOGRAPHY: Add the new bibliographic entries for RELEVANT papers into '{bib_file}'. CRITICAL: The BibTeX key MUST be the exact 'id' field from the JSON! Do NOT invent new keys (e.g. use @article{{10.5281_zenodo.1234, NOT @article{{smith2026,).\n"
+            f"3) BIBLIOGRAPHY: Add the new bibliographic entries for RELEVANT papers into '{bib_file}'. CRITICAL: The BibTeX key MUST be the exact 'id' field from the JSON! Do NOT invent new keys (e.g. use @article{{10.5281_zenodo.1234, NOT @article{{smith2026,). "
+            f"If a paper entry in the JSON includes non-empty 'authors' and/or 'venue' fields, use them verbatim for the BibTeX author={{}} and journal={{}} fields instead of leaving them empty; if they are missing or empty, leave author={{}} / journal={{}} as before.\n"
             f"4) DATA UPDATE: Update TIMELINE_DATA and TAXONOMY_DATA at the beginning of '{fig_script}' by ADDING the new counts of INTEGRATED papers to the existing values.\n"
             f"5) CLEANUP: Strictly remove any empty headers without underlying text from '{survey_file}'. The document must only contain fully argued sections!\n"
             f"6) FORMATTING & INTEGRITY CHECK: Do NOT group citations in a single bracket (use [^id1][^id2], NEVER [^id1, ^id2]). "
@@ -204,7 +263,20 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         delta = round(new_score - baseline_score, 2)
         print(f"\n[VERDICT] Baseline: {baseline_score} -> New Score: {new_score} (Δ {delta:+.2f})")
 
-        if new_score > baseline_score:
+        committed = new_score > baseline_score
+
+        # =======================================================
+        # HISTORY LOGGING (for tune_lss.py --tune)
+        # NOTE: logged BEFORE the commit/reset branch, on purpose: in the
+        # reject case, `git reset --hard` below wipes this cycle's edits from
+        # disk, so raw_components() must be captured now, while the survey/bib
+        # still reflect the actual (soon to be discarded) attempt. This is
+        # exactly the data point we want for tuning: "this attempt produced
+        # this real F1 and these C/N/V values, and was rejected/committed".
+        # =======================================================
+        log_cycle_metrics(topic, i, baseline_score, new_score, committed)
+
+        if committed:
             print("[SUCCESS] Improvement confirmed! Executing Git Commit.")
             run_command("git add .")
             run_command(f'git commit -m "feat({clean_name}): integrated valid papers (LSS: {new_score})" ')
@@ -228,7 +300,14 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
         if os.path.exists("ground_truth.json"):
             gt_archive = os.path.join(logs_dir, f"ground_truth_{timestamp}.json")
             shutil.move("ground_truth.json", gt_archive)
-            
+
+        if os.path.exists("cosine_scores.json"):
+            # Raw (non-binarized) Oracle scores, archived alongside ground_truth.json so
+            # past cycles can be re-analyzed with a different RELEVANCE_THRESHOLD without
+            # re-running the embedding step.
+            scores_archive = os.path.join(logs_dir, f"cosine_scores_{timestamp}.json")
+            shutil.move("cosine_scores.json", scores_archive)
+
         print(f"[LOG] JSON files successfully archived in: {logs_dir} (Timestamp: {timestamp})")
 
     print("\n==================================================")

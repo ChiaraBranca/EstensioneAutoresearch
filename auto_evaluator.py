@@ -23,7 +23,17 @@ load_dotenv()
 
 # Relevance threshold (Information Retrieval)
 # Embedding values typically range between -1 and 1. A value > 0.50 usually indicates good semantic relevance.
-RELEVANCE_THRESHOLD = 0.50
+#
+# NOTE (updated after manual testing across several topics): 0.50 was found to let through
+# papers that only share generic vocabulary with the topic (weak positives) while sometimes
+# scoring non-English or unusually phrased abstracts too low (false negatives). Observed
+# cosine similarities for manually-confirmed relevant papers clustered mostly >= 0.58,
+# while borderline/irrelevant ones clustered in the 0.50-0.57 band. 0.58 is used as the new
+# default, but THIS STILL NEEDS VALIDATION ACROSS MORE TOPICS before being trusted blindly -
+# hence it is kept overridable via the RELEVANCE_THRESHOLD environment variable, e.g.:
+#   RELEVANCE_THRESHOLD=0.50 python loop.py "topic" 1 "query"
+# to A/B test different thresholds on the same or comparable fetches without editing this file.
+RELEVANCE_THRESHOLD = float(os.environ.get("RELEVANCE_THRESHOLD", "0.58"))
 
 def get_embedding(text, api_base, api_key):
     """Fetches the mathematical vector (embedding) for a given text from the API."""
@@ -84,6 +94,12 @@ if __name__ == "__main__":
         papers = json.load(f)
         
     truth_dict = {}
+    # Raw (non-binarized) cosine scores, kept alongside the binary ground_truth.json.
+    # This lets you retroactively simulate "what would have happened with threshold X"
+    # without re-computing embeddings, and lets you plot the distribution of scores for
+    # relevant vs. irrelevant papers (useful evidence for the thesis' discussion of the
+    # Oracle's limitations).
+    scores_dict = {}
     print(f"[ORACLE] Auto-generating Ground Truth for {len(papers)} papers using Cosine Similarity...")
     
     for p in papers:
@@ -96,14 +112,18 @@ if __name__ == "__main__":
         # 4. Assign 1 or 0 based on the threshold
         is_relevant = 1 if sim_score >= RELEVANCE_THRESHOLD else 0
         truth_dict[p['id']] = is_relevant
+        scores_dict[p['id']] = round(sim_score, 4)
         
         print(f" -> Processed {p['id']} | Cosine Sim: {sim_score:.3f} | Relevant: {is_relevant}")
         
         # Progressive saving to avoid data loss
         with open("ground_truth.json", "w", encoding="utf-8") as f:
             json.dump(truth_dict, f, indent=2)
+        with open("cosine_scores.json", "w", encoding="utf-8") as f:
+            json.dump(scores_dict, f, indent=2)
             
         # Safety pause to respect API rate limits (max 8 req/min)
         time.sleep(10) 
         
     print("[ORACLE] ground_truth.json generated successfully!")
+    print("[ORACLE] cosine_scores.json (raw scores, for threshold analysis) generated successfully!")
