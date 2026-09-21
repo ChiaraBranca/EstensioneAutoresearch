@@ -11,8 +11,8 @@ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12
 
 SURVEY_TITLE = "Artificial_General_Intelligence"
 # [AI AGENT ZONE] Edit only these dictionaries
-TIMELINE_DATA = {"2022": 1, "2023": 2, "2024": 2, "2025": 0, "2026": 2}
-TAXONOMY_DATA = {"Theoretical Architectures": 3, "Safety & Ethics": 2, "Consciousness & Robotics": 2}
+TIMELINE_DATA = {"2022": 1, "2023": 2, "2024": 2, "2025": 0, "2026": 28}
+TAXONOMY_DATA = {"Theoretical Architectures": 8, "Safety & Ethics": 2, "Consciousness & Robotics": 5, "Benchmarking & Cognitive Reasoning": 11, "Economic & Societal Transitions": 6, "Foundational Learning Theories": 1}
 
 def plot_publication_timeline():
     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())
