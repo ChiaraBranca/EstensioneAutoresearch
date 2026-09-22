@@ -11,8 +11,8 @@ plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12
 
 SURVEY_TITLE = "brain"
 # [AI AGENT ZONE] Edit only these dictionaries
-TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 104, "2027": 7, "2028": 3, "2031": 2, "2036": 1}
-TAXONOMY_DATA = {"Neuroimaging & MRI": 34, "BCI & Neural Decoding": 26, "Neurological Disorders & Cancer": 33, "Neural Mechanisms & Signaling": 22, "Neural Recording & Benchmarking": 2}
+TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 132, "2027": 7, "2028": 3, "2031": 2, "2036": 1}
+TAXONOMY_DATA = {"Neuroimaging & MRI": 41, "BCI & Neural Decoding": 31, "Neurological Disorders & Cancer": 37, "Neural Mechanisms & Signaling": 34, "Neural Recording & Benchmarking": 2}
 
 def plot_publication_timeline():
     years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())
