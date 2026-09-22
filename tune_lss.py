@@ -123,7 +123,7 @@ def sensitivity(topic_name, step=0.05):
     print(f"\nCurrent formula (wC=0.35, wN=0.30, wV=0.20, wI=0.15) gives: {current:.2f}")
 
 
-def tune(history_path, step=0.05):
+def tune(history_path, step=0.05, metric="f1"):
     if not os.path.exists(history_path):
         print(f"[ERROR] '{history_path}' not found.\n")
         print("This file doesn't exist yet because loop.py / evaluate_metrics.py don't")
@@ -158,14 +158,15 @@ def tune(history_path, step=0.05):
     pairs = []
     for topic, topic_cycles in by_topic.items():
         for prev, curr in zip(topic_cycles, topic_cycles[1:]):
-            if "f1" in prev and "f1" in curr:
+            if metric in prev and metric in curr:
                 pairs.append((prev, curr))
 
     if not pairs:
-        print("[INFO] No consecutive same-topic cycle pairs with 'f1' recorded. "
+        print(f"[INFO] No consecutive same-topic cycle pairs with '{metric}' recorded. "
               "Nothing to tune yet (you may only have one cycle per topic so far).")
         return
 
+    print(f"[INFO] Tuning against metric: '{metric}'")
     print(f"[INFO] Using {len(pairs)} consecutive same-topic cycle pairs across "
           f"{len(by_topic)} topic(s): {', '.join(sorted(by_topic.keys()))}\n")
 
@@ -176,14 +177,14 @@ def tune(history_path, step=0.05):
             score_prev = wc * prev["C"] + wn * prev["N"] + wv * prev["V"] + wi * prev["I"]
             score_curr = wc * curr["C"] + wn * curr["N"] + wv * curr["V"] + wi * curr["I"]
             predicted_improve = score_curr > score_prev
-            actual_improve = curr["f1"] > prev["f1"]
+            actual_improve = curr[metric] > prev[metric]
             agree += int(predicted_improve == actual_improve)
             total += 1
         if total > 0:
             results.append((agree / total, wc, wn, wv, wi, total))
 
     if not results:
-        print("[INFO] No consecutive cycle pairs with 'f1' recorded. Nothing to tune yet.")
+        print(f"[INFO] No consecutive cycle pairs with '{metric}' recorded. Nothing to tune yet.")
         return
 
     results.sort(reverse=True)
@@ -193,7 +194,7 @@ def tune(history_path, step=0.05):
         print(f"{acc*100:6.1f}% {total:4d} {wc:5.2f} {wn:5.2f} {wv:5.2f} {wi:5.2f}")
 
     best = results[0]
-    print(f"\nBest agreement with real F1 improvement: {best[0]*100:.1f}% using "
+    print(f"\nBest agreement with real {metric} improvement: {best[0]*100:.1f}% using "
           f"wC={best[1]:.2f}, wN={best[2]:.2f}, wV={best[3]:.2f}, wI={best[4]:.2f} "
           f"(n={best[5]} cycle-pairs)")
 
@@ -211,6 +212,18 @@ def tune(history_path, step=0.05):
               f"wI is inert: consider dropping I from the formula and renormalizing "
               f"wC + wN + wV = 1 instead of picking an arbitrary wI.")
 
+    # Same check, but for V: if V never varies across the collected cycles (e.g. it is
+    # 100.0 in every single logged cycle, as observed empirically), it is just as inert
+    # as I, for the same reason (it can't discriminate between "better" and "worse" if
+    # it never changes value).
+    v_values_seen = set(round(c.get("V", -1), 2) for c in cycles if "V" in c)
+    if len(v_values_seen) == 1:
+        print(f"\n[NOTE] V is {list(v_values_seen)[0]} in every single logged cycle - it "
+              f"never varies in this dataset, so (like I) it cannot currently discriminate "
+              f"between a better and a worse cycle either. Worth keeping an eye on as you "
+              f"log more cycles: if it stays constant, it is a second candidate for removal "
+              f"or redesign, not just I.")
+
     print("\nNote: with few logged cycles this is a weak estimate - treat it as a")
     print("direction, not a final answer, until you have dozens of cycles logged across")
     print("several topics.")
@@ -223,7 +236,13 @@ if __name__ == "__main__":
     if sys.argv[1] == "--sensitivity" and len(sys.argv) > 2:
         sensitivity(sys.argv[2])
     elif sys.argv[1] == "--tune":
-        history_file = sys.argv[2] if len(sys.argv) > 2 else "metrics_history.jsonl"
-        tune(history_file)
+        args = sys.argv[2:]
+        metric = "f1"
+        if "--metric" in args:
+            idx = args.index("--metric")
+            metric = args[idx + 1]
+            del args[idx:idx + 2]
+        history_file = args[0] if args else "metrics_history.jsonl"
+        tune(history_file, metric=metric)
     else:
         print(__doc__)
