@@ -11,7 +11,7 @@ It manages the lifecycle of the Living Survey through an iterative workflow:
 4. Garbage Collection: Synchronizes the .bib file to remove orphaned citations.
 5. Validation & Commit: Computes performance metrics. If the score improves, 
    it commits via Git; if it drops (due to errors/hallucinations), it rolls back.
-6. History Logging: Persists the raw LSS components (C, N, V, I) together with
+6. History Logging: Persists the raw LSS components (C, N) together with
    the external Precision/Recall/F1 for this cycle into metrics_history.jsonl,
    so tune_lss.py --tune can later grid-search the LSS weights against real
    quality data instead of guessing them.
@@ -28,7 +28,7 @@ import json as _json
 from datetime import datetime
 from dotenv import load_dotenv
 
-import tune_lss  # reused to compute raw LSS components (C, N, V, I) for logging
+import tune_lss  # reused to compute raw LSS components (C, N) for logging
 
 load_dotenv()
 
@@ -71,7 +71,6 @@ def sync_bibliography(survey_file, bib_file):
     cited_ids = set()
     for match in raw_citations:
         for raw_id in match.split(','):
-            # Pulisce spazi e simboli ^ residui
             cited_ids.add(raw_id.strip(" ^"))
 
     # 2. Read the current bibliography
@@ -102,18 +101,9 @@ def sync_bibliography(survey_file, bib_file):
 
 
 def log_cycle_metrics(topic, cycle_index, baseline_score, new_score, committed):
-    """
-    Appends one JSON line to metrics_history.jsonl with:
-      - the raw (unweighted) LSS components for the CURRENT on-disk state,
-        recomputed via tune_lss.raw_components() (single source of truth,
-        avoids re-deriving C/N/V/I a third time here);
-      - the external precision/recall/f1/accuracy just computed by
-        evaluate_metrics.py, read back from last_metrics.json;
-      - the LSS baseline/new score and whether this cycle was committed.
-    This file is what tune_lss.py --tune consumes to grid-search the LSS
-    weights against a real, independent quality signal (F1) instead of
-    the current hand-picked 0.35/0.30/0.20/0.15 split.
-    """
+    """Appends one JSON line to metrics_history.jsonl with the raw LSS
+    components, the external precision/recall/f1/accuracy for this cycle,
+    and the commit/reject outcome. Consumed by tune_lss.py --tune."""
     try:
         components = tune_lss.raw_components(topic)
     except FileNotFoundError as e:
@@ -127,14 +117,15 @@ def log_cycle_metrics(topic, cycle_index, baseline_score, new_score, committed):
     else:
         print("[HISTORY WARNING] last_metrics.json not found; f1/precision/recall will be missing for this cycle.")
 
+    oracle_threshold = float(os.environ.get("RELEVANCE_THRESHOLD", "0.50"))
+
     record = {
         "topic": topic,
         "cycle": cycle_index,
         "timestamp": datetime.now().isoformat(),
+        "oracle_threshold": oracle_threshold,
         "C": components.get("C"),
         "N": components.get("N"),
-        "V": components.get("V"),
-        "I": components.get("I"),
         "precision": metrics.get("precision"),
         "recall": metrics.get("recall"),
         "f1": metrics.get("f1"),
@@ -148,7 +139,7 @@ def log_cycle_metrics(topic, cycle_index, baseline_score, new_score, committed):
         f.write(_json.dumps(record) + "\n")
 
     print(f"[HISTORY] Cycle {cycle_index} logged to metrics_history.jsonl "
-          f"(C={record['C']}, N={record['N']}, V={record['V']}, f1={record['f1']}, committed={committed})")
+          f"(C={record['C']}, N={record['N']}, f1={record['f1']}, committed={committed})")
 
 
 def run_autonomous_loop(topic, iterations=1, search_query=None):
@@ -267,12 +258,9 @@ def run_autonomous_loop(topic, iterations=1, search_query=None):
 
         # =======================================================
         # HISTORY LOGGING (for tune_lss.py --tune)
-        # NOTE: logged BEFORE the commit/reset branch, on purpose: in the
-        # reject case, `git reset --hard` below wipes this cycle's edits from
-        # disk, so raw_components() must be captured now, while the survey/bib
-        # still reflect the actual (soon to be discarded) attempt. This is
-        # exactly the data point we want for tuning: "this attempt produced
-        # this real F1 and these C/N/V values, and was rejected/committed".
+        # Logged before the commit/reset branch: on reject, git reset wipes
+        # this cycle's edits, so components must be captured while they're
+        # still on disk.
         # =======================================================
         log_cycle_metrics(topic, i, baseline_score, new_score, committed)
 

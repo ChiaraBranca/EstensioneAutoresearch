@@ -217,7 +217,7 @@ def fetch_arxiv_papers(query, existing_ids=None, target_count=25):
                 pub_year_str = entry.find('arxiv:published', ns).text[:4]
                 pub_year = int(pub_year_str)
                 
-                # DOPPIA SICUREZZA: Filtro Locale Python per ArXiv
+                # Local Python-side year filter (belt-and-suspenders check on top of the API query)
                 if target_years:
                     if len(target_years) > 1:
                         min_y, max_y = min(target_years), max(target_years)
@@ -288,7 +288,7 @@ def fetch_openalex_papers(query, existing_ids=None, target_count=25):
                 if not pub_year_val: continue
                 pub_year = int(pub_year_val)
                 
-                # DOPPIA SICUREZZA: Filtro Locale Python per OpenAlex
+                # Local Python-side year filter (belt-and-suspenders check on top of the API query)
                 if target_years:
                     if len(target_years) > 1:
                         min_y, max_y = min(target_years), max(target_years)
@@ -364,32 +364,27 @@ def compute_living_survey_score(topic_name):
     clean_name = os.path.basename(topic_dir)
     survey_path = os.path.join(topic_dir, f"{clean_name}.md")
     bib_file = os.path.join(topic_dir, "references.bib")
-    
-    fig_timeline = os.path.join(topic_dir, "figures", "timeline.png")
-    fig_taxonomy = os.path.join(topic_dir, "figures", "taxonomy.png")
-    
+
     if not os.path.exists(survey_path):
         return 0.0, 0
-        
+
     integrated_count = count_actual_citations(survey_path)
-    
+
     bib_count = 0
     if os.path.exists(bib_file):
         with open(bib_file, 'r', encoding='utf-8') as f:
             bib_count = f.read().count("@article")
 
-    figure_generated = os.path.exists(fig_timeline) and os.path.exists(fig_taxonomy)
-    
-    I = 100.0
-    C = min(100.0, (integrated_count * 3.0) + (bib_count * 1.5)) 
-    V = 100.0 if figure_generated else 0.0
-    
-    line_count = 0
+    # Citations used in the text are weighted more than raw .bib entries.
+    # Uncapped, so the score keeps tracking real contributions for the whole
+    # life of the survey instead of saturating after a few dozen citations.
+    C = (integrated_count * 3.0) + (bib_count * 1.5)
+
     with open(survey_path, 'r', encoding='utf-8') as f:
         line_count = len(f.readlines())
-    N = min(100.0, 50.0 + (line_count * 0.2)) 
-    
-    score = (0.35 * C) + (0.30 * N) + (0.20 * V) + (0.15 * I)
+    N = 50.0 + (line_count * 0.2)
+
+    score = (0.5 * C) + (0.5 * N)
     return round(score, 2), integrated_count
     
 if __name__ == "__main__":

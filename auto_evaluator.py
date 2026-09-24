@@ -27,13 +27,13 @@ load_dotenv()
 # NOTE (updated after manual testing across several topics): 0.50 was found to let through
 # papers that only share generic vocabulary with the topic (weak positives) while sometimes
 # scoring non-English or unusually phrased abstracts too low (false negatives). Observed
-# cosine similarities for manually-confirmed relevant papers clustered mostly >= 0.58,
-# while borderline/irrelevant ones clustered in the 0.50-0.57 band. 0.58 is used as the new
+# cosine similarities for manually-confirmed relevant papers clustered mostly >= 0.50,
+# while borderline/irrelevant ones clustered in the 0.50-0.57 band. 0.50 is used as the new
 # default, but THIS STILL NEEDS VALIDATION ACROSS MORE TOPICS before being trusted blindly -
 # hence it is kept overridable via the RELEVANCE_THRESHOLD environment variable, e.g.:
 #   RELEVANCE_THRESHOLD=0.50 python loop.py "topic" 1 "query"
 # to A/B test different thresholds on the same or comparable fetches without editing this file.
-RELEVANCE_THRESHOLD = float(os.environ.get("RELEVANCE_THRESHOLD", "0.58"))
+RELEVANCE_THRESHOLD = float(os.environ.get("RELEVANCE_THRESHOLD", "0.50"))
 
 def get_embedding(text, api_base, api_key):
     """Fetches the mathematical vector (embedding) for a given text from the API."""

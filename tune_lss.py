@@ -3,58 +3,43 @@
 FILE: tune_lss.py
 DESCRIPTION:
 Standalone diagnostic / tuning tool for the Living Survey Score (LSS) formula
-defined in prepare.py. It does NOT modify prepare.py, loop.py,
-evaluate_metrics.py or program.md.
+defined in prepare.py:
 
-  score = (wC * C) + (wN * N) + (wV * V) + (wI * I)
+  score = (wC * C) + (wN * N)
 
 Two modes:
 
   --sensitivity "<Topic>"
-      Recomputes the CURRENT raw components (C, N, V, I) for a topic and
-      shows how the total score moves across a grid of weight combinations.
-      No ground truth needed. Purely diagnostic: it will NOT tell you which
-      weights are "best", only how sensitive the score is to each one -
-      and it will show you that I is a constant (100.0) in the current
-      formula, so no weight assigned to it ever changes a commit/reject
-      decision.
+      Recomputes the current C and N for a topic and shows how the score
+      moves across the full range of wC (0 to 1, wN = 1 - wC). Diagnostic
+      only, no ground truth needed.
 
-  --tune [metrics_history.jsonl]
-      Reads a JSONL file (one JSON object per cycle) with fields:
-        topic, C, N, V, I, f1
-      and grid-searches weight combinations that maximize how often
-      "predicted LSS improved" agrees with "real F1 improved" between
-      CONSECUTIVE CYCLES OF THE SAME TOPIC (cycles from different topics
-      are never compared to each other - see the grouping logic in tune()).
-      This is the actual empirical tuning, and requires loop.py to have
-      logged several cycles per topic first (see metrics_history.jsonl).
+  --tune [metrics_history.jsonl] [--metric f1|precision|recall|accuracy]
+      Reads a JSONL history file (one line per cycle) and finds the wC/wN
+      split that best agrees with real quality changes (measured by the
+      chosen metric) between consecutive cycles of the same topic.
 
 Usage:
   python tune_lss.py --sensitivity "LLM Agents"
   python tune_lss.py --tune metrics_history.jsonl
+  python tune_lss.py --tune metrics_history.jsonl --metric precision
 =============================================================================
 """
 import sys
 import os
 import json
-import itertools
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import prepare  # reused read-only: get_topic_dir(), count_actual_citations()
 
 
 def raw_components(topic_name):
-    """
-    Recompute the four RAW components exactly like
-    prepare.compute_living_survey_score() does internally, but return them
-    separately (unweighted) so they can be re-weighted freely here.
-    """
+    """Recompute C and N exactly like prepare.compute_living_survey_score(),
+    returned unweighted so they can be re-weighted freely here."""
     topic_dir = prepare.get_topic_dir(topic_name)
     clean_name = os.path.basename(topic_dir)
     survey_path = os.path.join(topic_dir, f"{clean_name}.md")
     bib_file = os.path.join(topic_dir, "references.bib")
-    fig_timeline = os.path.join(topic_dir, "figures", "timeline.png")
-    fig_taxonomy = os.path.join(topic_dir, "figures", "taxonomy.png")
 
     if not os.path.exists(survey_path):
         raise FileNotFoundError(f"No survey found for '{topic_name}' at {survey_path}")
@@ -66,70 +51,42 @@ def raw_components(topic_name):
         with open(bib_file, "r", encoding="utf-8") as f:
             bib_count = f.read().count("@article")
 
-    figure_generated = os.path.exists(fig_timeline) and os.path.exists(fig_taxonomy)
-
     with open(survey_path, "r", encoding="utf-8") as f:
         line_count = len(f.readlines())
 
-    C = min(100.0, (integrated_count * 3.0) + (bib_count * 1.5))
-    V = 100.0 if figure_generated else 0.0
-    N = min(100.0, 50.0 + (line_count * 0.2))
-    I = 100.0  # constant in the current formula - see docstring / printout below
+    C = (integrated_count * 3.0) + (bib_count * 1.5)
+    N = 50.0 + (line_count * 0.2)
 
     return {
-        "C": C, "N": N, "V": V, "I": I,
+        "C": C, "N": N,
         "integrated_count": integrated_count, "bib_count": bib_count,
-        "line_count": line_count, "figures_ok": figure_generated,
+        "line_count": line_count,
     }
 
 
-def weight_grid(step=0.05):
-    """All (wC, wN, wV, wI) that are multiples of `step`, each >= 0, summing to 1."""
-    n = round(1 / step)
-    for ic, iN, iv in itertools.product(range(n + 1), repeat=3):
-        if ic + iN + iv > n:
-            continue
-        ii = n - ic - iN - iv
-        yield (ic * step, iN * step, iv * step, ii * step)
-
-
-def sensitivity(topic_name, step=0.05):
+def sensitivity(topic_name, step=0.02):
     comp = raw_components(topic_name)
 
     print(f"\nRaw components for '{topic_name}':")
-    print(f"  C (coverage)  = {comp['C']:.2f}  (integrated={comp['integrated_count']}, bib={comp['bib_count']})")
-    print(f"  N (length)    = {comp['N']:.2f}  (lines={comp['line_count']})")
-    print(f"  V (visuals)   = {comp['V']:.2f}  (figures_ok={comp['figures_ok']})")
-    print(f"  I (integrity) = {comp['I']:.2f}  <-- ALWAYS 100.0 in prepare.py.")
-    print("                    This term is a CONSTANT: whatever weight you give it,")
-    print("                    it can never change which of two cycles scores higher.")
-    print("                    Only C, N, V actually drive every commit/reject decision.\n")
+    print(f"  C = {comp['C']:.2f}  (integrated={comp['integrated_count']}, bib={comp['bib_count']})")
+    print(f"  N = {comp['N']:.2f}  (lines={comp['line_count']})\n")
 
-    rows = []
-    for wc, wn, wv, wi in weight_grid(step):
-        score = wc * comp["C"] + wn * comp["N"] + wv * comp["V"] + wi * comp["I"]
-        rows.append((wc, wn, wv, wi, score))
-    rows.sort(key=lambda r: r[-1])
+    print(f"{'wC':>5} {'wN':>5} {'score':>8}")
+    print("-" * 22)
+    n = round(1 / step)
+    for i in range(n + 1):
+        wc = round(i * step, 2)
+        wn = round(1 - wc, 2)
+        score = wc * comp["C"] + wn * comp["N"]
+        print(f"{wc:5.2f} {wn:5.2f} {score:8.2f}")
 
-    print(f"{'wC':>5} {'wN':>5} {'wV':>5} {'wI':>5} | score   (lowest 5 / highest 5 over the grid)")
-    print("-" * 55)
-    for wc, wn, wv, wi, score in rows[:5]:
-        print(f"{wc:5.2f} {wn:5.2f} {wv:5.2f} {wi:5.2f} | {score:6.2f}")
-    print("  ...")
-    for wc, wn, wv, wi, score in rows[-5:]:
-        print(f"{wc:5.2f} {wn:5.2f} {wv:5.2f} {wi:5.2f} | {score:6.2f}")
-
-    current = 0.35 * comp["C"] + 0.30 * comp["N"] + 0.20 * comp["V"] + 0.15 * comp["I"]
-    print(f"\nCurrent formula (wC=0.35, wN=0.30, wV=0.20, wI=0.15) gives: {current:.2f}")
+    current = 0.5 * comp["C"] + 0.5 * comp["N"]
+    print(f"\nCurrent formula (wC=0.50, wN=0.50) gives: {current:.2f}")
 
 
-def tune(history_path, step=0.05, metric="f1"):
+def tune(history_path, step=0.02, metric="f1"):
     if not os.path.exists(history_path):
-        print(f"[ERROR] '{history_path}' not found.\n")
-        print("This file doesn't exist yet because loop.py / evaluate_metrics.py don't")
-        print("currently persist per-cycle metrics to disk (they only print to stdout).")
-        print("Add lightweight logging first (see the snippet provided alongside this")
-        print("script), run a handful of cycles, then re-run --tune.")
+        print(f"[ERROR] '{history_path}' not found. Run some cycles with loop.py first.")
         return
 
     cycles = []
@@ -140,17 +97,11 @@ def tune(history_path, step=0.05, metric="f1"):
                 cycles.append(json.loads(line))
 
     if len(cycles) < 2:
-        print(f"[INFO] Only {len(cycles)} cycle(s) logged so far. Need at least 2 "
-              f"consecutive cycles with 'f1' recorded to evaluate any weighting "
-              f"scheme. Run a few more cycles first.")
+        print(f"[INFO] Only {len(cycles)} cycle(s) logged. Need at least 2 per topic.")
         return
 
-    # IMPORTANT: only compare CONSECUTIVE cycles of the SAME topic. metrics_history.jsonl
-    # accumulates cycles from every topic you have ever run loop.py on, in the order they
-    # happened; comparing e.g. cycle 3 of "brain" against cycle 1 of "cancer" would be
-    # meaningless (different survey, different baseline, unrelated LSS/F1 values). Grouping
-    # by "topic" first, and preserving the original (chronological) order within each group,
-    # gives only genuine same-survey, cycle-to-cycle comparisons.
+    # Only compare consecutive cycles of the SAME topic - cycles from
+    # different topics/surveys are never comparable to each other.
     by_topic = {}
     for c in cycles:
         by_topic.setdefault(c.get("topic", "<unknown>"), []).append(c)
@@ -162,8 +113,7 @@ def tune(history_path, step=0.05, metric="f1"):
                 pairs.append((prev, curr))
 
     if not pairs:
-        print(f"[INFO] No consecutive same-topic cycle pairs with '{metric}' recorded. "
-              "Nothing to tune yet (you may only have one cycle per topic so far).")
+        print(f"[INFO] No consecutive same-topic cycle pairs with '{metric}' recorded.")
         return
 
     print(f"[INFO] Tuning against metric: '{metric}'")
@@ -171,62 +121,48 @@ def tune(history_path, step=0.05, metric="f1"):
           f"{len(by_topic)} topic(s): {', '.join(sorted(by_topic.keys()))}\n")
 
     results = []
-    for wc, wn, wv, wi in weight_grid(step):
+    n = round(1 / step)
+    for i in range(n + 1):
+        wc = round(i * step, 4)
+        wn = round(1 - wc, 4)
         agree, total = 0, 0
         for prev, curr in pairs:
-            score_prev = wc * prev["C"] + wn * prev["N"] + wv * prev["V"] + wi * prev["I"]
-            score_curr = wc * curr["C"] + wn * curr["N"] + wv * curr["V"] + wi * curr["I"]
+            score_prev = wc * prev["C"] + wn * prev["N"]
+            score_curr = wc * curr["C"] + wn * curr["N"]
             predicted_improve = score_curr > score_prev
             actual_improve = curr[metric] > prev[metric]
             agree += int(predicted_improve == actual_improve)
             total += 1
         if total > 0:
-            results.append((agree / total, wc, wn, wv, wi, total))
+            results.append((wc, wn, agree / total, total))
 
     if not results:
-        print(f"[INFO] No consecutive cycle pairs with '{metric}' recorded. Nothing to tune yet.")
+        print(f"[INFO] No consecutive cycle pairs with '{metric}' recorded.")
         return
 
-    results.sort(reverse=True)
-    print(f"{'agree%':>7} {'n':>4} {'wC':>5} {'wN':>5} {'wV':>5} {'wI':>5}")
-    print("-" * 40)
-    for acc, wc, wn, wv, wi, total in results[:10]:
-        print(f"{acc*100:6.1f}% {total:4d} {wc:5.2f} {wn:5.2f} {wv:5.2f} {wi:5.2f}")
+    print(f"{'wC':>5} {'wN':>5} {'agree%':>8}")
+    print("-" * 22)
+    for wc, wn, acc, total in results:
+        print(f"{wc:5.2f} {wn:5.2f} {acc*100:7.1f}%")
 
-    best = results[0]
-    print(f"\nBest agreement with real {metric} improvement: {best[0]*100:.1f}% using "
-          f"wC={best[1]:.2f}, wN={best[2]:.2f}, wV={best[3]:.2f}, wI={best[4]:.2f} "
-          f"(n={best[5]} cycle-pairs)")
+    best_acc = max(r[2] for r in results)
+    plateau = [r for r in results if r[2] == best_acc]
+    wc_lo = min(r[0] for r in plateau)
+    wc_hi = max(r[0] for r in plateau)
 
-    # I is a constant (100.0) in every cycle, so it can never change which of two cycles
-    # scores higher - any weight assigned to it is interchangeable. If several top results
-    # share the same agreement but differ only in wI, that is direct empirical confirmation
-    # of this (not a coincidence of the grid), and a reasonable, well-justified simplification
-    # is to drop I from the formula entirely and renormalize wC + wN + wV = 1.
-    top_score = results[0][0]
-    tied = [r for r in results if r[0] == top_score]
-    wi_values = sorted(set(round(r[4], 2) for r in tied))
-    if len(wi_values) > 1:
-        print(f"\n[NOTE] {len(tied)} weight combinations tie for the best agreement "
-              f"({top_score*100:.1f}%), differing only in wI ({wi_values}). This confirms "
-              f"wI is inert: consider dropping I from the formula and renormalizing "
-              f"wC + wN + wV = 1 instead of picking an arbitrary wI.")
+    print(f"\nBest agreement: {best_acc*100:.1f}% (n={results[0][3]} cycle-pairs)")
+    if wc_hi - wc_lo > 2 * step:
+        midpoint = round((wc_lo + wc_hi) / 2, 2)
+        print(f"[NOTE] This is a PLATEAU, not a single point: every wC from {wc_lo:.2f} "
+              f"to {wc_hi:.2f} ties at {best_acc*100:.1f}%. With this sample size the data "
+              f"cannot distinguish between these ratios; a defensible choice is the "
+              f"plateau's midpoint (wC={midpoint:.2f}).")
+    else:
+        best_wc = plateau[0][0]
+        print(f"[NOTE] Fairly sharp optimum around wC={best_wc:.2f}, wN={1-best_wc:.2f}.")
 
-    # Same check, but for V: if V never varies across the collected cycles (e.g. it is
-    # 100.0 in every single logged cycle, as observed empirically), it is just as inert
-    # as I, for the same reason (it can't discriminate between "better" and "worse" if
-    # it never changes value).
-    v_values_seen = set(round(c.get("V", -1), 2) for c in cycles if "V" in c)
-    if len(v_values_seen) == 1:
-        print(f"\n[NOTE] V is {list(v_values_seen)[0]} in every single logged cycle - it "
-              f"never varies in this dataset, so (like I) it cannot currently discriminate "
-              f"between a better and a worse cycle either. Worth keeping an eye on as you "
-              f"log more cycles: if it stays constant, it is a second candidate for removal "
-              f"or redesign, not just I.")
-
-    print("\nNote: with few logged cycles this is a weak estimate - treat it as a")
-    print("direction, not a final answer, until you have dozens of cycles logged across")
-    print("several topics.")
+    print("\nWith few logged cycles this is a weak estimate - treat it as a direction,")
+    print("not a final answer, until more cycles are logged across several topics.")
 
 
 if __name__ == "__main__":
