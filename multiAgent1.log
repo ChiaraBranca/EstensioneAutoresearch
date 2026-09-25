@@ -2146,3 +2146,94 @@ Applied edit to multi_agent.md
 Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
 Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
 summarizer unexpectedly failed for all models
+==================================================
+ STARTING LIVING SURVEY: Project 'multi_agent' | Query: 'multi_agent'
+==================================================
+
+[SYSTEM] Executing: python prepare.py --init "multi_agent"
+WORKSPACE_READY:surveys/multi_agent
+
+──────────────────────────────────────────────────
+ CYCLE 1/1 - LITERATURE RETRIEVAL
+──────────────────────────────────────────────────
+
+[SYSTEM] Executing: python prepare.py --fetch "multi_agent" "multi_agent"
+--- INITIATING FEDERATED MULTI-SERVER SEARCH ---
+[SERVER 1 - ARXIV] Searching for: 'multi_agent' (Filter: Latest)...
+[SERVER 2 - OPENALEX] Searching for: 'multi_agent'...
+[PREPARE] Fetched 26 completely NEW papers.
+          Details: 1 from ArXiv, 25 from OpenAlex.
+
+[SYSTEM] Executing: python prepare.py --eval "multi_agent"
+INTEGRATED_COUNT:0
+LSS_SCORE:25.5
+[METRIC] Starting Baseline LSS Score: 25.5
+
+[ORACLE] Generating Ground Truth via Cosine Similarity (Vector IR)...
+
+[AI AGENT - ACTOR] Writing and integrating new literature...
+
+[SYSTEM] Executing: uvx --from aider-chat aider --model openai/lab-qwen36 --model-settings-file .aider.model.settings.yml --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "Carefully read the 'new_papers.json' file containing unreleased papers.
+1) COMPREHENSIVE LITERATURE MAPPING: The main topic is 'multi_agent'. Your goal is to build a rich, interdisciplinary academic survey. You MUST INCLUDE papers that fall into these valid categories:
+  - Core Research: Papers directly addressing the mechanisms, theories, or primary focus of 'multi_agent'.
+  - Foundational Methodologies: Papers exploring underlying algorithms, frameworks, or enabling technologies directly advancing 'multi_agent'.
+  - Implications & Transitions: Papers analyzing the direct ethical, societal, or advanced theoretical implications arising specifically from 'multi_agent'.
+You MUST REJECT ONLY papers that are purely off-topic or tangential:
+  - Mention-only: Papers where 'multi_agent' is merely mentioned as a background example, buzzword, or tangential use-case without being the central study.
+  - Out of Scope: Broad macro-models or distant fields where 'multi_agent' is just a minor variable.
+  - Trivial Applications: Basic educational, purely linguistic, or business-management papers that use 'multi_agent' just as context without advancing its science.
+Ignore identical duplicate abstracts.
+DO NOT self-limit to a 'representative subset' or an arbitrary number of papers for the sake of keeping the document short or manageable. Every single paper that passes the relevance criteria above MUST be integrated, however many that is - there is no maximum.
+2) INTEGRATION: For relevant papers only, integrate a concise analysis into 'surveys/multi_agent/multi_agent.md' using Markdown citations like [^paper_id]. EXPANSION RULE: Do NOT delete or summarize any existing text from previous cycles! Add new content by organically expanding existing sections or creating new ones.
+3) BIBLIOGRAPHY: Add the new bibliographic entries for RELEVANT papers into 'surveys/multi_agent/references.bib'. CRITICAL: The BibTeX key MUST be the exact 'id' field from the JSON! Do NOT invent new keys (e.g. use @article{10.5281_zenodo.1234, NOT @article{smith2026,).
+4) DATA UPDATE: Update TIMELINE_DATA and TAXONOMY_DATA at the beginning of 'surveys/multi_agent/generate_figures.py' by ADDING the new counts of INTEGRATED papers to the existing values.
+5) CLEANUP: Strictly remove any empty headers without underlying text from 'surveys/multi_agent/multi_agent.md'. The document must only contain fully argued sections!
+6) FORMATTING & INTEGRITY CHECK: Do NOT group citations in a single bracket (use [^id1][^id2], NEVER [^id1, ^id2]). Before finishing, you MUST independently verify that EVERY single paper ID you added to 'surveys/multi_agent/references.bib' has an explicit citation inside 'surveys/multi_agent/multi_agent.md'. Discrepancies are strictly forbidden!
+Do NOT execute terminal commands, do NOT write LaTeX code, just edit the requested files." surveys/multi_agent/multi_agent.md surveys/multi_agent/references.bib surveys/multi_agent/generate_figures.py
+
+[AI AGENT - CRITIC] Peer-reviewing and verifying scientific accuracy...
+
+[SYSTEM] Executing: uvx --from aider-chat aider --model openai/lab-qwen36 --model-settings-file .aider.model.settings.yml --read new_papers.json --read surveys/multi_agent/references.bib --yes-always --no-git --message "Act as a ruthless scientific reviewer (Reviewer 2). Carefully compare the latest additions in 'surveys/multi_agent/multi_agent.md' with the actual abstracts in 'new_papers.json'.
+REVIEW RULES & HISTORICAL MEMORY:
+1) RESPECT THE PAST: 'surveys/multi_agent/multi_agent.md' contains citations from previous cycles (already in 'surveys/multi_agent/references.bib'). If a citation is NOT in 'new_papers.json' but exists in 'surveys/multi_agent/references.bib', DO NOT DELETE IT! It is historically verified literature.
+2) VERIFY NEW ADDITIONS: Examine ONLY claims related to papers from the current 'new_papers.json'. Check if the abstract TRULY supports the written text or if there are hallucinations/exaggerations.
+3) If you find a single exaggeration, falsehood, or ungrounded data among the NEW papers, delete ONLY that specific flawed sentence/paragraph without touching the rest of the document.
+Do NOT invent code, limit yourself to the targeted revision of 'surveys/multi_agent/multi_agent.md'." surveys/multi_agent/multi_agent.md
+
+[SYSTEM] Running Garbage Collector for references.bib...
+[SYSTEM] Garbage Collector executed: bibliography successfully synchronized.
+
+[SYSTEM] Rendering actual charts to disk...
+
+[SYSTEM] Executing: python "surveys/multi_agent/generate_figures.py"
+[GENERATE_FIGURES] Charts updated in /mnt/sdb1/workspace/chiarabrancaleoni/autoresearch/surveys/multi_agent/figures (Timeline reconciled with .bib)
+
+[METRICS] Calculating Precision, Recall, and F1-Measure...
+
+[SYSTEM] Executing: python evaluate_metrics.py "multi_agent"
+Error: File ground_truth.json not found.
+
+[SYSTEM] Executing: python prepare.py --eval "multi_agent"
+INTEGRATED_COUNT:13
+LSS_SCORE:56.95
+
+[VERDICT] Baseline: 25.5 -> New Score: 56.95 (Δ +31.45)
+[HISTORY] Cycle 1 logged to metrics_history.jsonl (C=58.5, N=55.4, f1=0.767123287671233, committed=True)
+[SUCCESS] Improvement confirmed! Executing Git Commit.
+
+[SYSTEM] Executing: git add .
+
+[SYSTEM] Executing: git commit -m "feat(multi_agent): integrated valid papers (LSS: 56.95)" 
+[main 54346bf] feat(multi_agent): integrated valid papers (LSS: 56.95)
+ 7 files changed, 2345 insertions(+)
+ create mode 100644 multiAgent1.log
+ create mode 100644 surveys/multi_agent/figures/taxonomy.png
+ create mode 100644 surveys/multi_agent/figures/timeline.png
+ create mode 100644 surveys/multi_agent/generate_figures.py
+ create mode 100644 surveys/multi_agent/multi_agent.md
+ create mode 100644 surveys/multi_agent/references.bib
+[LOG] JSON files successfully archived in: surveys/multi_agent/eval_logs (Timestamp: 20260925_095353)
+
+==================================================
+ LOOP SUCCESSFULLY COMPLETED!
+==================================================
