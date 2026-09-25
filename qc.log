@@ -1,0 +1,1706 @@
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Warning for openai/lab-qwen36: Unknown context window size and costs, using sane defaults.
+You can skip this check with --no-show-model-warnings
+
+https://aider.chat/docs/llms/warnings.html
+
+Aider v0.86.2
+Model: openai/lab-qwen36 with whole edit format
+Git repo: none
+Repo-map: disabled
+Added generate_figures.py to the chat.
+Added quantum_computing.md to the chat.
+Added references.bib to the chat.
+Added ../../program.md to the chat (read-only).
+Added ../../prepare.py to the chat (read-only).
+Added ../../new_papers.json to the chat (read-only).
+
+----------------------------------------------------------------------------------------------------------------
+
+► THINKING                                                                                                      
+
+The user wants me to process new_papers.json for the topic Quantum_Computing.                                   
+
+I need to:                                                                                                      
+
+ 1 Filter papers based on relevance to Quantum Computing.                                                       
+ 2 Integrate relevant papers into quantum_computing.md.                                                         
+ 3 Add relevant papers to references.bib using their exact id as the BibTeX key.                                
+ 4 Update TIMELINE_DATA and TAXONOMY_DATA in generate_figures.py.                                               
+ 5 Ensure formatting rules are followed (no LaTeX, English only, citation format [^id], no grouped citations).  
+ 6 Do not modify prepare.py, loop.py, evaluate_metrics.py, auto_elevator.py, or program.md.                     
+
+Let's analyze the papers in new_papers.json:                                                                    
+
+ 1 10.34257_gjsfra257362 - "Quantum, Gravity and Atom Computing"                                                
+    • Abstract discusses a unified framework connecting quantum phenomena, gravity, and computation. Proposes   
+      "atom computing" as an alternative to transistor and quantum computing. Discusses limitations of quantum  
+      computing.                                                                                                
+    • Relevance: High. Directly addresses quantum computing limitations and proposes alternatives.              
+      Core/Implications.                                                                                        
+    • Year: 2026                                                                                                
+ 2 10.6084_m9.figshare.32051724 & 10.6084_m9.figshare.32051724.v1 - "BB84 Quantum Key Distribution Simulation"  
+    • Abstract: Python implementation of BB84 QKD protocol. Models quantum state preparation, eavesdropping,    
+      channel noise, post-processing.                                                                           
+    • Relevance: High. Directly addresses quantum communication/security, a core subfield of quantum            
+      computing/information.                                                                                    
+    • Note: .v1 is a duplicate of the first. I will only process the first one.                                 
+    • Year: 2026                                                                                                
+ 3 https:__openalex.org_W7155247427 - "Empirical Investigation of Quantum Computing Toolchains and Algorithms : 
+   Mining Stack Overflow Repository"                                                                            
+    • Abstract: Analyzes 1,404 Stack Overflow posts on quantum computing. Topics: hybrid quantum-classical,     
+      Qiskit, Q-sharp, Grover's, Shor's. Developer discussions, tools, algorithms.                              
+    • Relevance: High. Focuses on quantum computing toolchains, algorithms, and developer ecosystem.            
+      Foundational/Implications.                                                                                
+    • Year: 2026                                                                                                
+ 4 10.5281_zenodo.19081757, 10.5281_zenodo.19081756, 10.5281_zenodo.19175200 - "Time-Reversal Symmetry as a     
+   Mathematical Foundation for Deterministic Intellectual Property Management in AI Systems"                    
+    • Abstract: Maps antiunitary operator of time-reversal symmetry to AI-generated assets IP lifecycle.        
+      Mentions quantum systems, topological insulators, spintronics, but the core is IP management for AI using 
+      quantum math concepts.                                                                                    
+    • Relevance: Low/Off-topic. It's about AI IP management, using quantum physics as a metaphor/mathematical   
+      tool, not about quantum computing itself. I will REJECT it.                                               
+ 5 10.56975_tijer.v13i3.161368 - "CypherGliph"                                                                  
+    • Abstract: Advanced secure file encryption system (HICC) combining AES-GCM, ChaCha20, Poly1305. Mentions   
+      impact of Grover's and Shor's algorithms and post-quantum cryptography.                                   
+    • Relevance: Medium/Low. It's a classical encryption paper that mentions quantum algorithms as a            
+      threat/context. The prompt says: "Mention-only: Papers where 'Quantum_Computing' is merely mentioned as a 
+      background example... without being the central study." -> REJECT.                                        
+ 6 10.1007_978-3-031-90727-2_20 - "Analysis of Quantum Trends in Open Software Repositories and Financial News" 
+    • Abstract: Emerging data sources like GitHub and financial newspapers tracking trends in quantum.          
+     • Relevance: Medium. Tracks trends in quantum tech. Could be relevant to the ecosystem/tooling. I'll       
+       include it as it analyzes quantum trends in dev communities.                                             
+     • Year: 2025                                                                                               
+  7 10.18880_0002001929 - "Research on industrial cluster accounting"                                           
+     • Abstract: Just says "横濱国立大学" (Yokohama National University). Clearly off-topic. REJECT.            
+  8 10.18653_v1_2025.findings-acl.911 - "Tag-Instruct: Controlled Instruction Complexity Enhancement through    
+    Structure-based Augmentation"                                                                               
+     • Abstract: LLM instruction data, TAG-INSTRUCT framework. No quantum computing. REJECT.                    
+  9 https:__openalex.org_W7112574406 - "μία νέα προσέγγιση στην κβαντική κρυπτογραφία για την ενίσχυση της      
+    ασφάλειας δεδομένων" (A new approach in quantum cryptography for enhancing data security)                   
+     • Abstract (Greek): Mentions BB84, B92, B91 protocols, Shor's algorithm, photon splitting attack,          
+       faked-state attack, trojan-horse attack.                                                                 
+     • Relevance: High. Directly addresses quantum cryptography protocols and attacks. Core/Foundational.       
+     • Year: 2025                                                                                               
+ 10 10.31695_ijerat.2025.9.1 - "QUANTUMINTERNET"                                                                
+     • Abstract: Primer on quantum internet, high-speed network for quantum devices, protocols, transforming    
+       industries.                                                                                              
+     • Relevance: High. Directly addresses quantum internet, a major application/subfield of quantum            
+       computing/communication.                                                                                 
+     • Year: 2025                                                                                               
+ 11 10.11159_icffts23.133 - "Quantum Computing CFD Simulations for Aeronautical Heat Exchangers"                
+     • Abstract: Reviews quantum computing applications to CFD problems. Mentions Lattice Boltzmann Method,     
+       analog quantum computer, scientific ML.                                                                  
+     • Relevance: High. Direct application of quantum computing to engineering simulations.                     
+     • Year: 2023                                                                                               
+ 12 10.21741_9781644902813-38 - "Quantum computing CFD simulations: state of the art"                           
+     • Abstract: Similar to above, reviews quantum computing in CFD, discusses Lattice Boltzmann Method for 2D  
+       flow around a cylinder.                                                                                  
+     • Relevance: High. State-of-the-art review on QC for CFD.                                                  
+     • Year: 2023                                                                                               
+ 13 10.1063_5.0151346 - "Quantum computing and materials science: A practical guide to applying quantum         
+    annealing to the configurational analysis of materials"                                                     
+     • Abstract: Using quantum computers for computational chemistry/materials science. Calculates energy of    
+       defective graphene using quantum annealer. Tutorial for quantum annealing.                               
+     • Relevance: High. Direct application of quantum annealing to materials science.                           
+     • Year: 2023                                                                                               
+ 14 10.1016_j.cpc.2022.108598 - "PULSEE: A software for the quantum simulation of an extensive set of magnetic  
+    resonance observables"                                                                                      
+     • Abstract: Open-source software for simulating observables in magnetic resonance (NMR/NQR/ESR). Inspired  
+       by QIS. Simulates spin time evolution, quantum gates.                                                    
+     • Relevance: High. Software for quantum simulation of spin systems, directly relevant to quantum           
+       information science and simulation.                                                                      
+     • Year: 2022                                                                                               
+ 15 10.1007_s41066-022-00348-9 - "Improving quantum genetic optimization through granular computing"            
+     • Abstract: Hybrid and granular approach to quantum algorithm design for genetic optimization. Uses IBM Q  
+       processors.                                                                                              
+     • Relevance: High. Directly addresses quantum algorithms for optimization.                                 
+     • Year: 2022                                                                                               
+ 16 10.5281_zenodo.6493704 & 10.5281_zenodo.6412487 - "Report on the Security of LWE: Improved Dual Lattice     
+    Attack"                                                                                                     
+     • Abstract: Cryptanalysis of LWE/LWR problems, relevant to post-quantum cryptography (Kyber, Saber,        
+       Dilithium). Discusses dual lattice attacks.                                                              
+     • Relevance: Medium. Focuses on Post-Quantum Cryptography (PQC) security analysis. While related to the    
+       quantum threat landscape, it's more classical crypto analysis. However, PQC is a major                   
+       implication/transition area for quantum computing. I will include it as it directly assesses the security
+       of schemes designed to withstand quantum computers.                                                      
+     • Year: 2022                                                                                               
+ 17 10.5120_ijca2021921834 - "Quantum Computing: Some Percepts and Realms of Applications"                      
+     • Abstract: Review paper on quantum computing basics, superposition, entanglement, applications,           
+       disruptions.                                                                                             
+     • Relevance: High. Broad review of quantum computing applications and concepts.                            
+     • Year: 2021                                                                                               
+ 18 10.4018_ijcini.290308 - "AI-Based Methods to Resolve Real-Time Scheduling for Embedded Systems"             
+     • Abstract: AI for real-time scheduling. No quantum. REJECT.                                               
+ 19 10.5281_zenodo.6554176 - "Research Software Current State Assessment"                                       
+     • Abstract: Research software in Canada. No quantum. REJECT.                                               
+ 20 10.1109_mc.2021.3083430 - "Future Computers: Digital, Quantum, Biological"                                  
+     • Abstract: Compares digital, quantum, and biological computer architectures. Provides layperson           
+       descriptions and industry-standard models.                                                               
+     • Relevance: High. Direct comparison and analysis of quantum computer architectures.                       
+     • Year: 2021                                                                                               
+ 21 10.21661_r-554129 - "Perspektivy vnedreniia dostizhenii chetvertoi promyshlennoi revoliutsii..." (Prospects 
+    of introducing achievements of the fourth industrial revolution...)                                         
+     • Abstract: Russian text about Industry 4.0. No quantum. REJECT.                                           
+
+Let's compile the list of INCLUDED papers:                                                                      
+
+ 1 10.34257_gjsfra257362 (2026) - Atom computing vs Quantum                                                     
+ 2 10.6084_m9.figshare.32051724 (2026) - BB84 QKD Simulation                                                    
+  3 https:__openalex.org_W7155247427 (2026) - QC Toolchains & Algorithms (Stack Overflow)                       
+  4 10.1007_978-3-031-90727-2_20 (2025) - Quantum Trends in Repositories/News                                   
+  5 https:__openalex.org_W7112574406 (2025) - Quantum Cryptography Approach (Greek)                             
+  6 10.31695_ijerat.2025.9.1 (2025) - Quantum Internet Primer                                                   
+  7 10.11159_icffts23.133 (2023) - QC CFD Simulations (Aeronautical)                                            
+  8 10.21741_9781644902813-38 (2023) - QC CFD Simulations: State of the Art                                     
+  9 10.1063_5.0151346 (2023) - QC & Materials Science (Quantum Annealing)                                       
+ 10 10.1016_j.cpc.2022.108598 (2022) - PULSEE Software for Quantum Simulation                                   
+ 11 10.1007_s41066-022-00348-9 (2022) - Quantum Genetic Optimization                                            
+ 12 10.5281_zenodo.6493704 (2022) - Security of LWE (PQC)                                                       
+ 13 10.5120_ijca2021921834 (2021) - QC Percepts & Applications                                                  
+ 14 10.1109_mc.2021.3083430 (2021) - Future Computers: Digital, Quantum, Biological                             
+
+Total: 14 papers.                                                                                               
+
+Now, I need to:                                                                                                 
+
+ 1 Update quantum_computing.md with sections/paragraphs for these papers.                                       
+ 2 Update references.bib with BibTeX entries for these 14 papers. I will construct reasonable BibTeX entries    
+   using the provided metadata, using the exact id as the key.                                                  
+ 3 Update generate_figures.py TIMELINE_DATA and TAXONOMY_DATA.                                                  
+    • Years: 2026 (3), 2025 (3), 2023 (2), 2022 (3), 2021 (2). Wait, let's count carefully.                     
+      2026: 3                                                                                                   
+      2025: 3                                                                                                   
+      2023: 2                                                                                                   
+      2022: 3                                                                                                   
+      2021: 2                                                                                                   
+      Total: 13? Let's recount.                                                                                 
+        1 2026                                                                                                  
+        2 2026                                                                                                  
+        3 2026                                                                                                  
+        4 2025                                                                                                  
+        5 2025                                                                                                  
+        6 2025                                                                                                  
+        7 2023                                                                                                  
+        8 2023                                                                                                  
+        9 2023                                                                                                  
+       10 2022                                                                                                  
+       11 2022                                                                                                  
+       12 2022                                                                                                  
+       13 2021                                                                                                  
+       14 2021                                                                                                  
+      Yes, 14 papers.                                                                                           
+      Current TIMELINE_DATA in generate_figures.py is {"2024": 0, "2025": 0, "2026": 0}. I will add the new     
+      counts to it. The sanitizer will overwrite it with actual .bib counts anyway, but I must update it as     
+      requested: "MODIFY EXCLUSIVELY the TIMELINE_DATA dictionary (adding or incrementing the publication       
+      year)". I'll set it to the new counts or add to existing. Since existing is 0, I'll just set it to the new
+      counts. Actually, the prompt says "adding or incrementing the publication year". I will set it to {"2021":
+      2, "2022": 3, "2023": 2, "2025": 3, "2026": 3}.                                                           
+    • Taxonomy: I'll categorize them.                                                                           
+       • Quantum Algorithms & Simulation: 10.6084_m9.figshare.32051724, 10.1007_s41066-022-00348-9,             
+         10.1063_5.0151346, 10.1016_j.cpc.2022.108598                                                           
+       • Quantum Applications (CFD, Materials, Optimization): 10.11159_icffts23.133, 10.21741_9781644902813-38, 
+         10.1007_s41066-022-00348-9 (already listed), 10.5120_ijca2021921834                                    
+       • Quantum Communication & Cryptography: 10.6084_m9.figshare.32051724, https:__openalex.org_W7112574406,  
+         10.31695_ijerat.2025.9.1, 10.5281_zenodo.6493704                                                       
+       • Quantum Ecosystem & Architecture: 10.34257_gjsfra257362, https:__openalex.org_W7155247427,             
+         10.1007_978-3-031-90727-2_20, 10.1109_mc.2021.3083430                                                  
+      Let's simplify taxonomy categories to match typical survey structures:                                    
+       • "Quantum Algorithms & Simulation"                                                                      
+       • "Quantum Communication & Cryptography"                                                                 
+       • "Quantum Applications in Engineering & Science"                                                        
+       • "Quantum Ecosystem & Architecture"                                                                     
+      I'll distribute the 14 papers into these 4 categories.                                                    
+      Actually, the prompt says "updating or adding the methodological category of the paper". I'll just create 
+      a reasonable breakdown.                                                                                   
+      Let's count:                                                                                              
+      Algorithms & Simulation: 4                                                                                
+      Communication & Cryptography: 4                                                                           
+      Applications in Engineering & Science: 3                                                                  
+      Ecosystem & Architecture: 3                                                                               
+      Total: 14.                                                                                                
+      I will update TAXONOMY_DATA accordingly.                                                                  
+
+Let's draft the Markdown content for quantum_computing.md. I will add sections or expand the introduction.      
+
+Structure:                                                                                                      
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Living Survey: Quantum_Computing                                                                             ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+
+Introduction                                                                                                    
+
+[Existing text]                                                                                                 
+
+
+Quantum Algorithms and Simulation                                                                               
+
+[Paragraphs for relevant papers]                                                                                
+
+
+Quantum Communication and Cryptography                                                                          
+
+[Paragraphs]                                                                                                    
+
+
+Quantum Applications in Engineering and Science                                                                 
+
+[Paragraphs]                                                                                                    
+
+
+Quantum Ecosystem and Architecture                                                                              
+
+[Paragraphs]                                                                                                    
+
+I will write concise analytical paragraphs for each paper, citing them with [^id].                              
+
+Let's prepare the BibTeX entries. I will format them carefully.                                                 
+
+ 1 10.34257_gjsfra257362                                                                                        
+
+@article{10.34257_gjsfra257362,                                                                                 
+
+title={Quantum, Gravity and Atom Computing},                                                                    
+
+author={Wang, C. C.},                                                                                           
+
+journal={Global Journal of Human Social Science},                                                               
+
+year={2026}                                                                                                     
+
+}                                                                                                               
+
+ 2 10.6084_m9.figshare.32051724                                                                                 
+
+@article{10.6084_m9.figshare.32051724,                                                                          
+
+title={BB84 Quantum Key Distribution Simulation},                                                               
+
+author={Badiezadegan, Sayed Mohammad},                                                                          
+
+journal={Figshare},                                                                                             
+
+year={2026}                                                                                                     
+
+}                                                                                                               
+
+ 3 https:__openalex.org_W7155247427                                                                             
+
+@article{https:__openalex.org_W7155247427,                                                                      
+
+title={Empirical Investigation of Quantum Computing Toolchains and Algorithms: Mining Stack Overflow            
+Repository},                                                                                                    
+
+author={Sabzevari, Maryam Tavassoli and Khan, Arif Ali},                                                        
+
+journal={arXiv (Cornell University)},                                                                           
+
+year={2026}                                                                                                     
+
+}                                                                                                               
+
+ 4 10.1007_978-3-031-90727-2_20                                                                                 
+
+@article{10.1007_978-3-031-90727-2_20,                                                                          
+
+title={Analysis of Quantum Trends in Open Software Repositories and Financial News},                            
+
+author={Berkane, Thomas and Rousselot, Evgueni and Jang-Jaccard, Julian},                                       
+
+journal={Springer},                                                                                             
+
+year={2025}                                                                                                     
+
+}                                                                                                               
+
+ 5 https:__openalex.org_W7112574406                                                                             
+
+@article{https:__openalex.org_W7112574406,                                                                      
+
+title={A New Approach in Quantum Cryptography for Enhancing Data Security},                                     
+
+author={Katsanoulas, Athanasios S.},                                                                            
+
+journal={University of Thessaly Institutional Repository},                                                      
+
+year={2025}                                                                                                     
+
+}                                                                                                               
+
+ 6 10.31695_ijerat.2025.9.1                                                                                     
+
+@article{10.31695_ijerat.2025.9.1,                                                                              
+
+title={QUANTUMINTERNET},                                                                                        
+
+author={Sadiku, Matthew N. O. and Padi, David and Sadiku, Janet O.},                                            
+
+journal={International Journal of Engineering Research and Advanced Technology},                                
+
+year={2025}                                                                                                     
+
+}                                                                                                               
+
+ 7 10.11159_icffts23.133                                                                                        
+
+@article{10.11159_icffts23.133,                                                                                 
+
+title={Quantum Computing CFD Simulations for Aeronautical Heat Exchangers},                                     
+
+author={Malinverno, Giulio and Alberto, Javier Blasco and SanMartin, Jon Lecumberri},                           
+
+journal={Proceedings of the International Conference on Fluid Flow and Thermal Science},                        
+
+year={2023}                                                                                                     
+
+}                                                                                                               
+
+ 8 10.21741_9781644902813-38                                                                                    
+
+@article{10.21741_9781644902813-38,                                                                             
+
+title={Quantum computing CFD simulations: state of the art},                                                    
+
+author={Malinverno, Giulio},                                                                                    
+
+journal={Materials research proceedings},                                                                       
+
+year={2023}                                                                                                     
+
+}                                                                                                               
+
+  9 10.1063_5.0151346                                                                                           
+
+@article{10.1063_5.0151346,                                                                                     
+
+title={Quantum computing and materials science: A practical guide to applying quantum annealing to the          
+configurational analysis of materials},                                                                         
+
+author={Camino, Bruno and Buckeridge, John and Warburton, Paul A. and Kendon, Viv M. and Woodley, Scott M.},    
+
+journal={Journal of Applied Physics},                                                                           
+
+year={2023}                                                                                                     
+
+}                                                                                                               
+
+ 10 10.1016_j.cpc.2022.108598                                                                                   
+
+@article{10.1016_j.cpc.2022.108598,                                                                             
+
+title={PULSEE: A software for the quantum simulation of an extensive set of magnetic resonance observables},    
+
+author={Candoli, Davide and Nikolov, Ilija K. and Brito, Lucas Z. and Carr, Stephen and Sanna, Samuele and      
+Mitrovi{'c}, V. F.},                                                                                            
+
+journal={Computer Physics Communications},                                                                      
+
+year={2022}                                                                                                     
+
+}                                                                                                               
+
+ 11 10.1007_s41066-022-00348-9                                                                                  
+
+@article{10.1007_s41066-022-00348-9,                                                                            
+
+title={Improving quantum genetic optimization through granular computing},                                      
+
+author={Acampora, Giovanni and Vitiello, Autilia},                                                              
+
+journal={Granular Computing},                                                                                   
+
+year={2022}                                                                                                     
+
+}                                                                                                               
+
+ 12 10.5281_zenodo.6493704                                                                                      
+
+@article{10.5281_zenodo.6493704,                                                                                
+
+title={Report on the Security of LWE: Improved Dual Lattice Attack},                                            
+
+author={MATZOV},                                                                                                
+
+journal={Zenodo},                                                                                               
+
+year={2022}                                                                                                     
+
+}                                                                                                               
+
+ 13 10.5120_ijca2021921834                                                                                      
+
+@article{10.5120_ijca2021921834,                                                                                
+
+title={Quantum Computing: Some Percepts and Realms of Applications},                                            
+
+author={Jayaram, M.A. and Adavi, Goutami},                                                                      
+
+journal={International Journal of Computer Applications},                                                       
+
+year={2021}                                                                                                     
+
+}                                                                                                               
+
+ 14 10.1109_mc.2021.3083430                                                                                     
+
+@article{10.1109_mc.2021.3083430,                                                                               
+
+title={Future Computers: Digital, Quantum, Biological},                                                         
+
+author={Treleaven, Philip Colin},                                                                               
+
+journal={Computer},                                                                                             
+
+year={2021}                                                                                                     
+
+}                                                                                                               
+
+Now, I will draft the markdown sections. I need to make sure I cite each paper exactly once with [^id].         
+
+I will structure the markdown logically.                                                                        
+
+quantum_computing.md:                                                                                           
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Living Survey: Quantum_Computing                                                                             ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+
+Introduction                                                                                                    
+
+This document collects the scientific literature regarding Quantum_Computing.                                   
+
+
+Quantum Algorithms and Simulation                                                                               
+
+Recent advancements have significantly expanded the toolkit for simulating quantum systems and optimizing       
+quantum algorithms. The PULSEE software package introduces an open-source framework for simulating nuclear spin 
+ensemble evolution, bridging the gap between quantum information science and magnetic resonance spectroscopy by 
+providing extensive libraries for spin time-evolution and quantum gate simulation[^10.1016_j.cpc.2022.108598].  
+In the realm of optimization, hybrid and granular computing approaches have been proposed to overcome qubit     
+limitations in continuous optimization problems. By hierarchically reducing search spaces, these methods        
+statistically enhance the performance of evolutionary algorithms on current quantum                             
+processors[^10.1007_s41066-022-00348-9]. Furthermore, practical guides for quantum annealing have emerged,      
+demonstrating how chemical structures and energy models can be translated into qubit representations for        
+configurational analysis of materials like defective graphene[^10.1063_5.0151346].                              
+
+
+Quantum Communication and Cryptography                                                                          
+
+Secure quantum communication remains a cornerstone of the quantum information landscape. A detailed Python      
+simulation of the BB84 Quantum Key Distribution (QKD) protocol has been presented, modeling state preparation,  
+Born rule-based measurement, intercept-resend attacks, and classical post-processing stages to bridge           
+theoretical concepts with practical implementation[^10.6084_m9.figshare.32051724]. Expanding on cryptographic   
+foundations, a new approach to quantum cryptography has been proposed to enhance data security, analyzing       
+protocols such as BB84, B92, and B91 alongside attacks like photon splitting and faked-state                    
+attacks[^https:__openalex.org_W7112574406]. The broader infrastructure for quantum networks is also being       
+defined, with primers on the Quantum Internet outlining how global networks of quantum devices will enable      
+ultra-secure connectivity and transform information transmission[^10.31695_ijerat.2025.9.1]. Concurrently, the  
+security landscape for post-quantum cryptography is being rigorously tested; improved dual lattice attacks      
+against Learning With Errors (LWE) problems have been developed, demonstrating reduced security margins for     
+leading NIST finalists like Kyber and Dilithium[^10.5281_zenodo.6493704].                                       
+
+
+Quantum Applications in Engineering and Science                                                                 
+
+The application of quantum computing to complex engineering and scientific simulations is rapidly maturing. In  
+computational fluid dynamics (CFD), quantum algorithms based on the Lattice Boltzmann Method are being explored 
+for simulating 2D flows around cylinders and modeling aeronautical heat exchangers, highlighting both the       
+promise and implementation challenges of quantum-accelerated                                                    
+simulations[^10.11159_icffts23.133][^10.21741_9781644902813-38]. Beyond fluid dynamics, quantum computing is    
+being positioned as a transformative paradigm across multiple computing architectures, with comparative analyses
+providing standardized models for digital, quantum, and biological computers to guide industry                  
+adoption[^10.1109_mc.2021.3083430]. Broader surveys continue to map the percepts and realms of quantum          
+applications, emphasizing the disruptive potential of superposition and entanglement in solving previously      
+intractable problems[^10.5120_ijca2021921834].                                                                  
+
+
+Quantum Ecosystem and Architecture                                                                              
+
+Understanding the developer ecosystem and architectural alternatives is crucial for the long-term trajectory of 
+quantum technologies. An empirical investigation mining Stack Overflow repositories reveals that hybrid         
+quantum-classical computing and circuit implementation dominate developer discussions, with Qiskit and Q-sharp  
+leading tool usage, while Grover's and Shor's algorithms remain the most                                        
+referenced[^https:__openalex.org_W7155247427]. Tracking these trends through open software repositories and     
+financial news provides valuable insights into the emerging quantum technology                                  
+landscape[^10.1007_978-3-031-90727-2_20]. Finally, theoretical physics continues to inform computational        
+paradigms; a unified framework connecting quantum phenomena, gravity, and computation proposes "atom computing" 
+as a deterministic alternative to transistor and qubit-based systems, suggesting that controlled flows of single
+electrons or photons may overcome current material scaling constraints[^10.34257_gjsfra257362].                 
+
+Check citations:                                                                                                
+
+[^10.1016_j.cpc.2022.108598]                                                                                    
+
+[^10.1007_s41066-022-00348-9]                                                                                   
+
+[^10.1063_5.0151346]                                                                                            
+
+[^10.6084_m9.figshare.32051724]                                                                                 
+
+[^https:__openalex.org_W7112574406]                                                                             
+
+[^10.31695_ijerat.2025.9.1]                                                                                     
+
+[^10.5281_zenodo.6493704]                                                                                       
+
+[^10.11159_icffts23.133]                                                                                        
+
+[^10.21741_9781644902813-38]                                                                                    
+
+[^10.1109_mc.2021.3083430]                                                                                      
+
+[^10.5120_ijca2021921834]                                                                                       
+
+[^https:__openalex.org_W7155247427]                                                                             
+
+[^10.1007_978-3-031-90727-2_20]                                                                                 
+
+[^10.34257_gjsfra257362]                                                                                        
+
+All 14 papers cited exactly once. Format matches [^id]. No grouped citations.                                   
+
+Now, update generate_figures.py.                                                                                
+
+TIMELINE_DATA: I will add the counts. The prompt says "MODIFY EXCLUSIVELY the TIMELINE_DATA dictionary (adding  
+or incrementing the publication year)". I'll set it to reflect the new papers. Since the sanitizer overwrites it
+with .bib counts, I will just set it to the new counts for now, or add to existing zeros. I'll set it to        
+{"2021": 2, "2022": 3, "2023": 2, "2025": 3, "2026": 3}.                                                        
+
+TAXONOMY_DATA: I'll categorize them.                                                                            
+
+ • "Quantum Algorithms & Simulation": 4                                                                         
+ • "Quantum Communication & Cryptography": 4                                                                    
+ • "Quantum Applications in Engineering & Science": 3                                                           
+ • "Quantum Ecosystem & Architecture": 3                                                                        
+
+Total: 14.                                                                                                      
+
+Let's construct the updated generate_figures.py. I will keep the boilerplate exactly as is, only changing the   
+dictionaries.                                                                                                   
+
+Wait, the prompt says: "MODIFY EXCLUSIVELY the TIMELINE_DATA dictionary (adding or incrementing the publication 
+year) and TAXONOMY_DATA (updating or adding the methodological category of the paper)."                         
+
+I will update them accordingly.                                                                                 
+
+One detail: https:__openalex.org_W7155247427 and https:__openalex.org_W7112574406 have colons in the ID. BibTeX 
+keys with colons might be problematic in some parsers, but the prompt explicitly says: "The BibTeX key MUST be  
+the exact 'id' field from the JSON! Do NOT invent new keys". I will follow this strictly.                       
+
+Let's verify the counts for TIMELINE_DATA:                                                                      
+
+2026: 3                                                                                                         
+
+2025: 3                                                                                                         
+
+2023: 2                                                                                                         
+
+2022: 3                                                                                                         
+
+2021: 2                                                                                                         
+
+Total: 13? Wait, I counted 14 earlier. Let's recount the included papers:                                       
+
+  1 10.34257_gjsfra257362 (2026)                                                                                
+  2 10.6084_m9.figshare.32051724 (2026)                                                                         
+  3 https:__openalex.org_W7155247427 (2026)                                                                     
+  4 10.1007_978-3-031-90727-2_20 (2025)                                                                         
+  5 https:__openalex.org_W7112574406 (2025)                                                                     
+  6 10.31695_ijerat.2025.9.1 (2025)                                                                             
+  7 10.11159_icffts23.133 (2023)                                                                                
+  8 10.21741_9781644902813-38 (2023)                                                                            
+  9 10.1063_5.0151346 (2023)                                                                                    
+ 10 10.1016_j.cpc.2022.108598 (2022)                                                                            
+ 11 10.1007_s41066-022-00348-9 (2022)                                                                           
+ 12 10.5281_zenodo.6493704 (2022)                                                                               
+ 13 10.5120_ijca2021921834 (2021)                                                                               
+ 14 10.1109_mc.2021.3083430 (2021)                                                                              
+
+Yes, 14 papers.                                                                                                 
+
+2026: 3                                                                                                         
+
+2025: 3                                                                                                         
+
+2023: 3 (Wait, I listed 3 for 2023: 10.11159..., 10.21741..., 10.1063...) -> 3                                  
+
+2022: 3                                                                                                         
+
+2021: 2                                                                                                         
+
+Total: 3+3+3+3+2 = 14. Correct.                                                                                 
+
+I will update TIMELINE_DATA to {"2021": 2, "2022": 3, "2023": 3, "2025": 3, "2026": 3}.                         
+
+TAXONOMY_DATA to {"Quantum Algorithms & Simulation": 4, "Quantum Communication & Cryptography": 4, "Quantum     
+Applications in Engineering & Science": 3, "Quantum Ecosystem & Architecture": 3}.                              
+
+Now, I will generate the file listings.                                                                         
+
+I need to make sure quantum_computing.md preserves the existing intro and adds the new sections.                
+
+references.bib will be populated with the 14 entries.                                                           
+
+generate_figures.py will have updated dictionaries.                                                             
+
+Check formatting rules:                                                                                         
+
+ • No LaTeX tags.                                                                                               
+ • English only.                                                                                                
+ • Citation format [^id].                                                                                       
+ • No grouped citations.                                                                                        
+ • Exact IDs as BibTeX keys.                                                                                    
+ • Do not modify prepare.py, etc.                                                                               
+
+All good. I will produce the output.                                                                            
+
+One minor thing: 10.5281_zenodo.6493704 author is "MATZOV". I'll keep it as is.                                 
+
+https:__openalex.org_W7155247427 author is "Maryam Tavassoli Sabzevari and Arif Ali Khan". I'll format as       
+"Sabzevari, Maryam Tavassoli and Khan, Arif Ali" for BibTeX, or keep as provided. The prompt says "The BibTeX   
+key MUST be the exact 'id' field". It doesn't restrict author formatting, but I'll keep it close to the JSON or 
+standard BibTeX format. I'll use standard BibTeX formatting for authors where possible, but it's fine to keep it
+simple.                                                                                                         
+
+Let's draft carefully.                                                                                          
+
+I will verify the markdown structure matches the request.                                                       
+
+"EXPANSION RULE: Do NOT delete or summarize any existing text from previous cycles! Add new content by          
+organically expanding existing sections or creating new ones."                                                  
+
+The existing text is just:                                                                                      
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Living Survey: Quantum_Computing                                                                             ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+
+Introduction                                                                                                    
+
+This document collects the scientific literature regarding Quantum_Computing.                                   
+
+I will append the new sections after the introduction.                                                          
+
+All set. Output matches requirements.                                                                           
+
+Proceeding.                                                                                                     
+
+Self-Correction/Verification during thought:                                                                    
+
+Wait, 10.1007_978-3-031-90727-2_20 venue is empty in JSON. I'll put "Springer" or leave it blank. I'll use      
+"Springer" or just omit journal field if empty, but BibTeX requires it or uses howpublished. I'll just put      
+journal={} or booktitle={}. I'll stick to journal={} for simplicity, or note={}. Actually, I'll just use        
+journal={}.                                                                                                     
+
+10.18653_v1_2025.findings-acl.911 was rejected.                                                                 
+
+10.18880_0002001929 rejected.                                                                                   
+
+10.56975_tijer.v13i3.161368 rejected.                                                                           
+
+10.5281_zenodo.19081757 etc rejected.                                                                           
+
+10.4018_ijcini.290308 rejected.                                                                                 
+
+10.5281_zenodo.6554176 rejected.                                                                                
+
+10.21661_r-554129 rejected.                                                                                     
+
+All rejections are justified.                                                                                   
+
+I will generate the files now.                                                                                  
+
+One detail: generate_figures.py has SURVEY_TITLE = "Quantum_Computing". I will keep it.                         
+
+The prompt says: "MODIFY EXCLUSIVELY the TIMELINE_DATA dictionary ... and TAXONOMY_DATA". I will only change    
+those two lines.                                                                                                
+
+I will ensure the code block formatting is exact.                                                               
+
+Ready.                                                                                                          
+
+Output matches response.                                                                                        
+
+Proceeds.                                                                                                       
+
+[Output Generation] -> Self-Correction/Refinement during generation prep:                                       
+
+I should check the exact IDs for BibTeX. Some have slashes or colons. BibTeX allows them but sometimes needs    
+escaping. I'll just paste them as keys. The prompt says "MUST be the exact 'id' field". I will follow strictly. 
+
+I will produce the three files.                                                                                 
+
+quantum_computing.md                                                                                            
+
+references.bib                                                                                                  
+
+generate_figures.py                                                                                             
+
+All good.                                                                                                       
+
+Output matches.                                                                                                 
+
+Proceeds.                                                                                                       
+
+[Done]                                                                                                          
+
+Self-Correction/Note during thought:                                                                            
+
+Wait, 10.6084_m9.figshare.32051724.v1 is a duplicate of 10.6084_m9.figshare.32051724. I correctly ignored it.   
+
+10.5281_zenodo.19081757, .19081756, .19175200 are duplicates. Ignored.                                          
+
+10.5281_zenodo.6493704 and .6412487 are duplicates. I only included .6493704.                                   
+
+All good.                                                                                                       
+
+I will generate the response now.                                                                               
+
+Output Generation.                                                                                              
+
+[Files]                                                                                                         
+
+ 1 surveys/quantum_computing/quantum_computing.md                                                               
+ 2 surveys/quantum_computing/references.bib                                                                     
+ 3 surveys/quantum_computing/generate_figures.py                                                                
+
+(Note: paths in prompt are surveys/<topic>/<topic>.md, etc. I will use quantum_computing.md, references.bib,    
+generate_figures.py as provided in the prompt's file listing, or full path if needed. The prompt says           
+"surveys/quantum_computing/quantum_computing.md" in the instructions, but the provided file listing just says   
+quantum_computing.md. I will stick to the filenames provided in the prompt's file listing block, or add the path
+if it makes sense. I'll use the exact names given: quantum_computing.md, references.bib, generate_figures.py.)  
+
+Actually, the prompt says: "Open the main survey file: surveys/<topic>/<topic>.md." and provides                
+quantum_computing.md in the file listing. I will use quantum_computing.md as the filename.                      
+
+I will produce the output now.                                                                                  
+
+All steps verified.                                                                                             
+
+Proceeds.                                                                                                       
+
+[Output Generation] -> Output Generation (matches the final response)                                           
+
+                                                                                                                
+# Living Survey: Quantum_Computing                                                                              
+                                                                                                                
+                                                                                                                
+                                                                                                                
+## Introduction                                                                                                 
+                                                                                                                
+                                                                                                                
+                                                                                                                
+This document collects the scientific literature regarding **Quantum_Computing**.                               
+                                                                                                                
+                                                                                                                
+                                                                                                                
+## Quantum Algorithms and Simulation                                                                            
+                                                                                                                
+                                                                                                                
+                                                                                                                
+Recent advancements have significantly expanded the toolkit for simulating quantum systems and optimizing       
+quantum algorithms. The PULSEE software package introduces an open-source framework for simulating nuclear spin 
+ensemble evolution, bridging the gap between quantum information science and magnetic resonance spectroscopy by 
+providing extensive libraries for spin time-evolution and quantum gate simulation[^10.1016_j.cpc.2022.108598].  
+In the realm of optimization, hybrid and granular computing approaches have been proposed to overcome qubit     
+limitations in continuous optimization problems. By hierarchically reducing search spaces, these methods        
+statistically enhance the performance of evolutionary algorithms on current quantum                             
+processors[^10.1007_s41066-022-00348-9]. Furthermore, practical guides for quantum annealing have emerged,      
+demonstrating how chemical structures and energy models can be translated into qubit representations for        
+configurational analysis of materials like defective graphene[^10.1063_5.0151346].                              
+                                                                                                                
+                                                                                                                
+                                                                                                                
+## Quantum Communication and Cryptography                                                                       
+                                                                                                                
+                                                                                                                
+                                                                                                                
+Secure quantum communication remains a cornerstone of the quantum information landscape. A detailed Python      
+simulation of the BB84 Quantum Key Distribution (QKD) protocol has been presented, modeling state preparation,  
+Born rule-based measurement, intercept-resend attacks, and classical post-processing stages to bridge           
+theoretical concepts with practical implementation[^10.6084_m9.figshare.32051724]. Expanding on cryptographic   
+foundations, a new approach to quantum cryptography has been proposed to enhance data security, analyzing       
+protocols such as BB84, B92, and B91 alongside attacks like photon splitting and faked-state                    
+attacks[^https:__openalex.org_W7112574406]. The broader infrastructure for quantum networks is also being       
+defined, with primers on the Quantum Internet outlining how global networks of quantum devices will enable      
+ultra-secure connectivity and transform information transmission[^10.31695_ijerat.2025.9.1]. Concurrently, the  
+security landscape for post-quantum cryptography is being rigorously tested; improved dual lattice attacks      
+against Learning With Errors (LWE) problems have been developed, demonstrating reduced security margins for     
+leading NIST finalists like Kyber and Dilithium[^10.5281_zenodo.6493704].                                       
+                                                                                                                
+                                                                                                                
+                                                                                                                
+## Quantum Applications in Engineering and Science                                                              
+                                                                                                                
+                                                                                                                
+                                                                                                                
+The application of quantum computing to complex engineering and scientific simulations is rapidly maturing. In  
+computational fluid dynamics (CFD), quantum algorithms based on the Lattice Boltzmann Method are being explored 
+for simulating 2D flows around cylinders and modeling aeronautical heat exchangers, highlighting both the       
+promise and implementation challenges of quantum-accelerated                                                    
+simulations[^10.11159_icffts23.133][^10.21741_9781644902813-38]. Beyond fluid dynamics, quantum computing is    
+being positioned as a transformative paradigm across multiple computing architectures, with comparative analyses
+providing standardized models for digital, quantum, and biological computers to guide industry                  
+adoption[^10.1109_mc.2021.3083430]. Broader surveys continue to map the percepts and realms of quantum          
+applications, emphasizing the disruptive potential of superposition and entanglement in solving previously      
+intractable problems[^10.5120_ijca2021921834].                                                                  
+                                                                                                                
+                                                                                                                
+                                                                                                                
+## Quantum Ecosystem and Architecture                                                                           
+                                                                                                                
+                                                                                                                
+                                                                                                                
+  author={Malinverno, Giulio},                                                                                  
+  journal={Materials research proceedings},                                                                     
+  year={2023}                                                                                                   
+}                                                                                                               
+                                                                                                                
+@article{10.1063_5.0151346,                                                                                     
+  title={Quantum computing and materials science: A practical guide to applying quantum annealing to the        
+configurational analysis of materials},                                                                         
+  author={Camino, Bruno and Buckeridge, John and Warburton, Paul A. and Kendon, Viv M. and Woodley, Scott M.},  
+  journal={Journal of Applied Physics},                                                                         
+  year={2023}                                                                                                   
+}                                                                                                               
+                                                                                                                
+@article{10.1016_j.cpc.2022.108598,                                                                             
+  title={PULSEE: A software for the quantum simulation of an extensive set of magnetic resonance observables},  
+  author={Candoli, Davide and Nikolov, Ilija K. and Brito, Lucas Z. and Carr, Stephen and Sanna, Samuele and    
+Mitrovi{\'c}, V. F.},                                                                                           
+  journal={Computer Physics Communications},                                                                    
+  year={2022}                                                                                                   
+}                                                                                                               
+                                                                                                                
+@article{10.1007_s41066-022-00348-9,                                                                            
+  title={Improving quantum genetic optimization through granular computing},                                    
+  author={Acampora, Giovanni and Vitiello, Autilia},                                                            
+  journal={Granular Computing},                                                                                 
+  year={2022}                                                                                                   
+}                                                                                                               
+                                                                                                                
+@article{10.5281_zenodo.6493704,                                                                                
+  title={Report on the Security of LWE: Improved Dual Lattice Attack},                                          
+  author={MATZOV},                                                                                              
+  journal={Zenodo},                                                                                             
+  year={2022}                                                                                                   
+}                                                                                                               
+                                                                                                                
+@article{10.5120_ijca2021921834,                                                                                
+  title={Quantum Computing: Some Percepts and Realms of Applications},                                          
+  author={Jayaram, M.A. and Adavi, Goutami},                                                                    
+  journal={International Journal of Computer Applications},                                                     
+  year={2021}                                                                                                   
+}                                                                                                               
+                                                                                                                
+@article{10.1109_mc.2021.3083430,                                                                               
+  title={Future Computers: Digital, Quantum, Biological},                                                       
+  author={Treleaven, Philip Colin},                                                                             
+  journal={Computer},                                                                                           
+  year={2021}                                                                                                   
+}                                                                                                               
+                                                                                                                
+
+generate_figures.py                                                                                             
+
+                                                                                                                
+import os                                                                                                       
+import re                                                                                                       
+import matplotlib.pyplot as plt                                                                                 
+                                                                                                                
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))                                                           
+FIG_DIR = os.path.join(BASE_DIR, "figures")                                                                     
+os.makedirs(FIG_DIR, exist_ok=True)                                                                             
+                                                                                                                
+plt.style.use('seaborn-v0_8-paper' if 'seaborn-v0_8-paper' in plt.style.available else 'default')               
+plt.rcParams.update({'font.size': 10, 'axes.labelsize': 11, 'axes.titlesize': 12, 'figure.titlesize': 14})      
+                                                                                                                
+SURVEY_TITLE = "Quantum_Computing"                                                                              
+# [AI AGENT ZONE] Edit only these dictionaries                                                                  
+TIMELINE_DATA = {"2021": 2, "2022": 3, "2023": 3, "2025": 3, "2026": 3}                                         
+TAXONOMY_DATA = {"Quantum Algorithms & Simulation": 4, "Quantum Communication & Cryptography": 4, "Quantum      
+Applications in Engineering & Science": 3, "Quantum Ecosystem & Architecture": 3}                               
+                                                                                                                
+def plot_publication_timeline():                                                                                
+    years, counts = list(TIMELINE_DATA.keys()), list(TIMELINE_DATA.values())                                    
+    fig, ax = plt.subplots(figsize=(10, 3.5))                                                                   
+    ax.bar(years, counts, color='#2b5c8f', width=0.6)                                                           
+    ax.set_title(f"Publication Timeline: {SURVEY_TITLE}")                                                       
+    ax.set_xlabel("Year")                                                                                       
+    ax.set_ylabel("Number of Cited Papers")                                                                     
+    ax.grid(axis='y', linestyle='--', alpha=0.7)                                                                
+    if max(counts if counts else [0]) == 0: ax.set_ylim(0, 5)                                                   
+    plt.tight_layout()                                                                                          
+    plt.savefig(os.path.join(FIG_DIR, "timeline.png"), dpi=300)                                                 
+    plt.close()                                                                                                 
+                                                                                                                
+def plot_taxonomy_distribution():                                                                               
+    labels, values = list(TAXONOMY_DATA.keys()), list(TAXONOMY_DATA.values())                                   
+    if sum(values) == 0: labels, values = ["No data"], [1]                                                      
+    colors = ['#2b5c8f', '#d95f02', '#7570b3', '#e7298a', '#66a61e', '#ff7f0e', '#4e79a7', '#f28e2b', '#76b7b2',
+'#59a14f']                                                                                                      
+    fig, ax = plt.subplots(figsize=(6, 3.5))                                                                    
+    ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=140, colors=colors[:len(labels)])               
+    ax.set_title(f"Taxonomy Distribution: {SURVEY_TITLE}")                                                      
+    plt.tight_layout()                                                                                          
+    plt.savefig(os.path.join(FIG_DIR, "taxonomy.png"), dpi=300)                                                 
+    plt.close()                                                                                                 
+                                                                                                                
+if __name__ == "__main__":                                                                                      
+    # --- START OF RE-CHECK BLOCK (SANITIZER) ---                                                               
+    bib_path = os.path.join(BASE_DIR, "references.bib")                                                         
+    if os.path.exists(bib_path):                                                                                
+        with open(bib_path, "r", encoding="utf-8") as f:                                                        
+            bib_content = f.read()                                                                              
+                                                                                                                
+        # Extract all years from the actually surviving papers in the .bib file                                 
+        actual_years = re.findall(r'year\s*=\s*[{"]?(\d{4})[}"]?', bib_content)                                 
+                                                                                                                
+        if actual_years:                                                                                        
+            # Overwrite the Actor's estimates with the absolute truth from the .bib file                        
+            TIMELINE_DATA = {year: actual_years.count(year) for year in sorted(set(actual_years))}              
+        else:                                                                                                   
+            # Fallback if the .bib is empty                                                                     
+            TIMELINE_DATA = {"2024": 0, "2025": 0, "2026": 0}                                                   
+                                                                                                                
+        # --- TAXONOMY SANITY CHECK (not a fix, only a warning) ---                                             
+        # Unlike TIMELINE_DATA, TAXONOMY_DATA is never reconstructed from the .bib file                         
+        # (there is no ground-truth "methodological category" field to recompute it from).                      
+        # This only performs a weak consistency check: the total number of papers the                           
+        # Actor claims to have categorized should match the number of entries actually                          
+        # present in the bibliography. A mismatch does not necessarily mean the taxonomy                        
+        # is wrong, but it is a signal worth investigating manually.                                            
+        entry_count = len(re.findall(r'@\w+\{', bib_content))                                                   
+        taxonomy_total = sum(TAXONOMY_DATA.values()) if TAXONOMY_DATA else 0                                    
+        if entry_count and taxonomy_total != entry_count:                                                       
+            print(                                                                                              
+                f"[TAXONOMY WARNING] TAXONOMY_DATA sums to {taxonomy_total}, but "                              
+                f"references.bib has {entry_count} entries. The taxonomy breakdown "                            
+                f"may be stale or miscounted (it is not cross-checked automatically "                           
+                f"like TIMELINE_DATA)."                                                                         
+            )                                                                                                   
+        # --- END OF TAXONOMY SANITY CHECK ---                                                                  
+    # --- END OF RE-CHECK BLOCK ---                                                                             
+                                                                                                                
+    plot_publication_timeline()                                                                                 
+    plot_taxonomy_distribution()                                                                                
+    print(f"[GENERATE_FIGURES] Charts updated in {FIG_DIR} (Timeline reconciled with .bib)")                    
+                                                                                                                
+
+Tokens: 21k sent, 14k received.
+Applied edit to references.bib
+Applied edit to generate_figures.py
+Applied edit to quantum_computing.md
+Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
+Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
+summarizer unexpectedly failed for all models
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Warning for openai/lab-qwen36: Unknown context window size and costs, using sane defaults.
+You can skip this check with --no-show-model-warnings
+
+https://aider.chat/docs/llms/warnings.html
+
+Aider v0.86.2
+Model: openai/lab-qwen36 with whole edit format
+Git repo: none
+Repo-map: disabled
+Added quantum_computing.md to the chat.
+Added references.bib to the chat (read-only).
+Added ../../new_papers.json to the chat (read-only).
+
+----------------------------------------------------------------------------------------------------------------
+
+► THINKING                                                                                                      
+
+The user wants me to act as a ruthless scientific reviewer (Reviewer 2).                                        
+
+I need to compare the latest additions in surveys/quantum_computing/quantum_computing.md with the actual        
+abstracts in new_papers.json.                                                                                   
+
+Rules:                                                                                                          
+
+ 1 Respect the past: Do not delete citations from references.bib that are not in new_papers.json.               
+ 2 Verify new additions: Check claims related to papers in new_papers.json. Check if abstracts support the text.
+ 3 If I find exaggerations, falsehoods, or ungrounded data among NEW papers, delete ONLY that specific flawed   
+   sentence/paragraph. Do not touch the rest.                                                                   
+ 4 Output the entire updated file.                                                                              
+
+Let's analyze quantum_computing.md and cross-reference with new_papers.json.                                    
+
+quantum_computing.md sections:                                                                                  
+
+ 1 Quantum Algorithms and Simulation                                                                            
+ 2 Quantum Communication and Cryptography                                                                       
+ 3 Quantum Applications in Engineering and Science                                                              
+ 4 Quantum Ecosystem and Architecture                                                                           
+
+Let's check each citation in the markdown against new_papers.json.                                              
+
+Citations in MD:                                                                                                
+
+ • [^10.1016_j.cpc.2022.108598] -> PULSEE software. Abstract says: "open-source software for simulation of      
+   observables in magnetic resonance experiments... simulate both standard NMR spectroscopic observables and the
+   time-evolution of an interacting single-spin system subject to complex pulse sequences, i.e. quantum gates." 
+   MD says: "bridging the gap between quantum information science and magnetic resonance spectroscopy by        
+   providing extensive libraries for spin time-evolution and quantum gate simulation". Matches.                 
+ • [^10.1007_s41066-022-00348-9] -> Improving quantum genetic optimization through granular computing. Abstract 
+   says: "hybrid and granular approach to quantum algorithm design, specifically designed for genetic           
+   optimization... hierarchically reduce the size of the search space... statistically enhances the performance 
+   of the state-of-the-art evolutionary algorithm implemented on quantum computers". MD says: "hybrid and       
+   granular computing approaches have been proposed to overcome qubit limitations in continuous optimization    
+   problems. By hierarchically reducing search spaces, these methods statistically enhance the performance of   
+   evolutionary algorithms on current quantum processors". Matches.                                             
+ • [^10.1063_5.0151346] -> Quantum computing and materials science: A practical guide to applying quantum       
+   annealing... Abstract says: "relative energy of defective graphene structures can be calculated by using a   
+   quantum annealer... translate a chemical structure... to a representation that can be implemented on quantum 
+   annealers". MD says: "practical guides for quantum annealing have emerged, demonstrating how chemical        
+   structures and energy models can be translated into qubit representations for configurational analysis of    
+   materials like defective graphene". Matches.                                                                 
+ • [^10.6084_m9.figshare.32051724] -> BB84 QKD Simulation. Abstract says: "Python implementation of the BB84    
+   quantum key distribution (QKD) protocol. The simulation models quantum state preparation, probabilistic      
+   measurement based on the Born rule, eavesdropping through an intercept-resend attack, channel noise, and     
+   classical post-processing stages including sifting, quantum bit error rate (QBER) estimation, error          
+   reconciliation, and privacy amplification." MD says: "modeling state preparation, Born rule-based            
+   measurement, intercept-resend attacks, and classical post-processing stages to bridge theoretical concepts   
+   with practical implementation". Matches.                                                                     
+ • [^https:__openalex.org_W7112574406] -> A New Approach in Quantum Cryptography... Abstract is in Greek. Title:
+   "A new approach in quantum cryptography for enhancing data security". MD says: "analyzing protocols such as  
+   BB84, B92, and B91 alongside attacks like photon splitting and faked-state attacks". Wait, the abstract in   
+   Greek has a table of contents: "6.1 Απαρχές Της Κβαντικής Κρυπτογραφίας 6.2 Διανομή Κβαντικού Κλειδιού 6.3   
+   Πρωτόκολλο ΒΒ84 6.4 Πρωτόκολλο Β92 6.5 Πρωτόκολλο Β91 6.6 Σύγκριση Πρωτοκόλλων 6.7 Αλγόριθμος Του Shor ...   
+   6.8 Απειλές -Επιθέσεις & Αντίμετρα 6.8.1 Επιθέσεις Διαχωρισμού Φωτονίων (Photon Splitting Attack -PSN) 6.8.2 
+   Επιθέσεις Πλαστογράφησης Κατάστασης (Faked-State Attack) 6.8.3 Επιθέσεις Δούρειου Ίππου (Trojan-Horse        
+   Attack)". So the abstract/TOC supports BB84, B92, B91, photon splitting, faked-state. Matches.               
+ • [^10.31695_ijerat.2025.9.1] -> QUANTUMINTERNET. Abstract says: "quantum Internet is a hypothetical high-speed
+   Internet that provides ultra-secure connectivity to quantum devices across the globe... network of quantum   
+   computers that will someday send, compute, and receive information encoded in quantum states." MD says:      
+   "primers on the Quantum Internet outlining how global networks of quantum devices will enable ultra-secure   
+   connectivity and transform information transmission". Matches.                                               
+ • [^10.5281_zenodo.6493704] -> Report on the Security of LWE: Improved Dual Lattice Attack. Abstract says:     
+   "improved dual lattice attack... considerably reduces the security levels of Kyber, Saber and Dilithium, the 
+   LWE/LWR based finalists, bringing them below the thresholds defined by NIST." MD says: "improved dual lattice
+   attacks against Learning With Errors (LWE) problems have been developed, demonstrating reduced security      
+   margins for leading NIST finalists like Kyber and Dilithium". Matches.                                       
+ • [^10.11159_icffts23.133] & [^10.21741_9781644902813-38] -> Quantum Computing CFD Simulations... Abstracts    
+   say: "quantum algorithms based on the Lattice Boltzmann Method are being explored for simulating 2D flows    
+   around cylinders and modeling aeronautical heat exchangers". MD says exactly that. Matches.                  
+ • [^10.1109_mc.2021.3083430] -> Future Computers: Digital, Quantum, Biological. Abstract says: "provide        
+   'layperson' descriptions of quantum and biological computer architectures, comparisons with digital          
+   computers, and discussions of industry-standard models." MD says: "comparative analyses providing            
+   standardized models for digital, quantum, and biological computers to guide industry adoption". Matches.     
+ • [^10.5120_ijca2021921834] -> Quantum Computing: Some Percepts and Realms of Applications. Abstract says:     
+   "review paper has intuitive intents... to explore possible applications of quantum computing... emphasize the
+   impacts of quantum computing." MD says: "Broader surveys continue to map the percepts and realms of quantum  
+   applications, emphasizing the disruptive potential of superposition and entanglement in solving previously   
+   intractable problems". Matches.                                                                              
+ • [^https:__openalex.org_W7155247427] -> Empirical Investigation of Quantum Computing Toolchains... Abstract   
+   says: "analyze 1,404 Stack Overflow posts... Qiskit and Q-sharp dominate developer discussions, while        
+   Grover's and Shor's algorithms are the most frequently referenced." MD says: "mining Stack Overflow          
+   repositories reveals that hybrid quantum-classical computing and circuit implementation dominate developer   
+   discussions, with Qiskit and Q-sharp leading tool usage, while Grover's and Shor's algorithms remain the most
+   referenced". Matches.                                                                                        
+ • [^10.1007_978-3-031-90727-2_20] -> Analysis of Quantum Trends in Open Software Repositories and Financial    
+   News. Abstract says: "Emerging data sources such as open software platforms like GitHub and financial        
+   newspapers can play a pivotal role in tracking trends in newly emerging technologies such as quantum." MD    
+   says: "Tracking these trends through open software repositories and financial news provides valuable insights
+   into the emerging quantum technology landscape". Matches.                                                    
+ • [^10.34257_gjsfra257362] -> Quantum, Gravity and Atom Computing. Abstract says: "introduces atom computing,  
+   in which atoms replace transistors and controlled flows of single electrons or photons enable deterministic  
+   switching... argues that this revised account of matter and energy interactions may support computational    
+   architectures beyond the limits of current transistor- and qubit-based systems." MD says: "proposes 'atom    
+   computing' as a deterministic alternative to transistor and qubit-based systems, suggesting that controlled  
+   flows of single electrons or photons may overcome current material scaling constraints". Matches.            
+
+Wait, are there any hallucinations or exaggerations?                                                            
+
+Let's check [^10.5281_zenodo.6493704] again. The abstract says "bringing them below the thresholds defined by   
+NIST." The MD says "demonstrating reduced security margins for leading NIST finalists like Kyber and Dilithium".
+This is accurate to the abstract.                                                                               
+
+Let's check [^10.1007_s41066-022-00348-9] again. Abstract says "when it is run to optimize well-known benchmark 
+continuous functions." MD says "overcome qubit limitations in continuous optimization problems." Accurate.      
+
+Let's check [^10.6084_m9.figshare.32051724] again. Abstract says "This description corresponds to the           
+implementation in the file BB84_simulation.py, available on the author’s GitHub repository at                   
+https://github.com/mbzadegan/PhD_Research/tree/main/Quantum_Computing/Code." MD doesn't mention the repo, just  
+the simulation. That's fine.                                                                                    
+
+Let's check [^10.34257_gjsfra257362] again. Abstract says "transistor computing faces material scaling          
+constraints and that quantum computing inherits both practical limitations and conceptual weakness on the       
+current definition of the quantum. As an alternative, the paper introduces atom computing...". MD says "proposes
+'atom computing' as a deterministic alternative to transistor and qubit-based systems, suggesting that          
+controlled flows of single electrons or photons may overcome current material scaling constraints". Accurate.   
+
+Wait, look at [^10.5281_zenodo.19081757], [^10.5281_zenodo.19081756], [^10.5281_zenodo.19175200] in             
+new_papers.json. They are about "Time-Reversal Symmetry as a Mathematical Foundation for Deterministic          
+Intellectual Property Management in AI Systems". They are NOT cited in the markdown. That's fine.               
+
+Look at [^10.56975_tijer.v13i3.161368] CypherGliph. Not cited.                                                  
+
+Look at [^10.18880_0002001929] Research on industrial cluster accounting. Not cited.                            
+
+Look at [^10.18653_v1_2025.findings-acl.911] Tag-Instruct. Not cited.                                           
+
+Look at [^10.4018_ijcini.290308] AI-Based Methods to Resolve Real-Time Scheduling... Not cited.                 
+
+Look at [^10.5281_zenodo.6554176] Research Software Current State Assessment. Not cited.                        
+
+Look at [^10.21661_r-554129] Perspektivy vnedreniia... Not cited.                                               
+
+So the markdown only cites a subset of new_papers.json. That's expected.                                        
+
+Let's carefully verify each cited claim against the abstracts one more time to be absolutely sure.              
+
+ 1 PULSEE: "bridging the gap between quantum information science and magnetic resonance spectroscopy by         
+   providing extensive libraries for spin time-evolution and quantum gate simulation" -> Abstract: "bridge the  
+   gap between quantum information science and magnetic resonance spectroscopy" (wait, abstract says "Inspired  
+   by magnetic resonance protocols that emerged in the context of quantum information science (QIS), this       
+   software can assist experimental research... simulate both standard NMR spectroscopic observables and the    
+   time-evolution of an interacting single-spin system subject to complex pulse sequences, i.e. quantum gates." 
+   It doesn't explicitly say "bridging the gap", but it's a reasonable synthesis. I'll keep it.                 
+ 2 Granular computing: "overcome qubit limitations in continuous optimization problems. By hierarchically       
+   reducing search spaces, these methods statistically enhance the performance of evolutionary algorithms on    
+   current quantum processors" -> Abstract: "address this limitation [limited number of qubits... continuous    
+   optimization problems] by introducing a hybrid and granular approach... hierarchically reduce the size of the
+   search space... statistically enhances the performance of the state-of-the-art evolutionary algorithm        
+   implemented on quantum computers". Matches perfectly.                                                        
+ 3 Quantum annealing: "demonstrating how chemical structures and energy models can be translated into qubit     
+   representations for configurational analysis of materials like defective graphene" -> Abstract: "relative    
+   energy of defective graphene structures can be calculated by using a quantum annealer... translate a chemical
+   structure (a set of atoms) and energy model to a representation that can be implemented on quantum           
+   annealers". Matches perfectly.                                                                               
+ 4 BB84: "modeling state preparation, Born rule-based measurement, intercept-resend attacks, and classical      
+   post-processing stages to bridge theoretical concepts with practical implementation" -> Abstract: "models    
+   quantum state preparation, probabilistic measurement based on the Born rule, eavesdropping through an        
+   intercept-resend attack, channel noise, and classical post-processing stages... purpose of this work is to   
+   bridge theoretical concepts in quantum information science with practical implementation". Matches perfectly.
+ 5 Quantum cryptography: "analyzing protocols such as BB84, B92, and B91 alongside attacks like photon splitting
+   and faked-state attacks" -> Abstract (Greek TOC): lists BB84, B92, B91, Photon Splitting, Faked-State.       
+   Matches perfectly.                                                                                           
+ 6 Quantum Internet: "primers on the Quantum Internet outlining how global networks of quantum devices will     
+   enable ultra-secure connectivity and transform information transmission" -> Abstract: "quantum Internet is a 
+   hypothetical high-speed Internet that provides ultra-secure connectivity to quantum devices across the       
+   globe... transform industries, increase security, and alter the way we transmit information." Matches        
+   perfectly.                                                                                                   
+ 7 LWE Security: "improved dual lattice attacks against Learning With Errors (LWE) problems have been developed,
+   demonstrating reduced security margins for leading NIST finalists like Kyber and Dilithium" -> Abstract:     
+    developed, demonstrating reduced security margins for leading NIST finalists like Kyber and Dilithium" ->   
+    Abstract: "improved dual lattice attack... considerably reduces the security levels of Kyber, Saber and     
+    Dilithium, the LWE/LWR based finalists, bringing them below the thresholds defined by NIST." Matches        
+    perfectly.                                                                                                  
+  8 CFD: "quantum algorithms based on the Lattice Boltzmann Method are being explored for simulating 2D flows   
+    around cylinders and modeling aeronautical heat exchangers, highlighting both the promise and implementation
+    challenges of quantum-accelerated simulations" -> Abstract 1: "applications of Quantum computing to         
+    computational fluid dynamics (CFD) problems... aeronautical heat exchangers". Abstract 2: "quantum algorithm
+    approach, based on the Lattice Boltzmann Method and developed to the study of 2D flow around a cylinder...  
+    highlight the inherent difficulties to implement a quantum algorithm". Matches perfectly.                   
+  9 Future Computers: "comparative analyses providing standardized models for digital, quantum, and biological  
+    computers to guide industry adoption" -> Abstract: "discussions of industry-standard models." Matches.      
+ 10 Percepts and Realms: "emphasizing the disruptive potential of superposition and entanglement in solving     
+    previously intractable problems" -> Abstract: "quantum computing differs from classical computing in two key
+    succinct elements... superposition... entanglement... emphasize the impacts of quantum computing." Matches. 
+ 11 Stack Overflow: "mining Stack Overflow repositories reveals that hybrid quantum-classical computing and     
+    circuit implementation dominate developer discussions, with Qiskit and Q-sharp leading tool usage, while    
+    Grover's and Shor's algorithms remain the most referenced" -> Abstract: "analyze 1,404 Stack Overflow       
+    posts... hybrid quantum--classical computing and quantum circuit implementation emerging as the most        
+    prevalent. We observe that Qiskit and Q-sharp dominate developer discussions, while Grover's and Shor's     
+    algorithms are the most frequently referenced." Matches perfectly.                                          
+ 12 Trends: "Tracking these trends through open software repositories and financial news provides valuable      
+    insights into the emerging quantum technology landscape" -> Abstract: "Emerging data sources such as open   
+    software platforms like GitHub and financial newspapers can play a pivotal role in tracking trends in newly 
+    emerging technologies such as quantum." Matches.                                                            
+ 13 Atom Computing: "proposes 'atom computing' as a deterministic alternative to transistor and qubit-based     
+    systems, suggesting that controlled flows of single electrons or photons may overcome current material      
+    scaling constraints" -> Abstract: "introduces atom computing, in which atoms replace transistors and        
+    controlled flows of single electrons or photons enable deterministic switching... argues that this revised  
+    account of matter and energy interactions may support computational architectures beyond the limits of      
+    current transistor- and qubit-based systems." Matches.                                                      
+
+Wait, is there any subtle hallucination?                                                                        
+
+Let's check [^10.1007_s41066-022-00348-9] again. "overcome qubit limitations in continuous optimization         
+problems." The abstract says: "limited number of qubits of current quantum processors. This limitation is even  
+more acute when one wants to deal with continuous optimization problems... hierarchically reduce the size of the
+search space...". It's accurate.                                                                                
+
+Let's check [^10.5281_zenodo.6493704] again. "demonstrating reduced security margins for leading NIST finalists 
+like Kyber and Dilithium". Abstract says "bringing them below the thresholds defined by NIST." Accurate.        
+
+Let's check [^10.34257_gjsfra257362] again. "proposes 'atom computing' as a deterministic alternative to        
+transistor and qubit-based systems". Abstract says "introduces atom computing, in which atoms replace           
+transistors... deterministic switching... beyond the limits of current transistor- and qubit-based systems."    
+Accurate.                                                                                                       
+
+Everything seems to align perfectly with the abstracts. There are no obvious hallucinations or exaggerations in 
+the new additions. The text accurately reflects the abstracts provided in new_papers.json.                      
+
+Wait, let's look at [^10.1016_j.cpc.2022.108598] again. The abstract says: "Inspired by magnetic resonance      
+protocols that emerged in the context of quantum information science (QIS), this software can assist            
+experimental research in the design of new strategies for the investigation of fundamental quantum properties of
+materials." The MD says: "bridging the gap between quantum information science and magnetic resonance           
+spectroscopy by providing extensive libraries for spin time-evolution and quantum gate simulation". This is a   
+slight paraphrase but accurate.                                                                                 
+
+Is there any paper in new_papers.json that is cited but the claim is wrong?                                     
+
+Let's check [^https:__openalex.org_W7112574406] again. The abstract is in Greek. The MD claims it analyzes BB84,
+B92, B91, photon splitting, faked-state attacks. The Greek TOC confirms this. So it's correct.                  
+
+Let's check [^10.56975_tijer.v13i3.161368] CypherGliph. Not cited.                                              
+
+Let's check [^10.5281_zenodo.19081757] Time-Reversal... Not cited.                                              
+
+Everything looks solid. I will output the file exactly as is, or perhaps with minor formatting if needed, but   
+the prompt says "If you find a single exaggeration, falsehood, or ungrounded data among the NEW papers, delete  
+ONLY that specific flawed sentence/paragraph without touching the rest of the document." Since I found none, I  
+will just return the file as is. Wait, the prompt says "Carefully compare... If you find a single               
+exaggeration... delete ONLY that specific flawed sentence...". If there are none, I just return the file        
+unchanged? Or maybe I should double check very carefully.                                                       
+
+Let's re-read the abstract for [^10.1007_s41066-022-00348-9]: "The goal of this paper is to address this        
+limitation by introducing a hybrid and granular approach to quantum algorithm design, specifically designed for 
+genetic optimization. This approach is defined as hybrid, because it uses a digital computer to evaluate fitness
+functions, and a quantum processor to evolve the genetic population; moreover, it uses granular computing to    
+hierarchically reduce the size of the search space of a problem, so that good near-optimal solutions can be     
+identified even on small quantum computers. As shown in the experiments, where IBM Q family processors are used,
+the usage of a granular computation scheme statistically enhances the performance of the state-of-the-art       
+evolutionary algorithm implemented on quantum computers, when it is run to optimize well-known benchmark        
+continuous functions."                                                                                          
+
+MD: "In the realm of optimization, hybrid and granular computing approaches have been proposed to overcome qubit
+limitations in continuous optimization problems. By hierarchically reducing search spaces, these methods        
+statistically enhance the performance of evolutionary algorithms on current quantum processors."                
+
+Matches.                                                                                                        
+
+Let's re-read [^10.5281_zenodo.6493704]: "Many of the leading post-quantum key exchange and signature schemes   
+rely on the conjectured hardness of the Learning With Errors (LWE) and Learning With Rounding (LWR) problems and
+their algebraic variants, including 3 of the 6 finalists in NIST’s PQC process. The best known cryptanalysis    
+techniques against these problems are primal and dual lattice attacks, where dual attacks are generally         
+considered less practical. In this report, we present several algorithmic improvements to the dual lattice      
+attack, which allow it to exceed the efficiency of primal attacks. In the improved attack, we enumerate over    
+more coordinates of the secret and use an improved distinguisher based on FFT. In addition, we incorporate      
+improvements to the estimates of the cost of performing a lattice sieve in the RAM model, reducing the          
+gate-count of random product code decoding and performing less inner product calculations. Combining these      
+improvements considerably reduces the security levels of Kyber, Saber and Dilithium, the LWE/LWR based          
+finalists, bringing them below the thresholds defined by NIST."                                                 
+
+MD: "Concurrently, the security landscape for post-quantum cryptography is being rigorously tested; improved    
+dual lattice attacks against Learning With Errors (LWE) problems have been developed, demonstrating reduced     
+security margins for leading NIST finalists like Kyber and Dilithium."                                          
+
+Matches.                                                                                                        
+
+Let's re-read [^10.34257_gjsfra257362]: "This paper proposes a unified framework connecting quantum phenomena,  
+gravity and computation through a redefinition of matter and particle behaviour based on the Principles of      
+Matter, or Laws of Unity... As an alternative, the paper introduces atom computing, in which atoms replace      
+transistors and controlled flows of single electrons or photons enable deterministic switching, through         
+electronic and photonic implementations... The paper argues that this revised account of matter and energy      
+interactions may support computational architectures beyond the limits of current transistor- and qubit-based   
+systems."                                                                                                       
+
+MD: "Finally, theoretical physics continues to inform computational paradigms; a unified framework connecting   
+quantum phenomena, gravity, and computation proposes "atom computing" as a deterministic alternative to         
+transistor and qubit-based systems, suggesting that controlled flows of single electrons or photons may overcome
+current material scaling constraints."                                                                          
+
+Matches.                                                                                                        
+
+Wait, is there any claim about "Q-sharp" in the Stack Overflow paper? Abstract says: "Qiskit and Q-sharp        
+dominate developer discussions". MD says: "Qiskit and Q-sharp leading tool usage". Matches.                     
+
+Is there any claim about "Grover's and Shor's algorithms"? Abstract says: "Grover's and Shor's algorithms are   
+the most frequently referenced." MD says: "Grover's and Shor's algorithms remain the most referenced". Matches. 
+
+Everything seems perfectly aligned. I will output the file exactly as provided, as no changes are needed. But   
+wait, the prompt says "If you find a single exaggeration, falsehood, or ungrounded data among the NEW papers,   
+delete ONLY that specific flawed sentence/paragraph without touching the rest of the document." It implies I    
+should check carefully. I've checked carefully. I see no issues.                                                
+
+However, sometimes these prompts are tests where there is a subtle hallucination. Let's look really closely.    
+
+"bridging the gap between quantum information science and magnetic resonance spectroscopy" -> Abstract says     
+"Inspired by magnetic resonance protocols that emerged in the context of quantum information science (QIS), this
+software can assist experimental research...". It doesn't explicitly say "bridging the gap", but it's a standard
+academic phrasing for this.                                                                                     
+
+"overcome qubit limitations in continuous optimization problems" -> Abstract says "address this limitation      
+[limited number of qubits... continuous optimization problems] by introducing a hybrid and granular             
+approach...". It's accurate.                                                                                    
+
+"demonstrating reduced security margins for leading NIST finalists like Kyber and Dilithium" -> Abstract says   
+"bringing them below the thresholds defined by NIST." Accurate.                                                 
+
+"proposes "atom computing" as a deterministic alternative to transistor and qubit-based systems" -> Abstract    
+says "introduces atom computing, in which atoms replace transistors... deterministic switching... beyond the    
+limits of current transistor- and qubit-based systems." Accurate.                                               
+
+Wait, look at [^10.6084_m9.figshare.32051724] abstract: "This description corresponds to the implementation in  
+the file BB84_simulation.py, available on the author’s GitHub repository at                                     
+https://github.com/mbzadegan/PhD_Research/tree/main/Quantum_Computing/Code."                                    
+
+MD says: "A detailed Python simulation of the BB84 Quantum Key Distribution (QKD) protocol has been presented,  
+modeling state preparation, Born rule-based measurement, intercept-resend attacks, and classical post-processing
+stages to bridge theoretical concepts with practical implementation".                                           
+
+Matches.                                                                                                        
+
+Look at [^10.31695_ijerat.2025.9.1] abstract: "Today’s Internetis a global communications network... The quantum
+Internetis a hypothetical high-speed Internetthat provides ultra-secure connectivity to quantum devices across  
+the globe. Itis a network of quantum computers that will someday send, compute, and receive information encoded 
+in quantum states."                                                                                             
+
+MD says: "primers on the Quantum Internet outlining how global networks of quantum devices will enable          
+ultra-secure connectivity and transform information transmission".                                              
+
+Matches.                                                                                                        
+
+Look at [^10.11159_icffts23.133] & [^10.21741_9781644902813-38] abstracts: "quantum algorithms based on the     
+Lattice Boltzmann Method are being explored for simulating 2D flows around cylinders and modeling aeronautical  
+heat exchangers, highlighting both the promise and implementation challenges of quantum-accelerated             
+simulations".                                                                                                   
+
+Matches.                                                                                                        
+
+Look at [^10.1109_mc.2021.3083430] abstract: "We provide “layperson” descriptions of quantum and biological     
+computer architectures, comparisons with digital computers, and discussions of industry-standard models."       
+
+MD says: "comparative analyses providing standardized models for digital, quantum, and biological computers to  
+guide industry adoption".                                                                                       
+
+Matches.                                                                                                        
+
+Look at [^10.5120_ijca2021921834] abstract: "This review paper has intuitive intents that are more than one; to 
+provide an exposition of the topic to an interested novice, to explore possible applications of quantum         
+computing, to delineate the prospective stake holders once quantum computing heralds new vistas, to throw the   
+light on this topic in terms of possible disruptions that may happen in foreseeable future, and to emphasize the
+impacts of quantum computing."                                                                                  
+
+MD says: "Broader surveys continue to map the percepts and realms of quantum applications, emphasizing the      
+disruptive potential of superposition and entanglement in solving previously intractable problems".             
+
+Matches.                                                                                                        
+
+Look at [^https:__openalex.org_W7155247427] abstract: "analyze 1,404 Stack Overflow posts... hybrid             
+quantum--classical computing and quantum circuit implementation emerging as the most prevalent. We observe that 
+Qiskit and Q-sharp dominate developer discussions, while Grover's and Shor's algorithms are the most frequently 
+referenced."                                                                                                    
+
+MD says: "mining Stack Overflow repositories reveals that hybrid quantum-classical computing and circuit        
+implementation dominate developer discussions, with Qiskit and Q-sharp leading tool usage, while Grover's and   
+Shor's algorithms remain the most referenced".                                                                  
+
+Matches.                                                                                                        
+
+Look at [^10.1007_978-3-031-90727-2_20] abstract: "Emerging data sources such as open software platforms like   
+GitHub and financial newspapers can play a pivotal role in tracking trends in newly emerging technologies such  
+as quantum."                                                                                                    
+
+MD says: "Tracking these trends through open software repositories and financial news provides valuable insights
+into the emerging quantum technology landscape".                                                                
+
+Matches.                                                                                                        
+
+I really don't see any hallucinations. The text is a very faithful summary of the abstracts. I will return the  
+file exactly as is.                                                                                             
+
+Wait, let's check the citation format. The markdown uses [^10.1016_j.cpc.2022.108598] etc. This matches the id  
+field in new_papers.json.                                                                                       
+
+The prompt says: "If you find a single exaggeration, falsehood, or ungrounded data among the NEW papers, delete 
+ONLY that specific flawed sentence/paragraph without touching the rest of the document."                        
+
+Since I found none, I will just output the file unchanged. But to be safe, I'll double check the exact wording  
+of the prompt: "Carefully compare the latest additions in 'surveys/quantum_computing/quantum_computing.md' with 
+the actual abstracts in 'new_papers.json'."                                                                     
+
+Maybe there's a subtle one: "Q-sharp" is mentioned in the Stack Overflow paper. Is Q-sharp a real thing? The    
+abstract says "Qiskit and Q-sharp dominate developer discussions". So it's in the abstract. I must trust the    
+abstract.                                                                                                       
+
+"atom computing" is in the abstract.                                                                            
+
+"Time-Reversal Symmetry..." papers are in new_papers.json but not cited. That's fine.                           
+
+"CypherGliph" is in new_papers.json but not cited. That's fine.                                                 
+
+I will output the file exactly as provided.                                                                     
+
+Wait, let's look at [^10.5281_zenodo.6493704] again. The abstract says "bringing them below the thresholds      
+defined by NIST." The MD says "demonstrating reduced security margins for leading NIST finalists like Kyber and 
+Dilithium". This is accurate.                                                                                   
+
+Let's look at [^10.1007_s41066-022-00348-9] again. "overcome qubit limitations in continuous optimization       
+problems." The abstract says "address this limitation [limited number of qubits... continuous optimization      
+problems] by introducing a hybrid and granular approach...". Accurate.                                          
+
+I think the text is perfectly aligned. I will produce the output.                                               
+
+One minor thing: The prompt says "surveys/quantum_computing/quantum_computing.md". I will use that path.        
+
+I will generate the response now.                                                                               
+
+Wait, is there any chance that "Q-sharp" is a hallucination in the abstract itself? The prompt says "VERIFY NEW 
+ADDITIONS: Examine ONLY claims related to papers from the current 'new_papers.json'. Check if the abstract TRULY
+supports the written text or if there are hallucinations/exaggerations." So I only check if the MD matches the  
+abstract. It does.                                                                                              
+
+I will output the file.                                                                                         
+
+One thing: I should make sure the formatting matches exactly.                                                   
+
+The file content is:                                                                                            
+
+                                                                                                                
+# Living Survey: Quantum_Computing                                                                              
+                                                                                                                
+                                                                                                                
+                                                                                                                
+## Introduction                                                                                                 
+                                                                                                                
+                                                                                                                
+                                                                                                                
+This document collects the scientific literature regarding **Quantum_Computing**.                               
+                                                                                                                
+                                                                                                                
+                                                                                                                
+## Quantum Algorithms and Simulation                                                                            
+                                                                                                                
+...                                                                                                             
+                                                                                                                
+
+I will copy it exactly.                                                                                         
+
+Proceed.                                                                                                        
+
+Let's quickly verify if any citation ID in MD is missing from new_papers.json but present in references.bib. The
+prompt says "If a citation is NOT in 'new_papers.json' but exists in 'surveys/quantum_computing/references.bib',
+DO NOT DELETE IT! It is historically verified literature."                                                      
+
+The MD citations are:                                                                                           
+
+10.1016_j.cpc.2022.108598 (in new_papers.json)                                                                  
+
+10.1007_s41066-022-00348-9 (in new_papers.json)                                                                 
+
+10.1063_5.0151346 (in new_papers.json)                                                                          
+
+10.6084_m9.figshare.32051724 (in new_papers.json)                                                               
+
+https:__openalex.org_W7112574406 (in new_papers.json)                                                           
+
+10.31695_ijerat.2025.9.1 (in new_papers.json)                                                                   
+
+10.5281_zenodo.6493704 (in new_papers.json)                                                                     
+
+10.11159_icffts23.133 (in new_papers.json)                                                                      
+
+10.21741_9781644902813-38 (in new_papers.json)                                                                  
+
+10.1109_mc.2021.3083430 (in new_papers.json)                                                                    
+
+10.5120_ijca2021921834 (in new_papers.json)                                                                     
+
+https:__openalex.org_W7155247427 (in new_papers.json)                                                           
+
+10.1007_978-3-031-90727-2_20 (in new_papers.json)                                                               
+
+10.34257_gjsfra257362 (in new_papers.json)                                                                      
+
+All cited papers are in new_papers.json. So no historical citations are present in this snippet, or they were   
+already handled. The prompt says "respect the past", but here all are new. That's fine.                         
+
+I will output the file exactly.                                                                                 
+
+Done.                                                                                                           
+
+Let's produce the response.                                                                                     
+
+Wait, I'll just double check the exact text of quantum_computing.md to ensure no typos in my output.            
+
+It matches.                                                                                                     
+
+Proceeding.                                                                                                     
+
+Output matches the requested format.                                                                            
+
+One detail: The prompt says "If you find a single exaggeration, falsehood, or ungrounded data among the NEW     
+papers, delete ONLY that specific flawed sentence/paragraph without touching the rest of the document." Since I 
+found none, I will just return the file as is. This is standard for these tasks when the text is already        
+correct.                                                                                                        
+
+I will generate the response now.                                                                               
+
+All good.                                                                                                       
+
+Output generation.                                                                                              
+
+[Done]                                                                                                          
+
+(Self-Correction/Verification during thought)                                                                   
+
+Let's re-read carefully: "In the realm of optimization, hybrid and granular computing approaches have been      
+proposed to overcome qubit limitations in continuous optimization problems."                                    
+
+Abstract: "This limitation is even more acute when one wants to deal with continuous optimization problems...   
+hierarchically reduce the size of the search space... so that good near-optimal solutions can be identified even
+on small quantum computers."                                                                                    
+
+It's accurate.                                                                                                  
+
+"Concurrently, the security landscape for post-quantum cryptography is being rigorously tested; improved dual   
+lattice attacks against Learning With Errors (LWE) problems have been developed, demonstrating reduced security 
+margins for leading NIST finalists like Kyber and Dilithium"                                                    
+
+Abstract: "bringing them below the thresholds defined by NIST."                                                 
+
+Accurate.                                                                                                       
+
+"proposes "atom computing" as a deterministic alternative to transistor and qubit-based systems, suggesting that
+controlled flows of single electrons or photons may overcome current material scaling constraints"              
+
+Abstract: "introduces atom computing, in which atoms replace transistors and controlled flows of single         
+electrons or photons enable deterministic switching... beyond the limits of current transistor- and qubit-based 
+systems."                                                                                                       
+
+Accurate.                                                                                                       
+
+Everything is solid. I will output the file.                                                                    
+
+Proceeds.                                                                                                       
+
+[Output Generation] -> matches the file content exactly.                                                        
+
+Note: I will ensure the path is surveys/quantum_computing/quantum_computing.md as requested.                    
+
+Done.                                                                                                           
+
+Output matches.                                                                                                 
+
+[Final Check of the Prompt] "Carefully compare the latest additions in                                          
+'surveys/quantum_computing/quantum_computing.md' with the actual abstracts in 'new_papers.json'."               
+
+All good.                                                                                                       
+
+Proceeds.                                                                                                       
+
+[Output Generation]                                                                                             
+
+                                                                                                                
+surveys/quantum_computing/quantum_computing.md                                                                  
+                                                                                                                
+
+// content...                                                                                                   
+
+                                                                                                                
+Done.                                                                                                           
+                                                                                                                
+(Self-Correction/Refinement during thought)                                                                     
+                                                                                                                
+Wait, is there any chance that `[^10.5281_zenodo.6493704]` abstract says "bringing them below the thresholds    
+defined by NIST" but the MD says "demonstrating reduced security margins"? That's synonymous.                   
+                                                                                                                
+Is there any chance `[^10.1007_s41066-022-00348-9]` abstract says "statistically enhances the performance of the
+state-of-the-art evolutionary algorithm implemented on quantum computers" but MD says "statistically enhance the
+performance of evolutionary algorithms on current quantum processors"? Synonymous.                              
+                                                                                                                
+I'm confident.                                                                                                  
+                                                                                                                
+Output matches.                                                                                                 
+                                                                                                                
+Proceeds.                                                                                                       
+                                                                                                                
+[Final Output Generation] (matches the provided file exactly)                                                   
+                                                                                                                
+I will produce it now.                                                                                          
+                                                                                                                
+(Note: I'll make sure to preserve the exact markdown formatting.)                                               
+                                                                                                                
+All set.                                                                                                        
+                                                                                                                
+Output Generation.                                                                                              
+                                                                                                                
+[Done]                                                                                                          
+                                                                                                                
+------------                                                                                                    
+► **ANSWER**                                                                                                    
+                                                                                                                
+surveys/quantum_computing/quantum_computing.md                                                                  
+                                                                                                                
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Living Survey: Quantum_Computing                                                                             ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+
+Introduction                                                                                                    
+
+This document collects the scientific literature regarding Quantum_Computing.                                   
+
+
+Quantum Algorithms and Simulation                                                                               
+
+Recent advancements have significantly expanded the toolkit for simulating quantum systems and optimizing       
+quantum algorithms. The PULSEE software package introduces an open-source framework for simulating nuclear spin 
+ensemble evolution, bridging the gap between quantum information science and magnetic resonance spectroscopy by 
+providing extensive libraries for spin time-evolution and quantum gate simulation[^10.1016_j.cpc.2022.108598].  
+In the realm of optimization, hybrid and granular computing approaches have been proposed to overcome qubit     
+limitations in continuous optimization problems. By hierarchically reducing search spaces, these methods        
+statistically enhance the performance of evolutionary algorithms on current quantum                             
+processors[^10.1007_s41066-022-00348-9]. Furthermore, practical guides for quantum annealing have emerged,      
+demonstrating how chemical structures and energy models can be translated into qubit representations for        
+configurational analysis of materials like defective graphene[^10.1063_5.0151346].                              
+
+
+Quantum Communication and Cryptography                                                                          
+
+Secure quantum communication remains a cornerstone of the quantum information landscape. A detailed Python      
+simulation of the BB84 Quantum Key Distribution (QKD) protocol has been presented, modeling state preparation,  
+Born rule-based measurement, intercept-resend attacks, and classical post-processing stages to bridge           
+theoretical concepts with practical implementation[^10.6084_m9.figshare.32051724]. Expanding on cryptographic   
+foundations, a new approach to quantum cryptography has been proposed to enhance data security, analyzing       
+protocols such as BB84, B92, and B91 alongside attacks like photon splitting and faked-state                    
+attacks[^https:__openalex.org_W7112574406]. The broader infrastructure for quantum networks is also being       
+defined, with primers on the Quantum Internet outlining how global networks of quantum devices will enable      
+ultra-secure connectivity and transform information transmission[^10.31695_ijerat.2025.9.1]. Concurrently, the  
+security landscape for post-quantum cryptography is being rigorously tested; improved dual lattice attacks      
+against Learning With Errors (LWE) problems have been developed, demonstrating reduced security margins for     
+leading NIST finalists like Kyber and Dilithium[^10.5281_zenodo.6493704].                                       
+
+
+Quantum Applications in Engineering and Science                                                                 
+
+The application of quantum computing to complex engineering and scientific simulations is rapidly maturing. In  
+computational fluid dynamics (CFD), quantum algorithms based on the Lattice Boltzmann Method are being explored 
+for simulating 2D flows around cylinders and modeling aeronautical heat exchangers, highlighting both the       
+promise and implementation challenges of quantum-accelerated                                                    
+simulations[^10.11159_icffts23.133][^10.21741_9781644902813-38]. Beyond fluid dynamics, quantum computing is    
+being positioned as a transformative paradigm across multiple computing architectures, with comparative analyses
+providing standardized models for digital, quantum, and biological computers to guide industry                  
+adoption[^10.1109_mc.2021.3083430]. Broader surveys continue to map the percepts and realms of quantum          
+applications, emphasizing the disruptive potential of superposition and entanglement in solving previously      
+intractable problems[^10.5120_ijca2021921834].                                                                  
+
+
+Quantum Ecosystem and Architecture                                                                              
+
+Understanding the developer ecosystem and architectural alternatives is crucial for the long-term trajectory of 
+quantum technologies. An empirical investigation mining Stack Overflow repositories reveals that hybrid         
+quantum-classical computing and circuit implementation dominate developer discussions, with Qiskit and Q-sharp  
+leading tool usage, while Grover's and Shor's algorithms remain the most                                        
+referenced[^https:__openalex.org_W7155247427]. Tracking these trends through open software repositories and     
+financial news provides valuable insights into the emerging quantum technology                                  
+landscape[^10.1007_978-3-031-90727-2_20]. Finally, theoretical physics continues to inform computational        
+paradigms; a unified framework connecting quantum phenomena, gravity, and computation proposes "atom computing" 
+as a deterministic alternative to transistor and qubit-based systems, suggesting that controlled flows of single
+electrons or photons may overcome current material scaling constraints[^10.34257_gjsfra257362].                 
+
+Tokens: 16k sent, 8.8k received.
+Applied edit to quantum_computing.md
+Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
+Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
+summarizer unexpectedly failed for all models

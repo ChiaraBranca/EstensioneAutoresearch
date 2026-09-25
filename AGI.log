@@ -2012,3 +2012,97 @@ Applied edit to artificial_general_intelligence.md
 Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
 Summarization failed for model openai/lab-qwen36: cannot schedule new futures after shutdown
 summarizer unexpectedly failed for all models
+==================================================
+ STARTING LIVING SURVEY: Project 'Artificial_General_Intelligence' | Query: 'Artificial_General_Intelligence'
+==================================================
+
+[SYSTEM] Executing: python prepare.py --init "Artificial_General_Intelligence"
+[INIT] Created new survey file in: surveys/artificial_general_intelligence/artificial_general_intelligence.md
+[INIT] Baseline figures generated in surveys/artificial_general_intelligence/figures
+WORKSPACE_READY:surveys/artificial_general_intelligence
+
+──────────────────────────────────────────────────
+ CYCLE 1/1 - LITERATURE RETRIEVAL
+──────────────────────────────────────────────────
+
+[SYSTEM] Executing: python prepare.py --fetch "Artificial_General_Intelligence" "Artificial_General_Intelligence"
+--- INITIATING FEDERATED MULTI-SERVER SEARCH ---
+[SERVER 1 - ARXIV] Searching for: 'Artificial_General_Intelligence' (Filter: Latest)...
+[SERVER 2 - OPENALEX] Searching for: 'Artificial_General_Intelligence'...
+[PREPARE] Fetched 24 completely NEW papers.
+          Details: 0 from ArXiv, 24 from OpenAlex.
+
+[SYSTEM] Executing: python prepare.py --eval "Artificial_General_Intelligence"
+INTEGRATED_COUNT:0
+LSS_SCORE:25.5
+[METRIC] Starting Baseline LSS Score: 25.5
+
+[ORACLE] Generating Ground Truth via Cosine Similarity (Vector IR)...
+
+[AI AGENT - ACTOR] Writing and integrating new literature...
+
+[SYSTEM] Executing: uvx --from aider-chat aider --model openai/lab-qwen36 --model-settings-file .aider.model.settings.yml --read prepare.py --read program.md --read new_papers.json --yes-always --no-git --message "Carefully read the 'new_papers.json' file containing unreleased papers.
+1) COMPREHENSIVE LITERATURE MAPPING: The main topic is 'Artificial_General_Intelligence'. Your goal is to build a rich, interdisciplinary academic survey. You MUST INCLUDE papers that fall into these valid categories:
+  - Core Research: Papers directly addressing the mechanisms, theories, or primary focus of 'Artificial_General_Intelligence'.
+  - Foundational Methodologies: Papers exploring underlying algorithms, frameworks, or enabling technologies directly advancing 'Artificial_General_Intelligence'.
+  - Implications & Transitions: Papers analyzing the direct ethical, societal, or advanced theoretical implications arising specifically from 'Artificial_General_Intelligence'.
+You MUST REJECT ONLY papers that are purely off-topic or tangential:
+  - Mention-only: Papers where 'Artificial_General_Intelligence' is merely mentioned as a background example, buzzword, or tangential use-case without being the central study.
+  - Out of Scope: Broad macro-models or distant fields where 'Artificial_General_Intelligence' is just a minor variable.
+  - Trivial Applications: Basic educational, purely linguistic, or business-management papers that use 'Artificial_General_Intelligence' just as context without advancing its science.
+Ignore identical duplicate abstracts.
+DO NOT self-limit to a 'representative subset' or an arbitrary number of papers for the sake of keeping the document short or manageable. Every single paper that passes the relevance criteria above MUST be integrated, however many that is - there is no maximum.
+2) INTEGRATION: For relevant papers only, integrate a concise analysis into 'surveys/artificial_general_intelligence/artificial_general_intelligence.md' using Markdown citations like [^paper_id]. EXPANSION RULE: Do NOT delete or summarize any existing text from previous cycles! Add new content by organically expanding existing sections or creating new ones.
+3) BIBLIOGRAPHY: Add the new bibliographic entries for RELEVANT papers into 'surveys/artificial_general_intelligence/references.bib'. CRITICAL: The BibTeX key MUST be the exact 'id' field from the JSON! Do NOT invent new keys (e.g. use @article{10.5281_zenodo.1234, NOT @article{smith2026,).
+4) DATA UPDATE: Update TIMELINE_DATA and TAXONOMY_DATA at the beginning of 'surveys/artificial_general_intelligence/generate_figures.py' by ADDING the new counts of INTEGRATED papers to the existing values.
+5) CLEANUP: Strictly remove any empty headers without underlying text from 'surveys/artificial_general_intelligence/artificial_general_intelligence.md'. The document must only contain fully argued sections!
+6) FORMATTING & INTEGRITY CHECK: Do NOT group citations in a single bracket (use [^id1][^id2], NEVER [^id1, ^id2]). Before finishing, you MUST independently verify that EVERY single paper ID you added to 'surveys/artificial_general_intelligence/references.bib' has an explicit citation inside 'surveys/artificial_general_intelligence/artificial_general_intelligence.md'. Discrepancies are strictly forbidden!
+Do NOT execute terminal commands, do NOT write LaTeX code, just edit the requested files." surveys/artificial_general_intelligence/artificial_general_intelligence.md surveys/artificial_general_intelligence/references.bib surveys/artificial_general_intelligence/generate_figures.py
+
+[AI AGENT - CRITIC] Peer-reviewing and verifying scientific accuracy...
+
+[SYSTEM] Executing: uvx --from aider-chat aider --model openai/lab-qwen36 --model-settings-file .aider.model.settings.yml --read new_papers.json --read surveys/artificial_general_intelligence/references.bib --yes-always --no-git --message "Act as a ruthless scientific reviewer (Reviewer 2). Carefully compare the latest additions in 'surveys/artificial_general_intelligence/artificial_general_intelligence.md' with the actual abstracts in 'new_papers.json'.
+REVIEW RULES & HISTORICAL MEMORY:
+1) RESPECT THE PAST: 'surveys/artificial_general_intelligence/artificial_general_intelligence.md' contains citations from previous cycles (already in 'surveys/artificial_general_intelligence/references.bib'). If a citation is NOT in 'new_papers.json' but exists in 'surveys/artificial_general_intelligence/references.bib', DO NOT DELETE IT! It is historically verified literature.
+2) VERIFY NEW ADDITIONS: Examine ONLY claims related to papers from the current 'new_papers.json'. Check if the abstract TRULY supports the written text or if there are hallucinations/exaggerations.
+3) If you find a single exaggeration, falsehood, or ungrounded data among the NEW papers, delete ONLY that specific flawed sentence/paragraph without touching the rest of the document.
+Do NOT invent code, limit yourself to the targeted revision of 'surveys/artificial_general_intelligence/artificial_general_intelligence.md'." surveys/artificial_general_intelligence/artificial_general_intelligence.md
+
+[SYSTEM] Running Garbage Collector for references.bib...
+[SYSTEM] Garbage Collector executed: bibliography successfully synchronized.
+
+[SYSTEM] Rendering actual charts to disk...
+
+[SYSTEM] Executing: python "surveys/artificial_general_intelligence/generate_figures.py"
+[TAXONOMY WARNING] TAXONOMY_DATA sums to 12, but references.bib has 11 entries. The taxonomy breakdown may be stale or miscounted (it is not cross-checked automatically like TIMELINE_DATA).
+[GENERATE_FIGURES] Charts updated in /mnt/sdb1/workspace/chiarabrancaleoni/autoresearch/surveys/artificial_general_intelligence/figures (Timeline reconciled with .bib)
+
+[METRICS] Calculating Precision, Recall, and F1-Measure...
+
+[SYSTEM] Executing: python evaluate_metrics.py "artificial_general_intelligence"
+Error: File ground_truth.json not found.
+
+[SYSTEM] Executing: python prepare.py --eval "Artificial_General_Intelligence"
+INTEGRATED_COUNT:11
+LSS_SCORE:52.65
+
+[VERDICT] Baseline: 25.5 -> New Score: 52.65 (Δ +27.15)
+[HISTORY] Cycle 1 logged to metrics_history.jsonl (C=49.5, N=55.8, f1=0.767123287671233, committed=True)
+[SUCCESS] Improvement confirmed! Executing Git Commit.
+
+[SYSTEM] Executing: git add .
+
+[SYSTEM] Executing: git commit -m "feat(artificial_general_intelligence): integrated valid papers (LSS: 52.65)" 
+[main ac2630d] feat(artificial_general_intelligence): integrated valid papers (LSS: 52.65)
+ 7 files changed, 2218 insertions(+)
+ create mode 100644 AGI.log
+ create mode 100644 surveys/artificial_general_intelligence/artificial_general_intelligence.md
+ create mode 100644 surveys/artificial_general_intelligence/figures/taxonomy.png
+ create mode 100644 surveys/artificial_general_intelligence/figures/timeline.png
+ create mode 100644 surveys/artificial_general_intelligence/generate_figures.py
+ create mode 100644 surveys/artificial_general_intelligence/references.bib
+[LOG] JSON files successfully archived in: surveys/artificial_general_intelligence/eval_logs (Timestamp: 20260925_125648)
+
+==================================================
+ LOOP SUCCESSFULLY COMPLETED!
+==================================================
